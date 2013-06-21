@@ -106,16 +106,15 @@ int SndInit()
 			}
 		}
 //sq		nBurnSoundLen = ((nBurnSoundRate * 100 /*+ 3000*/) / nBurnFPS );
-		samples_per_frame = (nBurnSoundRate / (nBurnFPS/100) );
-//sq	pBurnSoundOut	= NULL;
+		samples_per_frame = nBurnSoundRate * 100 / nBurnFPS;
     
-        // attempt to initialize SDL
-        // alsa_init will also ammend the samples_per_frame
-        g_alsa = alsa_init();
-        
-        nBurnSoundLen = samples_per_frame;
-        
-        pBurnSoundOut = (short *)malloc(nBurnSoundLen*4);
+//        // attempt to initialize SDL
+//        // alsa_init will also ammend the samples_per_frame
+//        g_alsa = alsa_init();
+//        
+//        nBurnSoundLen = samples_per_frame;
+//        
+//        pBurnSoundOut = (short *)malloc(nBurnSoundLen*4);
         
         AudioCurBlock	= 0;
         
@@ -127,8 +126,29 @@ int SndInit()
 
 int SndOpen()
 {
-    if (g_alsa)
-        return 0;
+    
+    if (config_options.option_sound_enable)
+	{
+		samples_per_frame = nBurnSoundRate * 100 / nBurnFPS;
+        
+        // attempt to initialize SDL
+        // alsa_init will also ammend the samples_per_frame
+        g_alsa = alsa_init();
+        
+        nBurnSoundLen = samples_per_frame;
+        
+        pBurnSoundOut = (short *)malloc(nBurnSoundLen*4);
+        
+        AudioCurBlock	= 0;
+        
+        dspfd = -1;
+        
+        if (g_alsa)
+            return 0;
+        else
+            return -1;
+
+	}
     else
         return -1;
     
@@ -231,7 +251,7 @@ static void alsa_worker_thread(void *data)
 		size_t avail = fifo_read_avail(alsa->buffer);
         
 		//First run wait until the buffer is filled with a few frames
-		if(avail < alsa->period_size_bytes*3 && wait_on_buffer)
+		if(avail < alsa->period_size_bytes*2 && wait_on_buffer)
 		{
 			slock_unlock(alsa->fifo_lock);
 			continue;
@@ -307,7 +327,7 @@ static ssize_t alsa_write(void *data, const void *buf, size_t size)
 	return write_amt;
 }
 
-int update_audio_stream(INT16 *buffer)
+void update_audio_stream(INT16 *buffer)
 {
     alsa_write(g_alsa, buffer, (nBurnSoundLen * nAudioChannels * sizeof(signed short)) );
 }
@@ -371,7 +391,7 @@ static alsa_t *alsa_init(void)
 	alsa->fifo_lock = slock_new();
 	alsa->cond_lock = slock_new();
 	alsa->cond = scond_new();
-	alsa->buffer = fifo_new(alsa->buffer_size_bytes*6);
+	alsa->buffer = fifo_new(alsa->buffer_size_bytes*3);
 	if (!alsa->fifo_lock || !alsa->cond_lock || !alsa->cond || !alsa->buffer)
 		goto error;
 	
