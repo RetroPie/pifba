@@ -116,17 +116,16 @@ int BurnYM2151Init(int nClockFrequency, float nVolume, bool stereo)
 		return 0;
 	}
 
-	
-	if (nFMInterpolation == 3 || nBurnSoundRate > 11025) {
-		if (nBurnSoundRate > 11025)
-			nBurnYM2151SoundRate = 11025;
-		else
-			nBurnYM2151SoundRate = nBurnSoundRate;
-		if (nFMInterpolation == 3)
-			nBurnYM2151SoundRate = nBurnYM2151SoundRate >> 1;
-
+	if (nFMInterpolation == 3) {
+		// Set YM2151 core samplerate to match the hardware
+		nBurnYM2151SoundRate = nClockFrequency >> 6;
+		// Bring YM2151 core samplerate within usable range
+		while (nBurnYM2151SoundRate > nBurnSoundRate * 3) {
+			nBurnYM2151SoundRate >>= 1;
+		}
+        
 		BurnYM2151Render = YM2151RenderResample;
-
+        
 		nYM2151Volume = (int)((double)16384.0 * 100.0 / nVolume);
 	} else {
 		nBurnYM2151SoundRate = nBurnSoundRate;
