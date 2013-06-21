@@ -23,10 +23,10 @@ CXXFLAGSPROFILE= -mcpu=arm920t -mtune=arm920t -pipe -DQWS -fno-exceptions -fno-r
 CXXFLAGSPROFILE += -falign-functions=32 -falign-loops -falign-labels -falign-jumps -fomit-frame-pointer -ffast-math -fexpensive-optimizations -finline -finline-functions
 CXXFLAGSPROFILE += -mstructure-size-boundary=32 -frename-registers 
 INCPATH	= -I. -I./burn -I./burn/neogeo -I./burn/capcom -I./burn/cave -I./burn/toaplan -I./cpu/cz80 -I./cpu/cyclone -I./cpu/drz80 -I./cpu/nec -I./cpu/sh2 -I./burn/misc -I$(EZX_BASE)/include/3pt -I$(EZX_BASE)/include/qt -I$(EZX_BASE)/include/ezx -I$(SDKSTAGE)/opt/vc/include -I$(SDKSTAGE)/opt/vc/include/interface/vcos/pthreads \
-	-I$(SDKSTAGE)/opt/vc/include/interface/vmcs_host/linux -I/usr/include/SDL 
+	-I$(SDKSTAGE)/opt/vc/include/interface/vmcs_host/linux -I/usr/include/SDL -I/usr/include/glib-2.0 -I/usr/lib/arm-linux-gnueabihf/glib-2.0/include 
 LINK	= arm-linux-gnueabihf-g++
 LFLAGS	= -g
-LIBS	= -lz -lpthread -lm -lpthread -lSDL -L/opt/vc/lib -lbcm_host -lGLESv2 -lEGL 
+LIBS	= -lz -lpthread -lm -lpthread -lSDL -L/opt/vc/lib -lbcm_host -lGLESv2 -lEGL -lglib-2.0
 
 TAR	=	tar -cf
 GZIP	=	gzip -9f
@@ -73,9 +73,10 @@ HEADERS = gp2xsdk.h \
 		cache.h
 SOURCES = memcpy.s \
 		memset.s \
-		squidgehack.c \
 		gp2xsdk.cpp \
 		gles2.cpp \
+		thread.c \
+		fifo_buffer.c \
 		main.cpp \
 		gamewidget.cpp \
 		ezxaudio.cpp \
@@ -288,13 +289,13 @@ SOURCES = memcpy.s \
 		state.cpp \
 		drv.cpp \
 		run.cpp \
-		input.cpp \
-		usbjoy.c
+		input.cpp 
 OBJECTS = .obj_debug/memcpy.o \
 		.obj_debug/memset.o\
-		.obj_debug/squidgehack.o \
 		.obj_debug/gp2xsdk.o \
 		.obj_debug/gles2.o \
+		.obj_debug/thread.o \
+		.obj_debug/fifo_buffer.o \
 		.obj_debug/main.o \
 		.obj_debug/gamewidget.o \
 		.obj_debug/ezxaudio.o \
@@ -507,8 +508,7 @@ OBJECTS = .obj_debug/memcpy.o \
 		.obj_debug/state.o \
 		.obj_debug/drv.o \
 		.obj_debug/run.o \
-		.obj_debug/input.o \
-		.obj_debug/usbjoy.o
+		.obj_debug/input.o 
 
 INTERFACES =	
 DIST	=	
@@ -541,7 +541,6 @@ all: $(TARGET)
 
 $(TARGET): $(OBJECTS) 
 	$(LINK) $(LFLAGS) -o $(TARGET) $(OBJECTS) $(LIBS) 
-	strip $(TARGET) -o$(TARGET)_s
 
 clean:
 	-rm -f $(OBJECTS) $(TARGET)
@@ -555,14 +554,17 @@ clean:
 
 ####### Compile
 
-.obj_debug/squidgehack.o: squidgehack.c
-	$(CC) -c $(CXXFLAGS) $(INCPATH) -o .obj_debug/squidgehack.o squidgehack.c
-
 .obj_debug/gp2xsdk.o: gp2xsdk.cpp gp2xsdk.h
 	$(CC) -c $(CXXFLAGS) $(INCPATH) -o .obj_debug/gp2xsdk.o gp2xsdk.cpp
 
 .obj_debug/gles2.o: gles2.cpp
 	$(CC) -c $(CXXFLAGS) $(INCPATH) -o .obj_debug/gles2.o gles2.cpp
+
+.obj_debug/thread.o: thread.c
+	$(CC) -c $(CFLAGS) $(INCPATH) -o .obj_debug/thread.o thread.c
+
+.obj_debug/fifo_buffer.o: fifo_buffer.c
+	$(CC) -c $(CFLAGS) $(INCPATH) -o .obj_debug/fifo_buffer.o fifo_buffer.c
 
 .obj_debug/main.o: main.cpp \
 		main.h \
@@ -3197,9 +3199,6 @@ clean:
 		burn/cheat.h \
 		burn/state.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj_debug/input.o input.cpp
-
-.obj_debug/usbjoy.o: usbjoy.c
-	$(CC) -c $(CXXFLAGS) $(INCPATH) -o .obj_debug/usbjoy.o usbjoy.c
 
 .obj_debug/memset.o: memset.s
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj_debug/memset.o memset.s
