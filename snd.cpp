@@ -87,10 +87,10 @@ int SndInit()
 	{
 		if (BurnDrvGetHardwareCode() == HARDWARE_CAPCOM_CPS1)
 		{
-			nBurnSoundRate = 11025;
+//			nBurnSoundRate = 11025;
 			nAudioChannels = 1;
 		}
-		else
+//		else
 		{
 			switch(config_options.option_samplerate)
 			{
