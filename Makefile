@@ -292,7 +292,6 @@ SOURCES = memcpy.s \
 		input.cpp 
 OBJECTS = .obj/memcpy.o \
 		.obj/memset.o\
-		.obj/squidgehack.o \
 		.obj/gp2xsdk.o \
 		.obj/gles2.o \
 		.obj/thread.o \
