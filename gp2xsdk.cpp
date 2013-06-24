@@ -39,16 +39,6 @@ static int surface_height;
 unsigned char joy_buttons[2][32];
 unsigned char joy_axes[2][8];
 
-
-//void Disable_940(void)
-//{
-//	gp2xregs[0x3B42>>1];
-//	gp2xregs[0x3B42>>1]=0;
-//	gp2xregs[0x3B46>>1]=0xffff;	
-//	gp2xregs[0x3B48>>1]|= (1 << 7);
-//	gp2xregs[0x904>>1]&=0xfffe;
-//}
-
 //void InitMemPool() {
 //  //Try to apply MMU hack.
 //  UpperMem = mmap(0, 0x2000000, PROT_READ | PROT_WRITE, MAP_SHARED, mem_fd, 0x2000000);
@@ -74,7 +64,7 @@ static void open_config_file(void)
 	GError *error = NULL;
     
 	gkeyfile = g_key_file_new ();
-	if (!(int)g_key_file_load_from_file (gkeyfile, "snes9x.cfg", G_KEY_FILE_NONE, &error))
+	if (!(int)g_key_file_load_from_file (gkeyfile, "fba2x.cfg", G_KEY_FILE_NONE, &error))
 	{
 		gkeyfile=0;
 	}
@@ -82,10 +72,11 @@ static void open_config_file(void)
 
 static void close_config_file(void)
 {
-    g_key_file_free(gkeyfile);
+    if(gkeyfile)
+        g_key_file_free(gkeyfile);
 }
 
-static int get_integer_conf (char *section, char *option, int defval)
+static int get_integer_conf (const char *section, const char *option, int defval)
 {
 	GError *error=NULL;
 	int tempint;
@@ -100,51 +91,51 @@ static int get_integer_conf (char *section, char *option, int defval)
 }
 
 #define NUMKEYS 256
-static Uint16 sfc_key[NUMKEYS];
-static Uint16 sfc_joy[NUMKEYS];
+static Uint16 pi_key[NUMKEYS];
+static Uint16 pi_joy[NUMKEYS];
 
 void gp2x_initialize_input()
 {
     memset(joy_buttons, 0, 32*2);
 	memset(joy_axes, 0, 8*2);
-	memset(sfc_key, 0, NUMKEYS*2);
-	memset(sfc_joy, 0, NUMKEYS*2);
+	memset(pi_key, 0, NUMKEYS*2);
+	memset(pi_joy, 0, NUMKEYS*2);
     
 	//Open config file for reading below
 	open_config_file();
     
 	//Configure keys from config file or defaults
-	sfc_key[A_1] = get_integer_conf("Keyboard", "A_1", RPI_KEY_A);
-	sfc_key[B_1] = get_integer_conf("Keyboard", "B_1", RPI_KEY_B);
-	sfc_key[X_1] = get_integer_conf("Keyboard", "X_1", RPI_KEY_X);
-	sfc_key[Y_1] = get_integer_conf("Keyboard", "Y_1", RPI_KEY_Y);
-	sfc_key[L_1] = get_integer_conf("Keyboard", "L_1", RPI_KEY_L);
-	sfc_key[R_1] = get_integer_conf("Keyboard", "R_1", RPI_KEY_R);
-	sfc_key[START_1] = get_integer_conf("Keyboard", "START_1", RPI_KEY_START);
-	sfc_key[SELECT_1] = get_integer_conf("Keyboard", "SELECT_1", RPI_KEY_SELECT);
-	sfc_key[LEFT_1] = get_integer_conf("Keyboard", "LEFT_1", RPI_KEY_LEFT);
-	sfc_key[RIGHT_1] = get_integer_conf("Keyboard", "RIGHT_1", RPI_KEY_RIGHT);
-	sfc_key[UP_1] = get_integer_conf("Keyboard", "UP_1", RPI_KEY_UP);
-	sfc_key[DOWN_1] = get_integer_conf("Keyboard", "DOWN_1", RPI_KEY_DOWN);
+	pi_key[A_1] = get_integer_conf("Keyboard", "A_1", RPI_KEY_A);
+	pi_key[B_1] = get_integer_conf("Keyboard", "B_1", RPI_KEY_B);
+	pi_key[X_1] = get_integer_conf("Keyboard", "X_1", RPI_KEY_X);
+	pi_key[Y_1] = get_integer_conf("Keyboard", "Y_1", RPI_KEY_Y);
+	pi_key[L_1] = get_integer_conf("Keyboard", "L_1", RPI_KEY_L);
+	pi_key[R_1] = get_integer_conf("Keyboard", "R_1", RPI_KEY_R);
+	pi_key[START_1] = get_integer_conf("Keyboard", "START_1", RPI_KEY_START);
+	pi_key[SELECT_1] = get_integer_conf("Keyboard", "SELECT_1", RPI_KEY_SELECT);
+	pi_key[LEFT_1] = get_integer_conf("Keyboard", "LEFT_1", RPI_KEY_LEFT);
+	pi_key[RIGHT_1] = get_integer_conf("Keyboard", "RIGHT_1", RPI_KEY_RIGHT);
+	pi_key[UP_1] = get_integer_conf("Keyboard", "UP_1", RPI_KEY_UP);
+	pi_key[DOWN_1] = get_integer_conf("Keyboard", "DOWN_1", RPI_KEY_DOWN);
     
-	sfc_key[QUIT] = get_integer_conf("Keyboard", "QUIT", RPI_KEY_QUIT);
-	sfc_key[ACCEL] = get_integer_conf("Keyboard", "ACCEL", RPI_KEY_ACCEL);
+	pi_key[QUIT] = get_integer_conf("Keyboard", "QUIT", RPI_KEY_QUIT);
+	pi_key[ACCEL] = get_integer_conf("Keyboard", "ACCEL", RPI_KEY_ACCEL);
         
 	//Configure joysticks from config file or defaults
-	sfc_joy[A_1] = get_integer_conf("Joystick", "A_1", RPI_JOY_A);
-	sfc_joy[B_1] = get_integer_conf("Joystick", "B_1", RPI_JOY_B);
-	sfc_joy[X_1] = get_integer_conf("Joystick", "X_1", RPI_JOY_X);
-	sfc_joy[Y_1] = get_integer_conf("Joystick", "Y_1", RPI_JOY_Y);
-	sfc_joy[L_1] = get_integer_conf("Joystick", "L_1", RPI_JOY_L);
-	sfc_joy[R_1] = get_integer_conf("Joystick", "R_1", RPI_JOY_R);
-	sfc_joy[START_1] = get_integer_conf("Joystick", "START_1", RPI_JOY_START);
-	sfc_joy[SELECT_1] = get_integer_conf("Joystick", "SELECT_1", RPI_JOY_SELECT);
+	pi_joy[A_1] = get_integer_conf("Joystick", "A_1", RPI_JOY_A);
+	pi_joy[B_1] = get_integer_conf("Joystick", "B_1", RPI_JOY_B);
+	pi_joy[X_1] = get_integer_conf("Joystick", "X_1", RPI_JOY_X);
+	pi_joy[Y_1] = get_integer_conf("Joystick", "Y_1", RPI_JOY_Y);
+	pi_joy[L_1] = get_integer_conf("Joystick", "L_1", RPI_JOY_L);
+	pi_joy[R_1] = get_integer_conf("Joystick", "R_1", RPI_JOY_R);
+	pi_joy[START_1] = get_integer_conf("Joystick", "START_1", RPI_JOY_START);
+	pi_joy[SELECT_1] = get_integer_conf("Joystick", "SELECT_1", RPI_JOY_SELECT);
     
-	sfc_joy[QUIT] = get_integer_conf("Joystick", "QUIT", RPI_JOY_QUIT);
-	sfc_joy[ACCEL] = get_integer_conf("Joystick", "ACCEL", RPI_JOY_ACCEL);
+	pi_joy[QUIT] = get_integer_conf("Joystick", "QUIT", RPI_JOY_QUIT);
+	pi_joy[ACCEL] = get_integer_conf("Joystick", "ACCEL", RPI_JOY_ACCEL);
     
-	sfc_joy[QLOAD] = get_integer_conf("Joystick", "QLOAD", RPI_JOY_QLOAD);
-	sfc_joy[QSAVE] = get_integer_conf("Joystick", "QSAVE", RPI_JOY_QSAVE);
+	pi_joy[QLOAD] = get_integer_conf("Joystick", "QLOAD", RPI_JOY_QLOAD);
+	pi_joy[QSAVE] = get_integer_conf("Joystick", "QSAVE", RPI_JOY_QSAVE);
     
 	close_config_file();
     
@@ -165,6 +156,8 @@ void gp2x_initialize()
     gp2x_initialize_input();
     
     init_SDL();
+    
+    //Initialise display just for the rom loading screen first.
     gp2x_setvideo_mode(320,240);
     gp2x_clear_framebuffers();
     gp2x_video_flip();
@@ -310,36 +303,12 @@ void deinit_SDL(void)
     bcm_host_deinit();
 }
 
-void gp2x_deinit(void)
-{
-	int ret;
-    
-    gles2_destroy();
-    // Release OpenGL resources
-    eglMakeCurrent( display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT );
-    eglDestroySurface( display, surface );
-    eglDestroyContext( display, context );
-    eglTerminate( display );
-    
-	dispman_update = vc_dispmanx_update_start( 0 );
-	ret = vc_dispmanx_element_remove( dispman_update, dispman_element );
-	ret = vc_dispmanx_element_remove( dispman_update, dispman_element_bg );
-	ret = vc_dispmanx_update_submit_sync( dispman_update );
-	ret = vc_dispmanx_resource_delete( resource0 );
-	ret = vc_dispmanx_resource_delete( resource1 );
-	ret = vc_dispmanx_resource_delete( resource_bg );
-	ret = vc_dispmanx_display_close( dispman_display );
-    
-	if(VideoBuffer) free(VideoBuffer);
-	VideoBuffer=0;
-}
-
 static uint32_t display_adj_width, display_adj_height;		//display size minus border
 
 void gp2x_setvideo_mode(int width, int height)
 {
     
-	int ret;
+//	int ret;
 	uint32_t display_width, display_height;
 	uint32_t display_x=0, display_y=0;
 	float display_ratio,game_ratio;
@@ -350,7 +319,7 @@ void gp2x_setvideo_mode(int width, int height)
 	surface_width = width;
 	surface_height = height;
     
-	VideoBuffer=(unsigned short *) calloc(1, width*height*2);
+	VideoBuffer=(unsigned short *) calloc(1, width*height*4);
     
 	// get an EGL display connection
 	display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
@@ -424,7 +393,7 @@ void gp2x_setvideo_mode(int width, int height)
 	}
 //	else
 //		vc_dispmanx_rect_set( &dst_rect, config_options.option_display_border,
-                            config_options.option_display_border,
+//                            config_options.option_display_border,
 //                          display_adj_width, display_adj_height);
     
 //	if (options.display_smooth_stretch)
@@ -477,183 +446,26 @@ void gp2x_setvideo_mode(int width, int height)
 //		gles2_create(display_adj_width, display_adj_height, width, height, bitmap->depth);
 }
 
-
-
-
-//void gp2x_setvideo_mode(int hw, int vh)
-//{
-//int hsc, vsc;
-//
-//	hw *= 2;
-//	switch(screen_mode) {
-//		case 1: // TV PAL
-//			hsc = (float)(489.0 * hw) / 640;
-//			vsc = (float)(vh * (hw * 274.0)/320) / 240;
-//			break;
-//		case 2: // TV NTSC
-//			hsc = (float)(489.0 * hw) / 640;
-//			vsc = (float)(vh * (hw * 331.0)/320) / 240;
-//			break;
-//		default: // LCD
-//			hsc = (1024 * hw) / 640;
-//			vsc = (vh * hw) / 240;
-//	}
-//	gp2xregs[0x2906>>1] = hsc & 0xFFFF;
-//	gp2xregs[0x2908>>1] = vsc & 0xFFFF;
-//	gp2xregs[0x290A>>1] = vsc >> 16;
-//	gp2xregs[0x290C>>1] = hw;
-//}
-
-unsigned char *keyssnes;
-
-void gp2x_process_events (void)
+void gp2x_deinit(void)
 {
-	unsigned long num = 0;
+    gles2_destroy();
+    // Release OpenGL resources
+    eglMakeCurrent( display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT );
+    eglDestroySurface( display, surface );
+    eglDestroyContext( display, context );
+    eglTerminate( display );
     
-	SDL_Event event;
-	while(SDL_PollEvent(&event)) {
-		switch(event.type) {
-            case SDL_JOYBUTTONDOWN:
-                joy_buttons[event.jbutton.which][event.jbutton.button] = 1;
-                break;
-            case SDL_JOYBUTTONUP:
-                joy_buttons[event.jbutton.which][event.jbutton.button] = 0;
-                break;
-            case SDL_JOYAXISMOTION:
-                switch(event.jaxis.axis) {
-                    case JA_LR:
-                        if(event.jaxis.value > -10000 && event.jaxis.value < 10000)
-                            joy_axes[event.jbutton.which][JA_LR] = CENTER;
-                        else if(event.jaxis.value > 10000)
-                            joy_axes[event.jbutton.which][JA_LR] = RIGHT;
-                        else
-                            joy_axes[event.jbutton.which][JA_LR] = LEFT;
-                        break;
-                    case JA_UD:
-                        if(event.jaxis.value > -10000 && event.jaxis.value < 10000)
-                            joy_axes[event.jbutton.which][JA_UD] = CENTER;
-                        else if(event.jaxis.value > 10000)
-                            joy_axes[event.jbutton.which][JA_UD] = DOWN;
-                        else
-                            joy_axes[event.jbutton.which][JA_UD] = UP;
-                        break;
-                }
-                break;
-            case SDL_KEYDOWN:
-                keyssnes = SDL_GetKeyState(NULL);
-                
-//                if (event.key.keysym.sym == SDLK_0)
-//                    Settings.DisplayFrameRate = !Settings.DisplayFrameRate;
-//                
-//                else if (event.key.keysym.sym == SDLK_F1)	num = 1;
-//                else if (event.key.keysym.sym == SDLK_F2)	num = 2;
-//                else if (event.key.keysym.sym == SDLK_F3)	num = 3;
-//                else if (event.key.keysym.sym == SDLK_F4)	num = 4;
-//                else if (event.key.keysym.sym == SDLK_r) {
-//                    if (event.key.keysym.mod & KMOD_SHIFT)
-//                        S9xReset();
-//                }
-//                if (num) {
-//                    char fname[256], ext[8];
-//                    sprintf(ext, ".00%d", num - 1);
-//                    strcpy(fname, S9xGetFilename (ext));
-//                    if (event.key.keysym.mod & KMOD_SHIFT)
-//                        S9xFreezeGame (fname);
-//                    else
-//                        S9xLoadSnapshot (fname);
-//                }
-                break;
-            case SDL_KEYUP:
-                keyssnes = SDL_GetKeyState(NULL);
-                break;
-		}
-        
-	}
+	dispman_update = vc_dispmanx_update_start( 0 );
+	vc_dispmanx_element_remove( dispman_update, dispman_element );
+	vc_dispmanx_element_remove( dispman_update, dispman_element_bg );
+	vc_dispmanx_update_submit_sync( dispman_update );
+	vc_dispmanx_resource_delete( resource0 );
+	vc_dispmanx_resource_delete( resource1 );
+	vc_dispmanx_resource_delete( resource_bg );
+	vc_dispmanx_display_close( dispman_display );
     
-	//Check START+R,L for quicksave/quickload. Needs to go here outside of the internal processing
-//	if (joy_buttons[0][sfc_joy[QLOAD]] || (joy_buttons[0][sfc_joy[SELECT_1]] && joy_buttons[0][sfc_joy[L_1]] )) {
-//		char fname[256];
-//		strcpy(fname, S9xGetFilename (".000"));
-//		S9xLoadSnapshot (fname);
-//	}
-//	if (joy_buttons[0][sfc_joy[QSAVE]] || (joy_buttons[0][sfc_joy[SELECT_1]] && joy_buttons[0][sfc_joy[R_1]] )) {
-//		char fname[256];
-//		strcpy(fname, S9xGetFilename (".000"));
-//		S9xFreezeGame (fname);
-//	}
-    
-}
-
-extern bool GameLooping;
-
-//sq unsigned long gp2x_joystick_read(int which1)
-unsigned long gp2x_joystick_read(void)
-{
-//sq    unsigned long val=0x80000000;
-    unsigned long val=0;
-    
-    int which1 = 0;
-    
-	//Only handle two joysticks
-	if(which1 > 1) return val;
-    
-	if(which1 == 0) {
-        if (joy_buttons[which1][sfc_joy[L_1]])		val |= GP2X_L;
-		if (joy_buttons[which1][sfc_joy[R_1]])		val |= GP2X_R;
-		if (joy_buttons[which1][sfc_joy[X_1]])		val |= GP2X_X;
-		if (joy_buttons[which1][sfc_joy[Y_1]])		val |= GP2X_Y;
-		if (joy_buttons[which1][sfc_joy[B_1]])		val |= GP2X_B;
-		if (joy_buttons[which1][sfc_joy[A_1]])		val |= GP2X_A;
-		if (joy_buttons[which1][sfc_joy[START_1]])	val |= GP2X_START;
-		if (joy_buttons[which1][sfc_joy[SELECT_1]]) val |= GP2X_SELECT;
-		if (joy_axes[which1][JA_UD] == UP)          val |= GP2X_UP;
-		if (joy_axes[which1][JA_UD] == DOWN)        val |= GP2X_DOWN;
-		if (joy_axes[which1][JA_LR] == LEFT)        val |= GP2X_LEFT;
-		if (joy_axes[which1][JA_LR] == RIGHT)       val |= GP2X_RIGHT;
-	} else {
-		if (joy_buttons[which1][sfc_joy[L_1]])		val |= GP2X_L;
-		if (joy_buttons[which1][sfc_joy[R_1]])		val |= GP2X_R;
-		if (joy_buttons[which1][sfc_joy[X_1]])		val |= GP2X_X;
-		if (joy_buttons[which1][sfc_joy[Y_1]])		val |= GP2X_Y;
-		if (joy_buttons[which1][sfc_joy[B_1]])		val |= GP2X_B;
-		if (joy_buttons[which1][sfc_joy[A_1]])		val |= GP2X_A;
-		if (joy_buttons[which1][sfc_joy[START_1]])	val |= GP2X_START;
-		if (joy_buttons[which1][sfc_joy[SELECT_1]])	val |= GP2X_SELECT;
-		if (joy_axes[which1][JA_UD] == UP)			val |= GP2X_UP;
-		if (joy_axes[which1][JA_UD] == DOWN)		val |= GP2X_DOWN;
-		if (joy_axes[which1][JA_LR] == LEFT)		val |= GP2X_LEFT;
-		if (joy_axes[which1][JA_LR] == RIGHT)		val |= GP2X_RIGHT;
-	}
-    
-    if(keyssnes)
-    {
-        if (keyssnes[sfc_key[L_1]] == SDL_PRESSED) 		val |= GP2X_L;
-        if (keyssnes[sfc_key[R_1]] == SDL_PRESSED) 		val |= GP2X_R;
-        if (keyssnes[sfc_key[X_1]] == SDL_PRESSED) 		val |= GP2X_X;
-        if (keyssnes[sfc_key[Y_1]] == SDL_PRESSED)      val |= GP2X_Y;
-        if (keyssnes[sfc_key[B_1]] == SDL_PRESSED) 		val |= GP2X_B;
-        if (keyssnes[sfc_key[A_1]] == SDL_PRESSED) 		val |= GP2X_A;
-        if (keyssnes[sfc_key[START_1]] == SDL_PRESSED) 	val |= GP2X_START;
-        if (keyssnes[sfc_key[SELECT_1]] == SDL_PRESSED) val |= GP2X_SELECT;
-        if (keyssnes[sfc_key[UP_1]] == SDL_PRESSED) 	val |= GP2X_UP;
-        if (keyssnes[sfc_key[DOWN_1]] == SDL_PRESSED) 	val |= GP2X_DOWN;
-        if (keyssnes[sfc_key[LEFT_1]] == SDL_PRESSED) 	val |= GP2X_LEFT;
-        if (keyssnes[sfc_key[RIGHT_1]] == SDL_PRESSED)  val |= GP2X_RIGHT;
-        if (keyssnes[sfc_key[QUIT]] == SDL_PRESSED)
-            GameLooping = 0;
-    }
-    
-	return(val);
-
-    
-//  unsigned long value=(gp2xregs[0x1198>>1] & 0x00FF);
-//
-//  if(value==0xFD) value=0xFA;
-//  if(value==0xF7) value=0xEB;
-//  if(value==0xDF) value=0xAF;
-//  if(value==0x7F) value=0xBE;
-//
-//  return ~((gp2xregs[0x1184>>1] & 0xFF00) | value | (gp2xregs[0x1186>>1] << 16));
+	if(VideoBuffer) free(VideoBuffer);
+	VideoBuffer=0;
 }
 
 void gles2_draw(void * screen, int width, int height, int depth);
@@ -662,7 +474,7 @@ extern EGLSurface surface;
 
 void gp2x_video_flip()
 {
-//	extern int throttle;
+    //	extern int throttle;
     static int throttle=1;
 	static int save_throttle=0;
     
@@ -697,10 +509,162 @@ void gp2x_video_flip()
 
 void gp2x_clear_framebuffers()
 {
-//	gp2x_memset(framebuffer[0],0,0x35000);
-//	gp2x_memset(framebuffer[1],0,0x35000);
-//	gp2x_memset(framebuffer[2],0,0x35000);
-//	gp2x_memset(framebuffer[3],0,0x35000);
+    //	gp2x_memset(framebuffer[0],0,0x35000);
+    //	gp2x_memset(framebuffer[1],0,0x35000);
+    //	gp2x_memset(framebuffer[2],0,0x35000);
+    //	gp2x_memset(framebuffer[3],0,0x35000);
+}
+
+unsigned char *sdl_keys;
+
+void gp2x_process_events (void)
+{
+//	unsigned long num = 0;
+    
+	SDL_Event event;
+	while(SDL_PollEvent(&event)) {
+		switch(event.type) {
+            case SDL_JOYBUTTONDOWN:
+                joy_buttons[event.jbutton.which][event.jbutton.button] = 1;
+                break;
+            case SDL_JOYBUTTONUP:
+                joy_buttons[event.jbutton.which][event.jbutton.button] = 0;
+                break;
+            case SDL_JOYAXISMOTION:
+                switch(event.jaxis.axis) {
+                    case JA_LR:
+                        if(event.jaxis.value > -10000 && event.jaxis.value < 10000)
+                            joy_axes[event.jbutton.which][JA_LR] = CENTER;
+                        else if(event.jaxis.value > 10000)
+                            joy_axes[event.jbutton.which][JA_LR] = RIGHT;
+                        else
+                            joy_axes[event.jbutton.which][JA_LR] = LEFT;
+                        break;
+                    case JA_UD:
+                        if(event.jaxis.value > -10000 && event.jaxis.value < 10000)
+                            joy_axes[event.jbutton.which][JA_UD] = CENTER;
+                        else if(event.jaxis.value > 10000)
+                            joy_axes[event.jbutton.which][JA_UD] = DOWN;
+                        else
+                            joy_axes[event.jbutton.which][JA_UD] = UP;
+                        break;
+                }
+                break;
+            case SDL_KEYDOWN:
+                sdl_keys = SDL_GetKeyState(NULL);
+                
+//                if (event.key.keysym.sym == SDLK_0)
+//                    Settings.DisplayFrameRate = !Settings.DisplayFrameRate;
+//                
+//                else if (event.key.keysym.sym == SDLK_F1)	num = 1;
+//                else if (event.key.keysym.sym == SDLK_F2)	num = 2;
+//                else if (event.key.keysym.sym == SDLK_F3)	num = 3;
+//                else if (event.key.keysym.sym == SDLK_F4)	num = 4;
+//                else if (event.key.keysym.sym == SDLK_r) {
+//                    if (event.key.keysym.mod & KMOD_SHIFT)
+//                        S9xReset();
+//                }
+//                if (num) {
+//                    char fname[256], ext[8];
+//                    sprintf(ext, ".00%d", num - 1);
+//                    strcpy(fname, S9xGetFilename (ext));
+//                    if (event.key.keysym.mod & KMOD_SHIFT)
+//                        S9xFreezeGame (fname);
+//                    else
+//                        S9xLoadSnapshot (fname);
+//                }
+                break;
+            case SDL_KEYUP:
+                sdl_keys = SDL_GetKeyState(NULL);
+                break;
+		}
+        
+	}
+    
+	//Check START+R,L for quicksave/quickload. Needs to go here outside of the internal processing
+//	if (joy_buttons[0][pi_joy[QLOAD]] || (joy_buttons[0][pi_joy[SELECT_1]] && joy_buttons[0][pi_joy[L_1]] )) {
+//		char fname[256];
+//		strcpy(fname, S9xGetFilename (".000"));
+//		S9xLoadSnapshot (fname);
+//	}
+//	if (joy_buttons[0][pi_joy[QSAVE]] || (joy_buttons[0][pi_joy[SELECT_1]] && joy_buttons[0][pi_joy[R_1]] )) {
+//		char fname[256];
+//		strcpy(fname, S9xGetFilename (".000"));
+//		S9xFreezeGame (fname);
+//	}
+    
+}
+
+extern bool GameLooping;
+
+//sq unsigned long gp2x_joystick_read(int which1)
+unsigned long gp2x_joystick_read(void)
+{
+//sq    unsigned long val=0x80000000;
+    unsigned long val=0;
+    
+    int which1 = 0;
+    
+	//Only handle two joysticks
+	if(which1 > 1) return val;
+    
+	if(which1 == 0) {
+        if (joy_buttons[which1][pi_joy[L_1]])		val |= GP2X_L;
+		if (joy_buttons[which1][pi_joy[R_1]])		val |= GP2X_R;
+		if (joy_buttons[which1][pi_joy[X_1]])		val |= GP2X_X;
+		if (joy_buttons[which1][pi_joy[Y_1]])		val |= GP2X_Y;
+		if (joy_buttons[which1][pi_joy[B_1]])		val |= GP2X_B;
+		if (joy_buttons[which1][pi_joy[A_1]])		val |= GP2X_A;
+		if (joy_buttons[which1][pi_joy[START_1]])	val |= GP2X_START;
+		if (joy_buttons[which1][pi_joy[SELECT_1]]) val |= GP2X_SELECT;
+		if (joy_axes[which1][JA_UD] == UP)          val |= GP2X_UP;
+		if (joy_axes[which1][JA_UD] == DOWN)        val |= GP2X_DOWN;
+		if (joy_axes[which1][JA_LR] == LEFT)        val |= GP2X_LEFT;
+		if (joy_axes[which1][JA_LR] == RIGHT)       val |= GP2X_RIGHT;
+	} else {
+		if (joy_buttons[which1][pi_joy[L_1]])		val |= GP2X_L;
+		if (joy_buttons[which1][pi_joy[R_1]])		val |= GP2X_R;
+		if (joy_buttons[which1][pi_joy[X_1]])		val |= GP2X_X;
+		if (joy_buttons[which1][pi_joy[Y_1]])		val |= GP2X_Y;
+		if (joy_buttons[which1][pi_joy[B_1]])		val |= GP2X_B;
+		if (joy_buttons[which1][pi_joy[A_1]])		val |= GP2X_A;
+		if (joy_buttons[which1][pi_joy[START_1]])	val |= GP2X_START;
+		if (joy_buttons[which1][pi_joy[SELECT_1]])	val |= GP2X_SELECT;
+		if (joy_axes[which1][JA_UD] == UP)			val |= GP2X_UP;
+		if (joy_axes[which1][JA_UD] == DOWN)		val |= GP2X_DOWN;
+		if (joy_axes[which1][JA_LR] == LEFT)		val |= GP2X_LEFT;
+		if (joy_axes[which1][JA_LR] == RIGHT)		val |= GP2X_RIGHT;
+	}
+    
+    if(sdl_keys)
+    {
+        if (sdl_keys[pi_key[L_1]] == SDL_PRESSED) 		val |= GP2X_L;
+        if (sdl_keys[pi_key[R_1]] == SDL_PRESSED) 		val |= GP2X_R;
+        if (sdl_keys[pi_key[X_1]] == SDL_PRESSED) 		val |= GP2X_X;
+        if (sdl_keys[pi_key[Y_1]] == SDL_PRESSED)      val |= GP2X_Y;
+        if (sdl_keys[pi_key[B_1]] == SDL_PRESSED) 		val |= GP2X_B;
+        if (sdl_keys[pi_key[A_1]] == SDL_PRESSED) 		val |= GP2X_A;
+        if (sdl_keys[pi_key[START_1]] == SDL_PRESSED) 	val |= GP2X_START;
+        if (sdl_keys[pi_key[SELECT_1]] == SDL_PRESSED) val |= GP2X_SELECT;
+        if (sdl_keys[pi_key[UP_1]] == SDL_PRESSED) 	val |= GP2X_UP;
+        if (sdl_keys[pi_key[DOWN_1]] == SDL_PRESSED) 	val |= GP2X_DOWN;
+        if (sdl_keys[pi_key[LEFT_1]] == SDL_PRESSED) 	val |= GP2X_LEFT;
+        if (sdl_keys[pi_key[RIGHT_1]] == SDL_PRESSED)  val |= GP2X_RIGHT;
+        if (sdl_keys[pi_key[QUIT]] == SDL_PRESSED)
+            GameLooping = 0;
+    }
+    
+	return(val);
+
+    
+//  unsigned long value=(gp2xregs[0x1198>>1] & 0x00FF);
+//
+//  if(value==0xFD) value=0xFA;
+//  if(value==0xF7) value=0xEB;
+//  if(value==0xDF) value=0xAF;
+//  if(value==0x7F) value=0xBE;
+//
+//  return ~((gp2xregs[0x1184>>1] & 0xFF00) | value | (gp2xregs[0x1186>>1] << 16));
 }
 
 void *UpperMalloc(size_t size)
