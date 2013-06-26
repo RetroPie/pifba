@@ -21,6 +21,8 @@ static int PhysicalBufferWidth = 0;
 static unsigned short * BurnVideoBuffer = NULL;	// think max enough
 static bool BurnVideoBufferAlloced = false;
 
+static unsigned short * BurnVideoBufferSave = NULL;	// think max enough
+
 bool bShowFPS = true;
 
 int InpMake(unsigned int[]);
@@ -45,7 +47,14 @@ int RunReset()
     //SQ Rom loading screen uses different video size to the actual game
     //so close the screen and GLES and reinitialise.
     gp2x_deinit();
-    gp2x_setvideo_mode(VideoBufferWidth, VideoBufferHeight);
+    
+    //Burn rotates vertical games internally and as we rotate the bitmap
+    //after Burn has drawn it but before we draw to GLES we need to
+    //swap the dimensions for our GLES initialisation.
+    if(BurnDrvGetFlags() & BDF_ORIENTATION_VERTICAL)
+        gp2x_setvideo_mode(VideoBufferHeight, VideoBufferWidth);
+    else
+        gp2x_setvideo_mode(VideoBufferWidth, VideoBufferHeight);
     
 	nFramesEmulated = 0;
 	nCurrentFrame = 0;
@@ -92,8 +101,6 @@ int RunOneFrame(bool bDraw, int fps)
 */	return 0;
 }
 
-// --------------------------------
-
 static unsigned int HighCol16(int r, int g, int b, int  /* i */)
 {
 	unsigned int t;
@@ -109,161 +116,6 @@ static void BurnerVideoTransDemo(){}
 
 static void (*BurnerVideoTrans) () = BurnerVideoTransDemo;
 
-//typedef unsigned long long UINT64;
-
-//static void BurnerVideoTrans384x224Clip() 
-//{
-//	// CPS1 & CPS2 384x224
-//	unsigned short * p = &VideoBuffer[2560];
-//	unsigned short * q = &BurnVideoBuffer[32];
-//	
-//	for (int i=0; i<224; i++,p+=320,q+=384)
-//	{
-//		gp2x_memcpy(p,q,640);
-//	}
-//}
-//
-//static void BurnerVideoTrans384x224SW() 
-//{
-//#define COLORMIX(a, b) ( ((((a & 0xF81F) + (b & 0xF81F)) >> 1) & 0xF81F) | ((((a & 0x07E0) + (b & 0x07E0)) >> 1) & 0x07E0) )
-//	// CPS1 & CPS2 384x224
-//	unsigned short * p = &VideoBuffer[2560];
-//	unsigned short * q = BurnVideoBuffer;
-//	
-//	for (int i=0; i<224; i++)
-//		for (int j=0; j<64; j++) {
-//			//*((UINT64 *)p) = *((UINT64 *)q);
-//			p[0] = q[0];
-//			p[1] = q[1];
-//			p[2] = q[2];
-//			p[3] = COLORMIX(q[3],q[4]);
-//			p[4] = q[5];
-//			p += 5;
-//			q += 6;
-//		}
-//}
-//
-//static void BurnerVideoTrans304x224() 
-//{
-//	// SNK Neogeo 308x224
-//	unsigned short * p = &VideoBuffer[2568];
-//	unsigned short * q = &BurnVideoBuffer[0];
-//	for (int i=0; i<224; i ++) {
-//		gp2x_memcpy( p, q, 304 * 2 );
-//		p += 320;
-//		q += 304;
-//	}
-//}
-
-/*
-static void BurnerVideoTrans320x224() 
-{
-	// Cave gaia 320x224
-	unsigned short * p = &VideoBuffer[8][0];
-	unsigned short * q = &BurnVideoBuffer[0];
-	gp2x_memcpy( p, q, 320 * 224 * 2 );
-}
-
-static void BurnerVideoTrans320x240() 
-{
-	// Cave & Toaplan 320x240
-	unsigned short * p = &VideoBuffer[0][0];
-	unsigned short * q = &BurnVideoBuffer[0];
-	gp2x_memcpy( p, q, 320 * 240 * 2 );
-}
-
-*/
-
-//static void BurnerVideoTrans256x224() 
-//{
-//	// 256x224
-//	unsigned short * p = &VideoBuffer[2592];
-//	unsigned short * q = &BurnVideoBuffer[0];
-//	for (int i=0; i<224; i ++) {
-//		gp2x_memcpy( p, q, 256 * 2 );
-//		p += 320;
-//		q += 256;
-//	}
-//}
-//
-//static void BurnerVideoTrans384x240Flipped() 
-//{
-//	// 384x240
-//	register unsigned short * p = &VideoBuffer[0];
-//	register unsigned short * q = &BurnVideoBuffer[92159]; //384*240-1
-//	for (int x = 92160; x > 0; x --) {
-//		*p++ = *q--;
-//	}
-//}
-//
-//static void BurnerVideoTrans256x224Flipped() 
-//{
-//	// 256x224
-//	register unsigned short * p = &VideoBuffer[2592];
-//	register unsigned short * q = &BurnVideoBuffer[57343]; //256*224-1
-//	for (int y = 224; y > 0; y--, p += 64) {
-//		for (int x = 256; x > 0; x --) {
-//			*p++ = *q--;
-//		}
-//	}
-//}
-//
-//static void BurnerVideoTrans256x256() 
-//{
-//	// 256x256
-//	unsigned short * p = &VideoBuffer[32];
-//	unsigned short * q = &BurnVideoBuffer[0];
-//	for (int i=0; i<240; i ++) {
-//		gp2x_memcpy( p, q, 256 * 2 );
-//		p += 320;
-//		q += 256;
-//	}
-//}
-//
-//static void BurnerVideoTrans448x224() 
-//{
-//	// IGS 448x224
-///*
-//	unsigned short * p = &VideoBuffer[2560];
-//	unsigned short * q = BurnVideoBuffer;
-//	
-//	for (int i=0; i<224; i++)
-//		for (int j=0; j<64; j++) {
-//			p[0] = q[0];
-//			p[1] = q[1];
-//			p[2] = q[3];
-//			p[3] = q[4];
-//			p[4] = q[6];
-//			p += 5;
-//			q += 7;
-//		}
-//*/
-//	gp2x_memcpy(&VideoBuffer[0],BurnVideoBuffer,448*224*2);
-//}
-//
-//static void BurnerVideoTrans352x240() 
-//{
-//	// V-System 352x240
-//	unsigned short * p = &VideoBuffer[0];
-//	unsigned short * q = BurnVideoBuffer;
-//	
-//	for (int i=0; i<240; i++)
-//		for (int j=0; j<32; j++) {
-//			p[0] = q[0];
-//			p[1] = q[1];
-//			p[2] = q[2];
-//			p[3] = q[3];
-//			p[4] = q[4];
-//			p[5] = q[5];
-//			p[6] = q[6];
-//			p[7] = q[7];
-//			p[8] = q[8];
-//			p[9] = q[10];
-//			p += 10;
-//			q += 11;
-//		}
-//}
-
 static void BurnerVideoCopy()
 {
 	unsigned short * p = VideoBuffer;
@@ -276,6 +128,28 @@ static void BurnerVideoDoNothing()
     return;
 }
 
+//Rotate the bitmap 270 degrees
+static void BurnerVideoRotate()
+{
+    register unsigned short *pD = VideoBuffer;
+    register unsigned short *pS = BurnVideoBuffer;
+    
+    unsigned int r, c, dr, dc;
+    int row = VideoBufferHeight;
+    int col = VideoBufferWidth;
+    for(r = 0; r < row; r++)
+    {
+        dr = VideoBufferHeight-r;
+
+        for(c = 0; c < col; c++)
+        {
+            dc = VideoBufferWidth-c;
+            
+            ((unsigned short*)pD)[dc * row + (row - dr )] = ((unsigned short*)pS)[(r * col + c)];
+        }
+    }
+    
+}
 
 int VideoInit()
 {
@@ -289,151 +163,32 @@ int VideoInit()
 	
 	BurnRecalcPal();
 	
-//	if (VideoBufferWidth == 384 && VideoBufferHeight == 224) {
-//		// CPS1 & CPS2
-//		nBurnPitch  = VideoBufferWidth * 2;
-//		switch(config_options.option_rescale)
-//		{
-//			case 0:
-//				BurnVideoBuffer = (unsigned short *)malloc( VideoBufferWidth * VideoBufferHeight * 2 );
-//				BurnVideoBufferAlloced = true;
-//				BurnerVideoTrans = BurnerVideoTrans384x224Clip;
-//				PhysicalBufferWidth = 320;
-//			break;
-//			case 1:
-//				BurnVideoBuffer = (unsigned short *)malloc( VideoBufferWidth * VideoBufferHeight * 2 );
-//				BurnVideoBufferAlloced = true;
-//				BurnerVideoTrans = BurnerVideoTrans384x224SW;
-//				PhysicalBufferWidth = 320;
-//			break;
-//			default:
-//				BurnVideoBuffer = &VideoBuffer[3072];
-//				BurnVideoBufferAlloced = false;
-//				BurnerVideoTrans = BurnerVideoTransDemo;
-//				PhysicalBufferWidth	= VideoBufferWidth;						
-//		}
-//	} 
-//	else if (VideoBufferWidth == 384 && VideoBufferHeight == 240) {
-//		// Cave
-//		nBurnPitch  = VideoBufferWidth * 2;
-//
-//		if (BurnDrvGetFlags() & BDF_ORIENTATION_FLIPPED)
-//		{
-//			BurnVideoBuffer = (unsigned short *)malloc( VideoBufferWidth * VideoBufferHeight * 2 );
-//			BurnVideoBufferAlloced = true;
-//			BurnerVideoTrans = BurnerVideoTrans384x240Flipped;				
-//		}
-//		else
-//		{
-//			BurnVideoBuffer = &VideoBuffer[0];
-//			BurnVideoBufferAlloced = false;
-//			BurnerVideoTrans = BurnerVideoTransDemo;
-//		}
-//		PhysicalBufferWidth	= VideoBufferWidth;						
-//	} 
-//	else if (VideoBufferWidth == 304 && VideoBufferHeight == 224) {
-//		// Neogeo
-//		BurnVideoBuffer = (unsigned short *)malloc( VideoBufferWidth * VideoBufferHeight * 2 );
-//		BurnVideoBufferAlloced = true;
-//		nBurnPitch  = VideoBufferWidth * 2;
-//		BurnerVideoTrans = BurnerVideoTrans304x224;
-//		PhysicalBufferWidth = 320;
-//	} 
-//	else if (VideoBufferWidth == 320 && VideoBufferHeight == 224) {
-//		// Cave gaia & Neogeo with NEO_DISPLAY_OVERSCAN
-//		BurnVideoBuffer = &VideoBuffer[2560];
-//		BurnVideoBufferAlloced = false;
-//		nBurnPitch  = VideoBufferWidth * 2;
-//		BurnerVideoTrans = BurnerVideoTransDemo;
-//		PhysicalBufferWidth = 320;
-//	} 
-//	else if (VideoBufferWidth == 320 && VideoBufferHeight == 240) {
-//		// Cave & Toaplan
-//		BurnVideoBuffer = &VideoBuffer[0];
-//		BurnVideoBufferAlloced = false;
-//		nBurnPitch  = VideoBufferWidth * 2;
-//		BurnerVideoTrans = BurnerVideoTransDemo;
-//		PhysicalBufferWidth = 320;
-//	} 	
-//	else if (VideoBufferWidth == 256 && VideoBufferHeight == 224) {
-//		// Galpanic
-//		BurnVideoBuffer = (unsigned short *)malloc( VideoBufferWidth * VideoBufferHeight * 2 );
-//		BurnVideoBufferAlloced = true;
-//		nBurnPitch  = VideoBufferWidth * 2;
-//		if (BurnDrvGetFlags() & BDF_ORIENTATION_FLIPPED)
-//			BurnerVideoTrans = BurnerVideoTrans256x224Flipped;
-//		else		
-//			BurnerVideoTrans = BurnerVideoTrans256x224;
-//		PhysicalBufferWidth = 320;
-//	} 
-//	else if (VideoBufferWidth == 256 && VideoBufferHeight == 256) {
-//		BurnVideoBuffer = (unsigned short *)malloc( VideoBufferWidth * VideoBufferHeight * 2 );
-//		BurnVideoBufferAlloced = true;
-//		nBurnPitch  = VideoBufferWidth * 2;
-//		BurnerVideoTrans = BurnerVideoTrans256x256;
-//		PhysicalBufferWidth = 320;
-//	} 
-//	else if (VideoBufferWidth == 448 && VideoBufferHeight == 224) {
-//		// IGS
-//		nBurnPitch  = VideoBufferWidth * 2;
-//		BurnVideoBuffer = &VideoBuffer[3584];
-//		BurnVideoBufferAlloced = false;
-//		BurnerVideoTrans = BurnerVideoTransDemo;
-//		PhysicalBufferWidth	= VideoBufferWidth;						
-//	} 
-//	else if (VideoBufferWidth == 352 && VideoBufferHeight == 240) {
-//		// V-Systom
-//		BurnVideoBuffer = (unsigned short *)malloc( VideoBufferWidth * VideoBufferHeight * 2 );
-//		BurnVideoBufferAlloced = true;
-//		nBurnPitch  = VideoBufferWidth * 2;
-//		BurnerVideoTrans = BurnerVideoTrans352x240;
-//		PhysicalBufferWidth = 320;
-//	} 
-//	else {
-    //BurnVideoBuffer = NULL;
-    BurnVideoBuffer = VideoBuffer;
     BurnVideoBufferAlloced = false;
     nBurnPitch  = VideoBufferWidth * 2;
-//		BurnerVideoTrans = BurnerVideoTransDemo;
-    BurnerVideoTrans = BurnerVideoDoNothing;
-//	PhysicalBufferWidth = 320;
-    PhysicalBufferWidth = VideoBufferWidth;
-//	}
+    
+    if(BurnDrvGetFlags() & BDF_ORIENTATION_VERTICAL)
+    {
+        BurnerVideoTrans = BurnerVideoRotate;
+        BurnVideoBuffer = (unsigned short *)malloc( VideoBufferWidth * VideoBufferHeight * 2 );
+        BurnVideoBufferSave = BurnVideoBuffer;
+        PhysicalBufferWidth = VideoBufferHeight;
+    }
+    else {
+        BurnerVideoTrans = BurnerVideoDoNothing;
+    	BurnVideoBuffer = VideoBuffer;
+        PhysicalBufferWidth = VideoBufferWidth;
+    }
 		
 	return 0;
 }
 
 // 'VideoBuffer' is updated each frame due to double buffering, so we sometimes need to ensure BurnVideoBuffer is updated too.
 void VideoBufferUpdate (void)
-{
-//	if (BurnVideoBufferAlloced == false) 
-//	{
-//		if (VideoBufferWidth == 384 && VideoBufferHeight == 224)
-//		{
-//			BurnVideoBuffer = &VideoBuffer[3072];
-//		}
-//		else if (VideoBufferWidth == 384 && VideoBufferHeight == 240)
-//		{
-//			BurnVideoBuffer = &VideoBuffer[0];
-//		}
-//		else if (VideoBufferWidth == 320 && VideoBufferHeight == 240) 
-//		{
-//			BurnVideoBuffer = &VideoBuffer[0];
-//		}
-//		else if (VideoBufferWidth == 320 && VideoBufferHeight == 224)
-//		{
-//			BurnVideoBuffer = &VideoBuffer[2560];
-//		}
-//		else if (VideoBufferWidth == 448)
-//		{
-//			BurnVideoBuffer = &VideoBuffer[3584];
-//		}
-//		else
-//		{
-//			BurnVideoBuffer = NULL;
-//		}
-//	}
-    BurnVideoBuffer = VideoBuffer;
+{   
+    if(BurnVideoBufferSave)
+        BurnVideoBuffer = BurnVideoBufferSave;
+    else
+        BurnVideoBuffer = VideoBuffer;
 }
 
 void VideoTrans()
