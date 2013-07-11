@@ -38,12 +38,12 @@ enum {
 
 // Default key and joystick mappings
 
-#define RPI_KEY_A       SDLK_d
-#define RPI_KEY_B       SDLK_c
-#define RPI_KEY_X       SDLK_s
-#define RPI_KEY_Y       SDLK_x
-#define RPI_KEY_L       SDLK_a
-#define RPI_KEY_R       SDLK_f
+#define RPI_KEY_A       SDLK_LCTRL
+#define RPI_KEY_B       SDLK_SPACE
+#define RPI_KEY_X       SDLK_LALT
+#define RPI_KEY_Y       SDLK_LSHIFT
+#define RPI_KEY_L       SDLK_z
+#define RPI_KEY_R       SDLK_x
 #define RPI_KEY_START   SDLK_RETURN
 #define RPI_KEY_SELECT  SDLK_TAB
 #define RPI_KEY_LEFT    SDLK_LEFT
@@ -124,15 +124,15 @@ enum {
  extern "C" {
 #endif
 
-void gp2x_initialize();
-void gp2x_terminate(char *frontend);
+void pi_initialize();
+void pi_terminate(char *frontend);
 int init_SDL(void);
-     void deinit_SDL(void);
-     void gp2x_deinit(void);
-void gp2x_setvideo_mode(int hw, int vh);
-unsigned long gp2x_joystick_read(void);
-void gp2x_video_flip(void);
-void gp2x_clear_framebuffers();
+void deinit_SDL(void);
+void pi_deinit(void);
+void pi_setvideo_mode(int hw, int vh);
+unsigned long pi_joystick_read(void);
+void pi_video_flip(void);
+void pi_clear_framebuffers();
 void * UpperMalloc(size_t size);
 void UpperFree(void* mem);
 int GetUpperSize(void* mem);

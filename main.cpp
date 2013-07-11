@@ -143,14 +143,14 @@ int main( int argc, char **argv )
 //sq config_options.option_sound_enable = 0;
 	config_options.option_rescale = 2;
 	config_options.option_samplerate = 2;
-	config_options.option_showfps = 1;
+	config_options.option_showfps = 0;
 	config_options.option_display_border = 30;
-	strcpy(config_options.option_frontend, "/usr/gp2x/gp2xmenu");
+	strcpy(config_options.option_frontend, "");
 	parse_cmd(argc, argv,path);
 
-	gp2x_initialize();
+	pi_initialize();
 
 	//Initialize sound thread
 	run_fba_emulator (path);
-	gp2x_terminate(config_options.option_frontend);
+	pi_terminate(config_options.option_frontend);
 }

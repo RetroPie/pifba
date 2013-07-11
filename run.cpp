@@ -23,7 +23,7 @@ static bool BurnVideoBufferAlloced = false;
 
 static unsigned short * BurnVideoBufferSave = NULL;	// think max enough
 
-bool bShowFPS = true;
+bool bShowFPS = false;
 
 int InpMake(unsigned int[]);
 void uploadfb(void);
@@ -46,15 +46,15 @@ int RunReset()
     
     //SQ Rom loading screen uses different video size to the actual game
     //so close the screen and GLES and reinitialise.
-    gp2x_deinit();
+    pi_deinit();
     
     //Burn rotates vertical games internally and as we rotate the bitmap
     //after Burn has drawn it but before we draw to GLES we need to
     //swap the dimensions for our GLES initialisation.
     if(BurnDrvGetFlags() & BDF_ORIENTATION_VERTICAL)
-        gp2x_setvideo_mode(VideoBufferHeight, VideoBufferWidth);
+        pi_setvideo_mode(VideoBufferHeight, VideoBufferWidth);
     else
-        gp2x_setvideo_mode(VideoBufferWidth, VideoBufferHeight);
+        pi_setvideo_mode(VideoBufferWidth, VideoBufferHeight);
     
 	nFramesEmulated = 0;
 	nCurrentFrame = 0;
@@ -94,7 +94,7 @@ int RunOneFrame(bool bDraw, int fps)
 			DrawRect((uint16 *) (unsigned short *) &VideoBuffer[0],0, 0, 60, 9, 0,PhysicalBufferWidth);
 			DrawString (buf, (unsigned short *) &VideoBuffer[0], 0, 0,PhysicalBufferWidth);
 		}
-		gp2x_video_flip();
+		pi_video_flip();
 	}
 /*	if (config_options.option_sound_enable)
 		SndPlay();
@@ -209,6 +209,6 @@ void ChangeFrameskip()
 {
 	bShowFPS = !bShowFPS;
 //	DrawRect((uint16 *) (unsigned short *) &VideoBuffer[0],0, 0, 60, 9, 0,VideoBufferWidth);
-	gp2x_clear_framebuffers();
+	pi_clear_framebuffers();
 	nFramesRendered = 0;
 }

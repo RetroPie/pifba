@@ -51,7 +51,7 @@ void ChangeFrameskip();
 extern struct usbjoy *joys[4];
 extern char joyCount;
 extern CFG_OPTIONS config_options;
-extern volatile short *pOutput[];
+//sq extern volatile short *pOutput[];
 
 int joyMap[8] = {0x0040,0x0080,0x0100,0x0200,0x0400,0x0800,0x10,0x20};
 /*struct keymap_item FBA_KEYMAP[] = {
@@ -80,8 +80,8 @@ int joyMap[8] = {0x0040,0x0080,0x0100,0x0200,0x0400,0x0800,0x10,0x20};
 void do_keypad()
 {
 	static unsigned int turbo = 0;
-	unsigned long joy = gp2x_joystick_read();
-	int bVert = BurnDrvGetFlags() & BDF_ORIENTATION_VERTICAL;
+	unsigned long joy = pi_joystick_read();
+	int bVert = 0;
 	turbo ++;
 	
 	FBA_KEYPAD[0] = 0;
@@ -100,64 +100,38 @@ void do_keypad()
 	if ( joy & GP2X_START )		FBA_KEYPAD[0] |= 0x0020;	
 	
 	if ( joy & GP2X_A )	FBA_KEYPAD[0] |= 0x0040;	// A
-	if ( joy & GP2X_X )
-		if (bVert)
-			ezx_change_volume(1);
-		else
-			FBA_KEYPAD[0] |= 0x0080;	// B
+	if ( joy & GP2X_X )	FBA_KEYPAD[0] |= 0x0080;	// B
 	if ( joy & GP2X_B )	FBA_KEYPAD[0] |= 0x0100;	// C
-	if ( joy & GP2X_Y )	
-		if (bVert)
-			ezx_change_volume(-1);
-		else
-			FBA_KEYPAD[0] |= 0x0200;	// D
-	if ( joy & GP2X_L )							// E
-		if (bVert)
-			FBA_KEYPAD[0] |= 0x0100;
-		else
-			FBA_KEYPAD[0] |= 0x0400;
-	if ( joy & GP2X_R )							// F
-		if (bVert)
-			FBA_KEYPAD[0] |= 0x0200;
-		else
-			FBA_KEYPAD[0] |= 0x0800;
-	if ( joy & GP2X_VOL_UP )
-		if (bVert)
-			FBA_KEYPAD[0] |= 0x0040;
-		else
-			ezx_change_volume(1);
-	if ( joy & GP2X_VOL_DOWN )
-		if (bVert)
-			FBA_KEYPAD[0] |= 0x0080;
-		else
-			ezx_change_volume(-1);
+	if ( joy & GP2X_Y )	FBA_KEYPAD[0] |= 0x0200;	// D
+	if ( joy & GP2X_L )	FBA_KEYPAD[0] |= 0x0400;    // E
+	if ( joy & GP2X_R )	FBA_KEYPAD[0] |= 0x0800;    // F
 	if ( joy & GP2X_L && joy & GP2X_R)
 	{
 		if (joy & GP2X_Y) ChangeFrameskip();
-		else
-		if (joy & GP2X_START) GameLooping = false;
-		else
-		if ( joy & GP2X_SELECT) ServiceRequest = 1;
+		else if (joy & GP2X_START) GameLooping = false;
+		else if ( joy & GP2X_SELECT) ServiceRequest = 1;
 	}
 	else
 		if (joy & GP2X_START && joy & GP2X_SELECT) P1P2Start = 1;
-		
-	for (int i=0;i<joyCount;i++)
-	{
-	int numButtons = joy_buttons(joys[i]);
-		if (numButtons > 8)
-			numButtons = 8;
-		joy_update(joys[i]);
-		if(joy_getaxe(JOYUP, joys[i])) FBA_KEYPAD[i] |= bVert?0x0004:0x0001;
-		if(joy_getaxe(JOYDOWN, joys[i])) FBA_KEYPAD[i] |= bVert?0x0008:0x0002;
-		if(joy_getaxe(JOYLEFT, joys[i])) FBA_KEYPAD[i] |= bVert?0x0002:0x0004;
-		if(joy_getaxe(JOYRIGHT, joys[i])) FBA_KEYPAD[i] |= bVert?0x0001:0x0008;
-
-		for (int nButton = 0; nButton < numButtons; nButton++) {
-			if(joy_getbutton(nButton, joys[i]))
-				FBA_KEYPAD[i] |= joyMap[nButton];
-		}
-	}
+    
+//sq
+//	for (int i=0;i<joyCount;i++)
+//	{
+//        int numButtons = joy_buttons(joys[i]);
+//		if (numButtons > 8)
+//			numButtons = 8;
+//		joy_update(joys[i]);
+//		if(joy_getaxe(JOYUP, joys[i])) FBA_KEYPAD[i] |= bVert?0x0004:0x0001;
+//		if(joy_getaxe(JOYDOWN, joys[i])) FBA_KEYPAD[i] |= bVert?0x0008:0x0002;
+//		if(joy_getaxe(JOYLEFT, joys[i])) FBA_KEYPAD[i] |= bVert?0x0002:0x0004;
+//		if(joy_getaxe(JOYRIGHT, joys[i])) FBA_KEYPAD[i] |= bVert?0x0001:0x0008;
+//
+//		for (int nButton = 0; nButton < numButtons; nButton++) {
+//			if(joy_getbutton(nButton, joys[i]))
+//				FBA_KEYPAD[i] |= joyMap[nButton];
+//		}
+//	}
+    
 }
 
 int DrvInit(int nDrvNum, bool bRestore);
@@ -172,6 +146,9 @@ void VideoExit();
 int InpInit();
 int InpExit();
 void InpDIP();
+
+void update_audio_stream(INT16 *buffer);
+void pi_process_events (void);
 
 extern char szAppRomPath[];
 extern int nBurnFPS;
@@ -197,8 +174,11 @@ void show_rom_loading_text(char * szText, int nSize, int nTotalSize)
 		DrawRect((uint16 *) titlefb, 21, 141, size * 278 / nTotalSize, 10, 0x00FFFF00, 320);
 	}
 
-	gp2x_memcpy (VideoBuffer, titlefb, 320*240*2); gp2x_video_flip();
+	gp2x_memcpy (VideoBuffer, titlefb, 320*240*2); 
+	pi_video_flip();
 }
+
+
 
 void run_fba_emulator(const char *fn)
 {
@@ -206,25 +186,10 @@ void run_fba_emulator(const char *fn)
 	char romname[MAX_PATH];
 	if (BurnCacheInit(fn, romname))
 		goto finish;
-/*	
-	strcpy(szAppRomPath, fn);
-	char * p = strrchr(szAppRomPath, '/');
-	if (p) {
-		p++;
-		strcpy(romname, p);
-		
-		*p = 0;
-		p = strrchr(romname, '.');
-		if (p) *p = 0;
-		else {
-			// error
-			goto finish;
-		}
-	} else {
-		// error
-		goto finish;
-	}
-*/
+
+	if(config_options.option_showfps)
+		bShowFPS=true;
+
 	BurnLibInit();
 	
 	// find rom by name
@@ -246,7 +211,7 @@ void run_fba_emulator(const char *fn)
 	DrawString ("Now loading ... ", (uint16 *)&titlefb, 10, 105, 320);	
 	show_rom_loading_text("Open Zip", 0, 0);
 	gp2x_memcpy (VideoBuffer, titlefb, 320*240*2); 
-	gp2x_video_flip();
+	pi_video_flip();
 	 	
 	InpInit();
 	InpDIP();
@@ -267,19 +232,17 @@ void run_fba_emulator(const char *fn)
 
 	printf ("Lets go!\n");
 
-	gp2x_clear_framebuffers();
+	pi_clear_framebuffers();
 	if (config_options.option_sound_enable)
 	{
-	int aim=0, done=0, timer = 0, tick=0, i=0, fps = 0;
-	unsigned int frame_limit = nBurnFPS/100, frametime = 100000000/nBurnFPS;
-	bool bRenderFrame;
+		int aim=0, done=0, timer = 0, tick=0, i=0, fps = 0;
+		unsigned int frame_limit = nBurnFPS/100, frametime = 100000000/nBurnFPS;
+		bool bRenderFrame;
 
 		if (SndOpen() == 0)
 		{		
 			while (GameLooping)
 			{
-				for (i=10;i;i--)
-				{
 					if (bShowFPS)
 					{
 						timer = EZX_GetTicks();
@@ -290,30 +253,20 @@ void run_fba_emulator(const char *fn)
 							tick = timer;
 						}
 					}
-					aim=SegAim();
-					if (done!=aim)
-					{
-						//We need to render more audio:  
-						pBurnSoundOut=(short *)pOutput[done];
-						done++; if (done>=8) done=0;
+					//We need to render more audio:  
 		
-						if ((done==aim)) 
-							bRenderFrame=true; // Render last frame
-						else
-							bRenderFrame=false; // Render last frame
-						RunOneFrame(bRenderFrame,fps);	
-					}
-		
-					if (done==aim) break; // Up to date now
-				}
-				done=aim; // Make sure up to date
+					bRenderFrame=true; // Render last frame
+					RunOneFrame(bRenderFrame,fps);
+
+					update_audio_stream(pBurnSoundOut);
+					pi_process_events();
 			}
 		}
 	}
 	else
 	{
-	int now, done=0, timer = 0, ticks=0, tick=0, i=0, fps = 0;
-	unsigned int frame_limit = nBurnFPS/100, frametime = 100000000/nBurnFPS;
+		int now, done=0, timer = 0, ticks=0, tick=0, i=0, fps = 0;
+		unsigned int frame_limit = nBurnFPS/100, frametime = 100000000/nBurnFPS;
 		
 		while (GameLooping)
 		{

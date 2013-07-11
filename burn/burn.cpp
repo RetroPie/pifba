@@ -30,7 +30,7 @@ unsigned int nCurrentFrame;			// Framecount for emulated game
 
 unsigned int nFramesEmulated;		// Counters for FPS	display
 unsigned int nFramesRendered;		//
-bool bForce60Hz = false;
+bool bForce60Hz = true;
 int nBurnFPS = 6000;
 int nBurnCPUSpeedAdjust = 0x0100;	// CPU speed adjustment (clock * nBurnCPUSpeedAdjust / 0x0100)
 

@@ -5,8 +5,7 @@
 extern "C" {
 #endif
 extern void *gp2x_memcpy(void *s1, const void *s2, size_t n);
-//extern void *gp2x_memset(void *s, int c, size_t n);
-#define gp2x_memset memset
+extern void *gp2x_memset(void *s, int c, size_t n);
 #ifdef __cplusplus
 } /* End of extern "C" */
 #endif

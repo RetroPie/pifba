@@ -7,6 +7,10 @@
 #include <SDL.h>
 #include <assert.h>
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
 #include <glib.h>
 
 #include <EGL/egl.h>
@@ -14,20 +18,9 @@
 
 static SDL_Surface* sdlscreen = NULL;
 
-//#define BLOCKSIZE 1024
-//#define SetTaken(Start, Size) TakenSize[(Start - 0x2000000) / BLOCKSIZE] = (Size - 1) / BLOCKSIZE + 1
-
 #define logerror printf
 
-//static int mem_fd = -1;
-//void *UpperMem;
-//int TakenSize[0x2000000 / BLOCKSIZE];
 unsigned short *VideoBuffer = NULL;
-//static int screen_mode = 0;
-// volatile static unsigned short *gp2xregs = NULL;
-// unsigned long gp2x_physvram[4]={0,0,0,0};
-// unsigned short *framebuffer[4]={0,0,0,0};
-// static int currentframebuffer = 0;
 struct usbjoy *joys[4];
 char joyCount = 0;
 
@@ -38,24 +31,6 @@ static int surface_height;
 
 unsigned char joy_buttons[2][32];
 unsigned char joy_axes[2][8];
-
-//void InitMemPool() {
-//  //Try to apply MMU hack.
-//  UpperMem = mmap(0, 0x2000000, PROT_READ | PROT_WRITE, MAP_SHARED, mem_fd, 0x2000000);
-//  gp2x_memset(TakenSize, 0, sizeof(TakenSize));
-//
-//  //SetTaken(0x3000000, 0x80000); // Video decoder (you could overwrite this, but if you
-//                                // don't need the memory then be nice and don't)
-//  //SetTaken(0x3101000, 153600);  // Primary frame buffer
-//  //SetTaken(0x3381000, 153600);  // Secondary frame buffer (if you don't use it, uncomment)
-//  SetTaken(0x3600000, 0x80000);  // Sound buffer
-//  SetTaken(0x3F2E000, 0xD4000);  // Video Buffers
-//}
-
-//void DestroyMemPool() {
-//  munmap (UpperMem,0x2000000);
-//  UpperMem = NULL;
-//}
 
 static GKeyFile *gkeyfile=0;
 
@@ -94,7 +69,7 @@ static int get_integer_conf (const char *section, const char *option, int defval
 static Uint16 pi_key[NUMKEYS];
 static Uint16 pi_joy[NUMKEYS];
 
-void gp2x_initialize_input()
+void pi_initialize_input()
 {
     memset(joy_buttons, 0, 32*2);
 	memset(joy_axes, 0, 8*2);
@@ -141,7 +116,7 @@ void gp2x_initialize_input()
     
 }
 
-void gp2x_initialize()
+void pi_initialize()
 {
 //	for (int i=1; i<5; i++)
 //	{
@@ -153,56 +128,28 @@ void gp2x_initialize()
 //		}
 //	}
 
-    gp2x_initialize_input();
+    pi_initialize_input();
     
     init_SDL();
     
     //Initialise display just for the rom loading screen first.
-    gp2x_setvideo_mode(320,240);
-    gp2x_clear_framebuffers();
-    gp2x_video_flip();
+    pi_setvideo_mode(320,240);
+    pi_clear_framebuffers();
+    pi_video_flip();
 	
 }
 
-void gp2x_terminate(char *frontend)
+void pi_terminate(char *frontend)
 {
-//struct stat info;
-//
-//	for (int i=0; i<joyCount; i++)
-//	{
-//		joy_close(joys[i]);
-//	}
-//	DestroyMemPool();
-//	gp2x_setvideo_mode(320,240);
-//	munmap(framebuffer[0],0x40000);
-//	munmap(framebuffer[1],0x40000);
-//	if(gp2xregs) munmap((void *)gp2xregs, 0x10000);
-//	if(mem_fd >= 0) close(mem_fd);
-//	system("/sbin/rmmod mmuhack");
-//	
-//	if( (lstat(frontend, &info) == 0) && S_ISREG(info.st_mode) )
-//	{
-//	char path[256];
-//	char *p;
-//		strcpy(path, frontend);
-//		p = strrchr(path, '/');
-//		if(p == NULL) p = strrchr(path, '\\');
-//		if(p != NULL)
-//		{
-//			*p = '\0';
-//			chdir(path);
-//		}
-//		execl(frontend, frontend, NULL);
-//	}
-//	else
-//	{
-//		chdir("/usr/gp2x");
-//		execl("/usr/gp2x/gp2xmenu", "/usr/gp2x/gp2xmenu", NULL);
-//	}
-    
-    gp2x_deinit();
+	struct stat info;
+
+    pi_deinit();
     deinit_SDL();
 
+	if( (stat(frontend, &info) == 0) && S_ISREG(info.st_mode) )
+	{
+		execl(frontend, frontend, NULL);
+	}
 }
 
 // create two resources for 'page flipping'
@@ -305,7 +252,7 @@ void deinit_SDL(void)
 
 static uint32_t display_adj_width, display_adj_height;		//display size minus border
 
-void gp2x_setvideo_mode(int width, int height)
+void pi_setvideo_mode(int width, int height)
 {
     
 //	int ret;
@@ -446,7 +393,7 @@ void gp2x_setvideo_mode(int width, int height)
 //		gles2_create(display_adj_width, display_adj_height, width, height, bitmap->depth);
 }
 
-void gp2x_deinit(void)
+void pi_deinit(void)
 {
     gles2_destroy();
     // Release OpenGL resources
@@ -472,7 +419,7 @@ void gles2_draw(void * screen, int width, int height, int depth);
 extern EGLDisplay display;
 extern EGLSurface surface;
 
-void gp2x_video_flip()
+void pi_video_flip()
 {
     //	extern int throttle;
     static int throttle=1;
@@ -493,31 +440,13 @@ void gp2x_video_flip()
     eglSwapBuffers(display, surface);
 }
 
-
-//void gp2x_video_flip()
-//{
-//unsigned int address;
-//
-//	address=(unsigned int)gp2x_physvram[currentframebuffer];
-//	gp2xregs[0x290E>>1]=(unsigned short)(address & 0xffff);
-//	gp2xregs[0x2910>>1]=(unsigned short)(address >> 16);
-//	gp2xregs[0x2912>>1]=(unsigned short)(address & 0xffff);
-//	gp2xregs[0x2914>>1]=(unsigned short)(address >> 16);
-//	currentframebuffer = ++currentframebuffer % 4;
-//	VideoBuffer = framebuffer[currentframebuffer];
-//}
-
-void gp2x_clear_framebuffers()
+void pi_clear_framebuffers()
 {
-    //	gp2x_memset(framebuffer[0],0,0x35000);
-    //	gp2x_memset(framebuffer[1],0,0x35000);
-    //	gp2x_memset(framebuffer[2],0,0x35000);
-    //	gp2x_memset(framebuffer[3],0,0x35000);
 }
 
 unsigned char *sdl_keys;
 
-void gp2x_process_events (void)
+void pi_process_events (void)
 {
 //	unsigned long num = 0;
     
@@ -597,8 +526,8 @@ void gp2x_process_events (void)
 
 extern bool GameLooping;
 
-//sq unsigned long gp2x_joystick_read(int which1)
-unsigned long gp2x_joystick_read(void)
+//sq unsigned long pi_joystick_read(int which1)
+unsigned long pi_joystick_read(void)
 {
 //sq    unsigned long val=0x80000000;
     unsigned long val=0;
@@ -655,16 +584,6 @@ unsigned long gp2x_joystick_read(void)
     }
     
 	return(val);
-
-    
-//  unsigned long value=(gp2xregs[0x1198>>1] & 0x00FF);
-//
-//  if(value==0xFD) value=0xFA;
-//  if(value==0xF7) value=0xEB;
-//  if(value==0xDF) value=0xAF;
-//  if(value==0x7F) value=0xBE;
-//
-//  return ~((gp2xregs[0x1184>>1] & 0xFF00) | value | (gp2xregs[0x1186>>1] << 16));
 }
 
 void *UpperMalloc(size_t size)
