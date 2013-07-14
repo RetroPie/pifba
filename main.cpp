@@ -140,7 +140,6 @@ int main( int argc, char **argv )
 
 	//Initialize configuration options
 	config_options.option_sound_enable = 1;
-//sq config_options.option_sound_enable = 0;
 	config_options.option_rescale = 2;
 	config_options.option_samplerate = 2;
 	config_options.option_showfps = 0;
