@@ -107,12 +107,13 @@ void do_keypad()
 	if ( joy & GP2X_R )	FBA_KEYPAD[0] |= 0x0800;    // F
 	if ( joy & GP2X_L && joy & GP2X_R)
 	{
-		if (joy & GP2X_Y) ChangeFrameskip();
-		else if (joy & GP2X_START) GameLooping = false;
-		else if ( joy & GP2X_SELECT) ServiceRequest = 1;
+		//sq if (joy & GP2X_Y) ChangeFrameskip();
+		//sq else if (joy & GP2X_START) GameLooping = false;
+		if ( joy & GP2X_SELECT) ServiceRequest = 1;
 	}
-	else
-		if (joy & GP2X_START && joy & GP2X_SELECT) P1P2Start = 1;
+//sq	else
+//sq		if (joy & GP2X_START && joy & GP2X_SELECT) P1P2Start = 1;
+	if ( joy & GP2X_START && joy & GP2X_SELECT) GameLooping = false;
     
 //sq
 //	for (int i=0;i<joyCount;i++)
