@@ -31,8 +31,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-//#include "driver.h"
-//#include "minimal.h"
+#include "burner.h"
+#include "config.h"
 
 //IMPORTANT, make sure this function is commented out at runtime
 //as it has a big performance impact!
@@ -49,49 +49,18 @@ static const char* vertex_shader_prg =
     "   gl_Position = u_vp_matrix * a_position;             \n"
     "}                                                      \n";
 
-static const char* fragment_shader_none =
-    "varying mediump vec2 v_texcoord;                                           \n"
-    "uniform sampler2D u_texture;                                               \n"
-    "uniform sampler2D u_palette;                                               \n"
-    "void main()                                                                \n"
-    "{                                                                          \n"
-	"	// u_texture is the index bitmap, u_palette is the palette for it		\n"
-    "	vec4 index = texture2D(u_texture, v_texcoord);                          \n"
-    "	gl_FragColor = texture2D(u_palette, index.xy);  				\n"
-    "}                                                                          \n";
-
 static const char* fragment_shader_none_16bit =
     "varying mediump vec2 v_texcoord;                       \n"
     "uniform sampler2D u_texture;                           \n"
-    "uniform sampler2D u_palette;                           \n"
     "void main()                                            \n"
     "{                                                      \n"
 	"	gl_FragColor = texture2D(u_texture, v_texcoord);	\n"
     "}                                                      \n";
 
 // scanline-3x.shader
-static const char* fragment_shader_scanline =
-	"varying mediump vec2 v_texcoord; 												\n"
-	"uniform sampler2D u_texture; 													\n"
-    "uniform sampler2D u_palette;                                                   \n"
-	"void main()     																\n"
-	"{																				\n"
-	"	vec4 index = texture2D(u_texture, v_texcoord);  								\n"
-    "   vec4 rgb = texture2D(u_palette, index.xy);  					    \n"
-	"	vec4 intens ;  																\n"
-	"	if (fract(gl_FragCoord.y * (0.5*4.0/3.0)) > 0.5)  							\n"
-	"		intens = vec4(0);  														\n"
-	"	else  																		\n"
-	"		intens = smoothstep(0.2,0.8,rgb) + normalize(vec4(rgb.xyz, 1.0));  		\n"
-	"	float level = (4.0-0.0) * 0.19;  											\n"
-	"	gl_FragColor = intens * (0.5-level) + rgb * 1.1 ;  							\n"
-	"} 																				\n";
-
-// scanline-3x.shader
 static const char* fragment_shader_scanline_16bit =
 	"varying mediump vec2 v_texcoord; 												\n"
 	"uniform sampler2D u_texture; 													\n"
-    "uniform sampler2D u_palette;                                                   \n"
 	"void main()     																\n"
 	"{																				\n"
 	"	vec4 rgb = texture2D(u_texture, v_texcoord);  								\n"
@@ -123,6 +92,8 @@ static const GLushort indices[] =
 
 static const int kVertexCount = 4;
 static const int kIndexCount = 6;
+
+extern CFG_OPTIONS config_options;
 
 void gles_show_error()
 {
@@ -226,14 +197,11 @@ typedef	struct ShaderInfo {
 		GLint a_texcoord;
 		GLint u_vp_matrix;
 		GLint u_texture;
-		GLint u_palette;
 } ShaderInfo;
 
 static ShaderInfo shader;
 static GLuint buffers[3];
 static GLuint textures[2];
-
-static char palette_changed;
 
 static int dis_width;
 static int dis_height;
@@ -257,16 +225,10 @@ void gles2_create(int display_width, int display_height, int bitmap_width, int b
 	
 	memset(&shader, 0, sizeof(ShaderInfo));
 
-//	if (options.display_effect == 1)
-//		if(depth == 8)
-//			shader.program = CreateProgram(vertex_shader_prg, fragment_shader_scanline);
-//		else
-//			shader.program = CreateProgram(vertex_shader_prg, fragment_shader_scanline_16bit);
-//	else
-//		if(depth == 8)
-//			shader.program = CreateProgram(vertex_shader_prg, fragment_shader_none);
-//		else
-			shader.program = CreateProgram(vertex_shader_prg, fragment_shader_none_16bit);
+	if (config_options.display_effect == 1)
+		shader.program = CreateProgram(vertex_shader_prg, fragment_shader_scanline_16bit);
+	else
+		shader.program = CreateProgram(vertex_shader_prg, fragment_shader_none_16bit);
 	
 	if(shader.program)
 	{
@@ -274,25 +236,14 @@ void gles2_create(int display_width, int display_height, int bitmap_width, int b
 		shader.a_texcoord	= glGetAttribLocation(shader.program, "a_texcoord");
 		shader.u_vp_matrix	= glGetUniformLocation(shader.program, "u_vp_matrix");
 		shader.u_texture	= glGetUniformLocation(shader.program, "u_texture");
-		shader.u_palette    = glGetUniformLocation(shader.program, "u_palette");
 	}
 	if(!shader.program) return;
 
 	glGenTextures(2, textures);	SHOW_ERROR
 
 	//create bitmap texture
-	//8bit uses a texture palette, 16bit does not
 	glBindTexture(GL_TEXTURE_2D, textures[0]); SHOW_ERROR
-	if (depth == 8) {
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, tex_width, tex_height, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL); SHOW_ERROR
-	}
-	else {
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, tex_width, tex_height, 0, GL_RGB, GL_UNSIGNED_SHORT_5_6_5, NULL); SHOW_ERROR
-	}
-
-	//create palette texture, only used by 8bit
-	glBindTexture(GL_TEXTURE_2D, textures[1]); SHOW_ERROR	// color palette
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 256, 1, 0, GL_RGB, GL_UNSIGNED_SHORT_5_6_5, NULL); SHOW_ERROR
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, tex_width, tex_height, 0, GL_RGB, GL_UNSIGNED_SHORT_5_6_5, NULL); SHOW_ERROR
 
 	uvs[0] = min_u;
 	uvs[1] = min_v;
@@ -333,7 +284,6 @@ void gles2_create(int display_width, int display_height, int bitmap_width, int b
 	//Set the dimensions for displaying the texture(bitmap) on the screen
 	SetOrtho(proj, -0.5f, +0.5f, +0.5f, -0.5f, -1.0f, 1.0f, sx*op_zoom, sy*op_zoom);
 
-    palette_changed = 1;
 }
 
 void gles2_destroy()
@@ -344,34 +294,7 @@ void gles2_destroy()
 	glDeleteTextures(2, textures); SHOW_ERROR
 }
 
-//Draw using a palette texture
-static void gles2_DrawQuad_8(const ShaderInfo *sh, GLuint p_textures[2])
-{
-	glUniform1i(sh->u_texture, 0); SHOW_ERROR
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); SHOW_ERROR 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); SHOW_ERROR
-
-    glActiveTexture(GL_TEXTURE1); SHOW_ERROR
-    glBindTexture(GL_TEXTURE_2D, p_textures[1]); SHOW_ERROR
-    glUniform1i(sh->u_palette, 1); SHOW_ERROR
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); SHOW_ERROR
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); SHOW_ERROR
-
-	glBindBuffer(GL_ARRAY_BUFFER, buffers[0]); SHOW_ERROR
-	glVertexAttribPointer(sh->a_position, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), NULL); SHOW_ERROR
-	glEnableVertexAttribArray(sh->a_position); SHOW_ERROR
-
-	glBindBuffer(GL_ARRAY_BUFFER, buffers[1]); SHOW_ERROR
-	glVertexAttribPointer(sh->a_texcoord, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), NULL); SHOW_ERROR
-	glEnableVertexAttribArray(sh->a_texcoord); SHOW_ERROR
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers[2]); SHOW_ERROR
-
-	glDrawElements(GL_TRIANGLES, kIndexCount, GL_UNSIGNED_SHORT, 0); SHOW_ERROR
-}
-
-//Draw directly, without a palette texture.
+//Draw directly texture to the screen
 static void gles2_DrawQuad_16(const ShaderInfo *sh, GLuint p_textures[2])
 {
 	glUniform1i(sh->u_texture, 0); SHOW_ERROR
@@ -392,8 +315,6 @@ static void gles2_DrawQuad_16(const ShaderInfo *sh, GLuint p_textures[2])
 	glDrawElements(GL_TRIANGLES, kIndexCount, GL_UNSIGNED_SHORT, 0); SHOW_ERROR
 }
 
-//sq extern volatile unsigned short gp2x_palette[512];
-
 void gles2_draw(void *screen, int width, int height, int depth)
 {
 	if(!shader.program) return;
@@ -405,34 +326,13 @@ void gles2_draw(void *screen, int width, int height, int depth)
 	glUseProgram(shader.program); SHOW_ERROR
 	glUniformMatrix4fv(shader.u_vp_matrix, 1, GL_FALSE, &proj[0][0]); SHOW_ERROR
 
-//	if(depth == 8 && palette_changed)
-//   {
-//      glActiveTexture(GL_TEXTURE1); SHOW_ERROR
-//     glBindTexture(GL_TEXTURE_2D, textures[1]); SHOW_ERROR
-//        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 256, 1, GL_RGB, GL_UNSIGNED_SHORT_5_6_5, (const GLvoid*)gp2x_palette); SHOW_ERROR
-//		palette_changed = 0;
-//    }
-
 	glActiveTexture(GL_TEXTURE0); SHOW_ERROR
 	glBindTexture(GL_TEXTURE_2D, textures[0]); SHOW_ERROR
 	
-	if(depth == 8)
-	{
-		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_LUMINANCE, GL_UNSIGNED_BYTE, (unsigned char*) screen); SHOW_ERROR
-		gles2_DrawQuad_8(&shader, textures);
-	}
-	else
-	{
-		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGB, GL_UNSIGNED_SHORT_5_6_5, (unsigned short*) screen); SHOW_ERROR
-		gles2_DrawQuad_16(&shader, textures);
-	}
+	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGB, GL_UNSIGNED_SHORT_5_6_5, (unsigned short*) screen); SHOW_ERROR
+	gles2_DrawQuad_16(&shader, textures);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0); SHOW_ERROR
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); SHOW_ERROR
-}
-
-void gles2_palette_changed()
-{
-    palette_changed = 1;
 }
 
