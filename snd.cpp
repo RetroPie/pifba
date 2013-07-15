@@ -17,6 +17,8 @@ extern "C" {
 #include "thread.h"
 }
 
+void logoutput(const char *text,...);
+
 // buffer over/underflow counts
 static int fifo_underrun;
 static int fifo_overrun;
@@ -62,24 +64,9 @@ static int nAudioChannels=2;
 static bool exitSoundThread = false;
 static pthread_t soundthread_p = (pthread_t) -1;
 
-#define logerror printf
 #define TRY_ALSA(x) if (x < 0) { \
 goto error; \
 }
-
-//void *soundthread_f (void *a)
-//{
-//	while (!exitSoundThread)
-//	{
-//		AudioCurBlock++;
-//
-//		if (AudioCurBlock >= 8) AudioCurBlock = 0;
-//		
-//		write(dspfd, (void *)pOutput[AudioCurBlock], EzxAudioBuffer[1]);
-//		ioctl(dspfd, SOUND_PCM_SYNC, 0); 
-//	}
-//	return NULL;
-//}
 
 int SndInit()
 {
@@ -87,35 +74,23 @@ int SndInit()
 	{
 		if (BurnDrvGetHardwareCode() == HARDWARE_CAPCOM_CPS1)
 		{
-//			nBurnSoundRate = 11025;
 			nAudioChannels = 1;
 		}
-//		else
+
+		switch(config_options.option_samplerate)
 		{
-			switch(config_options.option_samplerate)
-			{
-				case 1:
-					nBurnSoundRate = 22050;
-				break;
-				case 2:
-					nBurnSoundRate = 44100;
-				break;
-				default:
-					nBurnSoundRate = 11025;
-				break;
-			}
+			case 1:
+				nBurnSoundRate = 22050;
+			break;
+			case 2:
+				nBurnSoundRate = 44100;
+			break;
+			default:
+				nBurnSoundRate = 11025;
+			break;
 		}
-//sq		nBurnSoundLen = ((nBurnSoundRate * 100 /*+ 3000*/) / nBurnFPS );
 		samples_per_frame = nBurnSoundRate * 100 / nBurnFPS;
     
-//        // attempt to initialize SDL
-//        // alsa_init will also ammend the samples_per_frame
-//        g_alsa = alsa_init();
-//        
-//        nBurnSoundLen = samples_per_frame;
-//        
-//        pBurnSoundOut = (short *)malloc(nBurnSoundLen*4);
-        
         AudioCurBlock	= 0;
         
         dspfd = -1;
@@ -152,45 +127,6 @@ int SndOpen()
     else
         return -1;
     
-//unsigned int BufferSize;
-//unsigned int bufferStart;
-//
-//	BufferSize = (nBurnSoundLen * nAudioChannels * AUDIO_BLOCKS)*2+8;
-//	EzxAudioBuffer= (unsigned short *)malloc(BufferSize);
-//	gp2x_memset(EzxAudioBuffer,0,BufferSize);
-//	EzxAudioBuffer[1]=(EzxAudioBuffer[0]=(nBurnSoundLen * nAudioChannels * 2));
-//	EzxAudioBuffer[2]=(1000000000/nBurnSoundRate)&0xFFFF;
-//	EzxAudioBuffer[3]=(1000000000/nBurnSoundRate)>>16;
-//	bufferStart = (unsigned int)&EzxAudioBuffer[4];
-//	pOutput[0] = (short*)bufferStart;
-//	pOutput[1] = (short*)(bufferStart+1*EzxAudioBuffer[1]);
-//	pOutput[2] = (short*)(bufferStart+2*EzxAudioBuffer[1]);
-//	pOutput[3] = (short*)(bufferStart+3*EzxAudioBuffer[1]);
-//	pOutput[4] = (short*)(bufferStart+4*EzxAudioBuffer[1]);
-//	pOutput[5] = (short*)(bufferStart+5*EzxAudioBuffer[1]);
-//	pOutput[6] = (short*)(bufferStart+6*EzxAudioBuffer[1]);
-//	pOutput[7] = (short*)(bufferStart+7*EzxAudioBuffer[1]);
-//	if ( !GameMute )
-//	{
-//	int frag = 10 + config_options.option_samplerate;
-//    	frag |= 2 << 16;
-//        
-//return 0;
-//
-////		dspfd = ezx_open_dsp ( nBurnSoundRate, nAudioChannels, AUDIO_FORMAT, frag );
-////		// printf("SOUND: Init done (%d)\n", dspfd);
-////		if (dspfd >= 0)
-////		{
-////			pthread_create(&soundthread_p, NULL, &soundthread_f, NULL);
-////			return 0;
-////		}
-////		else
-//		{
-//			nBurnSoundRate	= 0;
-//			nBurnSoundLen	= 0;
-//		}
-//	}
-//	return -1;
 }
 
 void SndClose()
@@ -206,15 +142,6 @@ void SndPlay()
 
 void SndExit()
 {
-//	exitSoundThread = true;
-//	usleep(1000000);
-//	if (dspfd >= 0)
-//		ezx_close_dsp(dspfd);
-//
-//	pBurnSoundOut = NULL;
-//	dspfd = -1;
-//	free(EzxAudioBuffer);
-    
     alsa_free(g_alsa);
     if(pBurnSoundOut)
         free(pBurnSoundOut);
@@ -241,7 +168,7 @@ static void alsa_worker_thread(void *data)
 	UINT8 *buf = (UINT8 *)calloc(1, alsa->period_size_bytes);
 	if (!buf)
 	{
-		logerror("failed to allocate audio buffer");
+		logoutput("failed to allocate audio buffer");
 		goto end;
 	}
 	
@@ -285,7 +212,7 @@ static void alsa_worker_thread(void *data)
 			snd_underrun++;
 			if (snd_pcm_recover(alsa->pcm, frames, 1) < 0)
 			{
-				logerror("[ALSA]: (#2) Failed to recover from error (%s)\n",
+				logoutput("[ALSA]: (#2) Failed to recover from error (%s)\n",
                          snd_strerror(frames));
 				break;
 			}
@@ -294,7 +221,7 @@ static void alsa_worker_thread(void *data)
 		}
 		else if (frames < 0)
 		{
-			logerror("[ALSA]: Unknown error occured (%s).\n", snd_strerror(frames));
+			logoutput("[ALSA]: Unknown error occured (%s).\n", snd_strerror(frames));
 			break;
 		}
 	}
@@ -367,14 +294,14 @@ static alsa_t *alsa_init(void)
 	//tends to be even whereas MAME uses odd - based on the frame & sound rates.
 	samples_per_frame = (int)alsa->period_size_frames;
     
-	logerror("ALSA: Period size: %d frames\n", (int)alsa->period_size_frames);
-	logerror("ALSA: Buffer size: %d frames\n", (int)buffer_size_frames);
+	logoutput("ALSA: Period size: %d frames\n", (int)alsa->period_size_frames);
+	logoutput("ALSA: Buffer size: %d frames\n", (int)buffer_size_frames);
     
 	alsa->buffer_size_bytes = snd_pcm_frames_to_bytes(alsa->pcm, buffer_size_frames);
 	alsa->period_size_bytes = snd_pcm_frames_to_bytes(alsa->pcm, alsa->period_size_frames);
     
-	logerror("ALSA: Period size: %d bytes\n", (int)alsa->period_size_bytes);
-	logerror("ALSA: Buffer size: %d bytes\n", (int)alsa->buffer_size_bytes);
+	logoutput("ALSA: Period size: %d bytes\n", (int)alsa->period_size_bytes);
+	logoutput("ALSA: Buffer size: %d bytes\n", (int)alsa->buffer_size_bytes);
     
 	TRY_ALSA(snd_pcm_prepare(alsa->pcm));
     
@@ -398,14 +325,14 @@ static alsa_t *alsa_init(void)
 	alsa->worker_thread = sthread_create(alsa_worker_thread, alsa);
 	if (!alsa->worker_thread)
 	{
-		logerror("error initializing worker thread\n");
+		logoutput("error initializing worker thread\n");
 		goto error;
 	}
 	
 	return alsa;
 	
 error:
-	logerror("ALSA: Failed to initialize...\n");
+	logoutput("ALSA: Failed to initialize...\n");
 	if (params)
 		snd_pcm_hw_params_free(params);
 	
