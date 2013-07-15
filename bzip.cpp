@@ -13,6 +13,8 @@ static int nRomCount = 0; static int nTotalSize = 0;
 static struct ZipEntry* List = NULL; static int nListCount = 0;	// List of entries for current zip file
 static int nCurrentZip = -1;									// Zip which is currently open
 
+void logoutput(const char *text,...);
+
 // ----------------------------------------------------------------------------
 
 static void BzipListFree()
@@ -274,7 +276,8 @@ static int __cdecl BzipBurnLoadRom(unsigned char* Dest, int* pnWrote, int i)
 	//ProgressUpdateBurner(ri.nLen ? 1.0 / ((double)nTotalSize / ri.nLen) : 0, szText, 0);
 
 	if (RomFind[i].nState == 0) {							// Rom not found in zip at all
-		printf("%s (not found)\n", szText);
+		//sq printf("%s (not found)\n", szText);
+		logoutput("%s (not found)\n", szText);
 		return 1;
 	}
 
@@ -283,7 +286,8 @@ static int __cdecl BzipBurnLoadRom(unsigned char* Dest, int* pnWrote, int i)
 		ZipClose();
 		nCurrentZip = -1;
 		if (ZipOpen(szBzipName[nWantZip])) {
-			printf("%s (open zip err: %s)\n", szText, szBzipName[nWantZip]);
+			//sq printf("%s (open zip err: %s)\n", szText, szBzipName[nWantZip]);
+			logoutput("%s (open zip err: %s)\n", szText, szBzipName[nWantZip]);
 			return 1;
 		}
 		nCurrentZip = nWantZip;
@@ -295,10 +299,12 @@ static int __cdecl BzipBurnLoadRom(unsigned char* Dest, int* pnWrote, int i)
 		// Error loading from the zip file
 		//FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(nRet == 2 ? IDS_ERR_LOAD_DISK_CRC : IDS_ERR_LOAD_DISK), pszRomName, GetFilenameW(szBzipName[nCurrentZip]));
 		//FBAPopupDisplay(PUF_TYPE_WARNING);
-		printf("%s (ERR)\n", szText);
+		//sq printf("%s (ERR)\n", szText);
+		logoutput("%s (ERR)\n", szText);
 		return 1;
 	}
-	printf("%s (OK)\n", szText);
+	//sq printf("%s (OK)\n", szText);
+	logoutput("%s (OK)\n", szText);
 	return 0;
 }
 

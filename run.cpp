@@ -30,20 +30,10 @@ void uploadfb(void);
 void VideoBufferUpdate(void);
 void VideoTrans();
 
+void logoutput(const char *text,...);
+
 int RunReset()
 {
-//	if (VideoBufferWidth == 384 && (config_options.option_rescale == 2 || VideoBufferHeight == 240))
-//    {
-//        gp2x_deinit();
-//		gp2x_setvideo_mode(384,240);
-//    }
-//	else
-//	if (VideoBufferWidth == 448)
-//    {
-//        gp2x_deinit();
-//		gp2x_setvideo_mode(448,240);
-//    }
-    
     //SQ Rom loading screen uses different video size to the actual game
     //so close the screen and GLES and reinitialise.
     pi_deinit();
@@ -96,9 +86,6 @@ int RunOneFrame(bool bDraw, int fps)
 		}
 		pi_video_flip();
 	}
-/*	if (config_options.option_sound_enable)
-		SndPlay();
-*/	return 0;
 }
 
 static unsigned int HighCol16(int r, int g, int b, int  /* i */)
@@ -155,8 +142,7 @@ int VideoInit()
 {
 	BurnDrvGetFullSize(&VideoBufferWidth, &VideoBufferHeight);
 	
-//sq
-	printf("Screen Size: %d x %d\n", VideoBufferWidth, VideoBufferHeight);
+	logoutput("Screen Size: %d x %d\n", VideoBufferWidth, VideoBufferHeight);
 	
 	nBurnBpp = 2;
 	BurnHighCol = HighCol16;
@@ -208,7 +194,6 @@ void VideoExit()
 void ChangeFrameskip()
 {
 	bShowFPS = !bShowFPS;
-//	DrawRect((uint16 *) (unsigned short *) &VideoBuffer[0],0, 0, 60, 9, 0,VideoBufferWidth);
 	pi_clear_framebuffers();
 	nFramesRendered = 0;
 }
