@@ -18,7 +18,7 @@
 
 static SDL_Surface* sdlscreen = NULL;
 
-#define logerror printf
+void logoutput(const char *text,...);
 
 unsigned short *VideoBuffer = NULL;
 struct usbjoy *joys[4];
@@ -116,6 +116,21 @@ void pi_initialize_input()
     
 }
 
+void pi_parse_config_file (void)
+{
+    int i=0;
+
+    open_config_file();
+
+    config_options.display_smooth_stretch = get_integer_conf("Graphics", "DisplaySmoothStretch", 1);
+    config_options.option_display_border = get_integer_conf("Graphics", "DisplayBorder", 0);
+    config_options.display_effect = get_integer_conf("Graphics", "DisplayEffect", 0);
+
+    close_config_file();
+
+}
+
+
 void pi_initialize()
 {
 //	for (int i=1; i<5; i++)
@@ -129,6 +144,7 @@ void pi_initialize()
 //	}
 
     pi_initialize_input();
+	pi_parse_config_file();
     
     init_SDL();
     
@@ -215,13 +231,13 @@ int init_SDL(void)
 				{
 					SDL_JoystickClose(myjoy[i]);
 					myjoy[i]=0;
-					logerror("Error detected invalid joystick/keyboard\n");
+					logoutput("Error detected invalid joystick/keyboard\n");
 					break;
 				}
 			}
 		}
 		if(myjoy[0])
-			logerror("Found %d joysticks\n",SDL_NumJoysticks());
+			logoutput("Found %d joysticks\n",SDL_NumJoysticks());
 	}
 	SDL_EventState(SDL_ACTIVEEVENT,SDL_IGNORE);
 	SDL_EventState(SDL_SYSWMEVENT,SDL_IGNORE);
@@ -255,7 +271,6 @@ static uint32_t display_adj_width, display_adj_height;		//display size minus bor
 void pi_setvideo_mode(int width, int height)
 {
     
-//	int ret;
 	uint32_t display_width, display_height;
 	uint32_t display_x=0, display_y=0;
 	float display_ratio,game_ratio;
@@ -310,7 +325,7 @@ void pi_setvideo_mode(int width, int height)
 	display_adj_width = display_width - (config_options.option_display_border * 2);
 	display_adj_height = display_height - (config_options.option_display_border * 2);
     
-//	if (options.display_smooth_stretch)
+	if (config_options.display_smooth_stretch)
 	{
 		//We use the dispmanx scaler to smooth stretch the display
 		//so GLES2 doesn't have to handle the performance intensive postprocessing
@@ -338,15 +353,15 @@ void pi_setvideo_mode(int width, int height)
                              display_y + config_options.option_display_border,
                              sx, sy);
 	}
-//	else
-//		vc_dispmanx_rect_set( &dst_rect, config_options.option_display_border,
-//                            config_options.option_display_border,
-//                          display_adj_width, display_adj_height);
+	else
+		vc_dispmanx_rect_set( &dst_rect, config_options.option_display_border,
+                            config_options.option_display_border,
+                          display_adj_width, display_adj_height);
     
-//	if (options.display_smooth_stretch)
+	if (config_options.display_smooth_stretch)
 		vc_dispmanx_rect_set( &src_rect, 0, 0, width << 16, height << 16);
-//	else
-//		vc_dispmanx_rect_set( &src_rect, 0, 0, display_adj_width << 16, display_adj_height << 16);
+	else
+		vc_dispmanx_rect_set( &src_rect, 0, 0, display_adj_width << 16, display_adj_height << 16);
     
 	dispman_display = vc_dispmanx_display_open(0);
 	dispman_update = vc_dispmanx_update_start(0);
@@ -367,15 +382,15 @@ void pi_setvideo_mode(int width, int height)
                                                  (DISPMANX_TRANSFORM_T) 0 );
     
 	nativewindow.element = dispman_element;
-//	if (options.display_smooth_stretch) {
+	if (config_options.display_smooth_stretch) {
 		nativewindow.width = width;
 		nativewindow.height = height;
-//	}
-//	else {
-//		nativewindow.width = display_adj_width;
-//		nativewindow.height = display_adj_height;
-//	}
-//    
+	}
+	else {
+		nativewindow.width = display_adj_width;
+		nativewindow.height = display_adj_height;
+	}
+    
 	vc_dispmanx_update_submit_sync(dispman_update);
     
 	surface = eglCreateWindowSurface(display, config, &nativewindow, NULL);
@@ -387,10 +402,10 @@ void pi_setvideo_mode(int width, int height)
     
 	//Smooth stretch the display size for GLES2 is the size of the bitmap
 	//otherwise let GLES2 upscale (NEAR) to the size of the display
-//	if (options.display_smooth_stretch) 
+	if (config_options.display_smooth_stretch) 
 		gles2_create(width, height, width, height, 16);
-//	else
-//		gles2_create(display_adj_width, display_adj_height, width, height, bitmap->depth);
+	else
+		gles2_create(display_adj_width, display_adj_height, width, height, 16);
 }
 
 void pi_deinit(void)
