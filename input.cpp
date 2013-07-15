@@ -5,6 +5,7 @@ extern char joyCount;
 extern unsigned char ServiceRequest;
 extern unsigned char P1P2Start;
 
+void logoutput(const char *text,...);
 
 struct GameInp {
 	unsigned char *pVal;  // Destination for the Input Value
@@ -310,7 +311,8 @@ void InpDIP()
 							break;
 					pgi->nConst = (pgi->nConst & ~bdi.nMask) | ((GameScreenMode << j) & bdi.nMask);
 					
-					printf("Set DIP Difficulty [%d] = 0x%02x\n", bdi.nInput, (GameScreenMode << j) & bdi.nMask);
+					//sq printf("Set DIP Difficulty [%d] = 0x%02x\n", bdi.nInput, (GameScreenMode << j) & bdi.nMask);
+					logoutput("Set DIP Difficulty [%d] = 0x%02x\n", bdi.nInput, (GameScreenMode << j) & bdi.nMask);
 				}
 				bDifficultyFound = false;
 			}
