@@ -9,6 +9,8 @@ typedef struct
 	int option_showfps;
 	int option_display_border;
 	char option_frontend[MAX_PATH];
+	int display_smooth_stretch;
+	int display_effect;
 } CFG_OPTIONS;
 
 #endif
