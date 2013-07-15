@@ -51,31 +51,10 @@ void ChangeFrameskip();
 extern struct usbjoy *joys[4];
 extern char joyCount;
 extern CFG_OPTIONS config_options;
-//sq extern volatile short *pOutput[];
+
+void logoutput(const char *text,...);
 
 int joyMap[8] = {0x0040,0x0080,0x0100,0x0200,0x0400,0x0800,0x10,0x20};
-/*struct keymap_item FBA_KEYMAP[] = {
-		{"-----",	0, false },
-		{"START",	1, false },
-		{"COIN",	2, false },
-		{"A",		3, false },
-		{"B", 		4, false },
-		{"C",		5, false },
-		{"D",		6, false },
-		{"E",		7, false },
-		{"F",		8, false },
-		
-		{"A+B",		9, false },
-		{"C+D",	   10, false },
-		{"A+B+C",  11, false },
-		
-		{"A-Turbo",	3, true  },
-		{"B-Turbo",	4, true  },
-		{"C-Turbo",	5, true  },
-		{"D-Turbo",	6, true  },
-		{"E-Turbo",	7, true  },
-		{"F-Turbo",	8, true  } 	};
-*/
 
 void do_keypad()
 {
@@ -200,11 +179,11 @@ void run_fba_emulator(const char *fn)
 	if (nBurnDrvSelect >= nBurnDrvCount) {
 		// unsupport rom ...
 		nBurnDrvSelect = ~0U;
-		printf ("rom not supported!\n");
+		logoutput ("rom not supported!\n");
 		goto finish;
 	}
 	
-	printf("Attempt to initialise '%s'\n", BurnDrvGetTextA(DRV_FULLNAME));
+	logoutput("Attempt to initialise '%s'\n", BurnDrvGetTextA(DRV_FULLNAME));
 	
 	gp2x_memset (titlefb, 0, 320*240*2);
 	DrawString ("Finalburn Alpha Plus for Pi (Ver.090308/7.3)", (uint16*)&titlefb, 10, 20, 320);
@@ -220,7 +199,7 @@ void run_fba_emulator(const char *fn)
 	VideoInit();
 
 	if (DrvInit(nBurnDrvSelect, false) != 0) {
-		printf ("Driver initialisation failed! Likely causes are:\n- Corrupt/Missing ROM(s)\n- I/O Error\n- Memory error\n\n");
+		logoutput ("Driver initialisation failed! Likely causes are:\n- Corrupt/Missing ROM(s)\n- I/O Error\n- Memory error\n\n");
 		goto finish;
 	}
 
@@ -231,7 +210,7 @@ void run_fba_emulator(const char *fn)
 
 	EZX_StartTicks();
 
-	printf ("Lets go!\n");
+	logoutput ("Lets go!\n");
 
 	pi_clear_framebuffers();
 	if (config_options.option_sound_enable)
@@ -295,10 +274,10 @@ void run_fba_emulator(const char *fn)
 		}
 	}
 	
-	printf ("Finished emulating\n");
+	logoutput ("Finished emulating\n");
 	
 finish:
-	printf("---- Shutdown Finalburn Alpha plus ----\n\n");
+	logoutput("---- Shutdown Finalburn Alpha plus ----\n\n");
 	DrvExit();
 	BurnLibExit();
 
