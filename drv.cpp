@@ -1,6 +1,8 @@
 // Driver Init module
 #include "burner.h"
 
+void logoutput(const char *text,...);
+
 int bDrvOkay=0; // 1 if the Driver has been initted okay, and it's okay to use the BurnDrv functions
 
 static bool bSaveRAM = false;
@@ -69,7 +71,8 @@ static int __cdecl DrvLoadRom(unsigned char* Dest, int* pnWrote, int i)
 {
 	int nRet;
 
-printf("real load rom\n");
+//printf("real load rom\n");
+logoutput("real load rom\n");
 
 	BzipOpen(false);
 
@@ -77,7 +80,8 @@ printf("real load rom\n");
 		char* pszFilename;
 
 		BurnDrvGetRomName(&pszFilename, i, 0);
-		printf("Error load %s, requested by %s\n", pszFilename, BurnDrvGetText(DRV_NAME));
+		//sq printf("Error load %s, requested by %s\n", pszFilename, BurnDrvGetText(DRV_NAME));
+		logoutput("Error load %s, requested by %s\n", pszFilename, BurnDrvGetText(DRV_NAME));
 	}
 
 	BzipClose();
@@ -99,7 +103,8 @@ int DrvInit(int nDrvNum, bool bRestore)
 
 	if (nRet!=0) {
 		BurnDrvExit(); // Exit the driver
-		printf ("There was an error starting '%s'.\n", BurnDrvGetText(DRV_NAME));
+		//sq printf ("There was an error starting '%s'.\n", BurnDrvGetText(DRV_NAME));
+		logoutput ("There was an error starting '%s'.\n", BurnDrvGetText(DRV_NAME));
 		return 1;
 	}
 
