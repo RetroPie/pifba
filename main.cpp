@@ -64,11 +64,38 @@ int FindDrvByFileName(const char * fn)
 	return -1;
 }
 
+void generate_gamelist(void)
+{
+	FILE *fp;
+
+	fp = fopen("gamelist.txt", "w");
+	fprintf(fp, "  name            status  full name                                               parent          year    company         hardware        remarks\n");
+	fprintf(fp, "+---------------+-------+-------------------------------------------------------+---------------+-------+---------------+---------------+---------------------------------------+\n");
+	fclose(fp);
+
+	fp = popen("sort >> gamelist.txt", "w");
+
+    BurnLibInit();
+    for (nBurnDrvSelect=0; nBurnDrvSelect<nBurnDrvCount; nBurnDrvSelect++)
+    {
+    	char tparent[50], tcomment[255];
+        if  ( BurnDrvGetTextA(DRV_PARENT) == NULL ) strcpy(tparent, "");
+        else strcpy(tparent, BurnDrvGetTextA(DRV_PARENT));
+
+        if  ( BurnDrvGetTextA(DRV_COMMENT) == NULL ) strcpy(tcomment, "");
+        else strcpy(tcomment, BurnDrvGetTextA(DRV_COMMENT));
+			
+        fprintf (fp, "| %-13s |       | %-53.53s | %-13.13s | %-5.5s | %-13.13s | %-13.13s | %-37.37s |\n", BurnDrvGetTextA(DRV_NAME), BurnDrvGetTextA(DRV_FULLNAME), tparent, BurnDrvGetTextA(DRV_DATE), BurnDrvGetTextA(DRV_MANUFACTURER), BurnDrvGetTextA(DRV_SYSTEM), tcomment );
+	};
+	pclose(fp);		
+	printf("Generated gamelist.txt file\n");
+ 	exit(0);
+}
+
 
 void parse_cmd(int argc, char *argv[], char *path)
 {
 	int option_index, c;
-	int val;
 	char *p;
 
 	static struct option long_opts[] = {
@@ -80,7 +107,8 @@ void parse_cmd(int argc, char *argv[], char *path)
 		{"hw-rescale", 0, &config_options.option_rescale, 2},
 		{"showfps", 0, &config_options.option_showfps, 1},
 		{"no-showfps", 0, &config_options.option_showfps, 0},
-		{"frontend", required_argument, 0, 'f'}
+		{"frontend", required_argument, 0, 'f'},
+		{"gamelist", 0, 0, 'l'}
 	};
 
 	option_index=optind=0;
@@ -101,12 +129,29 @@ void parse_cmd(int argc, char *argv[], char *path)
 				else
 					strcpy(config_options.option_frontend, optarg);
 				break;
+			case 'l':
+			    //Generate full gamelist
+				generate_gamelist();		
+				break;
 		}
 	}
 
 	if(optind < argc) {
 		strcpy(path, argv[optind]);
 	}
+}
+
+static FILE *errorlog;
+
+void logoutput(const char *text,...) 
+{
+    if (errorlog)
+    {
+        va_list arg;
+        va_start(arg,text);
+        vfprintf(errorlog,text,arg);
+        va_end(arg);
+    }
 }
 
 /*
@@ -117,24 +162,15 @@ int main( int argc, char **argv )
 { 	
 	char path[MAX_PATH];
 
-//sq	gp2x_initialize();
+	errorlog = fopen("output.log","wa");
 
 	if (argc < 2)
 	{
-		int c;
-		printf ("Usage: %s <path to rom><shortname>.zip\n   ie: %s ./uopoko.zip\n Note: Path and .zip extension are mandatory.\n\n",argv[0], argv[0]);
-		printf ("Supported (but not necessarily working via fba-gp2x) roms:\n\n");
-		BurnLibInit();
-		for (nBurnDrvSelect=0; nBurnDrvSelect<nBurnDrvCount; nBurnDrvSelect++)
-		{
-			printf ("%-20s ", BurnDrvGetTextA(DRV_NAME)); c++;
-			if (c == 3)
-			{
-				c = 0;
-				printf ("\n");
-			}
-		}
-		printf ("\n\n");
+		printf ("Usage: %s <path to rom><shortname>.zip [OPTION]...\n   ie: %s roms/uopoko.zip\n Note: Path and .zip extension are mandatory.\n\n",argv[0], argv[0]);
+		printf ("  --gamelist        generate a gamelist.txt with all supported games\n");
+		printf ("  --showfps         show FPS during the game\n");
+		printf ("  --no-sound        disable sound\n");
+		printf ("\n");
 		return 0;
 	}
 
