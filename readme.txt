@@ -2,23 +2,25 @@
 
 *INTRODUCTION*
 
-This is Final Burn Alpha 2x for the Raspberry Pi ported by Squid. This emulates old archive games using MAME based roms for CPS1, CPS2, NeoGeo, System 16, Toaplan and many other games. It should support most recent versions of the MAME versions of these ROMS but unfortnately there is no definitive version to use.
+PiFBA is Final Burn Alpha 2x for the Raspberry Pi ported by Squid. This emulates old archive games using MAME based roms for CPS1, CPS2, NeoGeo, System 16, Toaplan and many other games. It should support most recent versions of the MAME versions of these ROMS but unfortnately there is no definitive version to use.
 
 Some large ROMS require converting to the '.fba' format before they will work. FBACache_windows.zip is included to do this, which runs on Windows not Linux.
+
+A clrmamepro DAT file is included 'fba_029671_clrmame_dat.zip' which supports most of the ROMS that work and can generate compatible ROMS from recent versions of MAME.
 
 A number of games will not work properly, some are so large they appear to run out of memory.
 
 It uses a modified version of the Capex frontend for game selection but you can use your own frontend and simply call the "fba2x" to play the games.
 
-This port supports keyboard and USB joystick input and are configurable. It uses GLES2 graphics API so can run equally well in the Console or under X-Windows. The audio uses the ALSA API and SDL is used for input.
+This port supports keyboard and USB joystick input and are configurable. It uses GLES2 graphics API and can run in the Console or under X-Windows. The audio uses the ALSA API and SDL is used for input.
 
-Download it from the official Raspberry Pi Store App:
+Download it from the official Raspberry Pi App Store:
 http://store.raspberrypi.com/projects/pifba
 
 Web page for news, source, additional information:
 http://code.google.com/p/pifba/
 
-(No asking for ROMS, problems with ROMS)
+(No asking for ROMS or any issues with ROMS)
 
 
 *CONTROLS*
@@ -40,11 +42,11 @@ Keyboard controls:
 'escape'         Quit
 }}}
 
-The joystick layout defaults to Saitek P380 button layout.
-
 Additionally to quit with the joystick you can press SELECT+START.
 
-All controls are configurable by editing the "pifba.cfg" file.
+The joystick layout defaults to Saitek P380 button layout.
+
+All controls are configurable by editing the "fba2x.cfg" file.
 
 The frontend displays the list of ROMS in the following colours:
 RED = missing
@@ -56,21 +58,20 @@ BLUE = parent rom detected & cache detected
 
 *INSTALLATION*
 {{{
-fba2x      -> Game binary
-fbacapex   -> Frontend binary
-fba2x.cfg  -> Keyboard and joystick configuration
+fba2x       -> Game binary
+fbacapex    -> Frontend binary
+fba2x.cfg   -> Keyboard and joystick configuration
 rominfo.fba -> required by the frontend
 zipname.fba -> required by the frontend
-preview/   -> screenshots (BMP 192x112)
-roms/      -> ROMs directory (Put your game ROMs in here)
-skin/      -> Frontend skins directory
+preview/    -> screenshots (BMP 192x112)
+roms/       -> ROMs directory (Put your game ROMs in here)
+skin/       -> Frontend skins directory
 FBACache_windows.zip -> for converting large ROMS to .fba cache format
+fba_029671_clrmame_dat.zip -> clrmamepro DAT file for ROM validation and conversion.
 }}}
 
 To run piFBA simple run the "fbacapex" executable. At the command line "./fbacapex".
-This runs the GUI frontend. To simply run piFBA without the GUI enter "./fba2x roms/{gamerom}" where "{gamerom}" is the game rom filename to run.
-
-It will work in X-Windows or in the Console.
+This runs the GUI frontend. To simply run piFBA without the GUI enter "./fba2x roms/{gamerom}" where "{gamerom}" is the game rom filename to run. A number of options are available for "fba2x", enter "fba2x -h" on the command line for a list.
 
 For the frontend screenshots you need to put the relevant screenshot files in the preview subdirectory. These files should be BMP and 192x112 dimensions.
 
@@ -119,7 +120,7 @@ Postprocessing can be enabled by setting "DisplayEffect" in fba2x.cfg. In additi
 
 *PORT CREDITS*
 
-  * Ported to and optimised for the Raspberry Pi by Squid.
+  * Ported to and optimised for the Raspberry Pi by Squid (aka Pudding on the Pi forums)
 
 *ORIGINAL CREDITS*
 
