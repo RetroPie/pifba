@@ -187,5 +187,8 @@ int main( int argc, char **argv )
 
 	//Initialize sound thread
 	run_fba_emulator (path);
+
+	fclose(errorlog);
+
 	pi_terminate(config_options.option_frontend);
 }
