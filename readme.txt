@@ -4,9 +4,9 @@
 
 PiFBA is Final Burn Alpha 2x for the Raspberry Pi ported by Squid. This emulates old archive games using MAME based roms for CPS1, CPS2, NeoGeo, System 16, Toaplan and many other games. It should support most recent versions of the MAME versions of these ROMS but unfortnately there is no definitive version to use.
 
-Some large ROMS require converting to the '.fba' format before they will work. FBACache_windows.zip is included to do this, which runs on Windows not Linux.
+Some large ROMS may require converting to the '.fba' format before they will work. FBACache_windows.zip is included to do this, which runs on Windows not Linux.
 
-A clrmamepro DAT file is included 'fba_029671_clrmame_dat.zip' which supports most of the ROMS that work and can generate compatible ROMS from recent versions of MAME.
+A clrmamepro/romcenter DAT file is included 'fba_029671_clrmame_dat.zip' which supports most of the ROMS that work and can generate compatible ROMS from recent versions of MAME.
 
 A number of games will not work properly, some are so large they appear to run out of memory.
 
@@ -44,16 +44,15 @@ Keyboard controls:
 
 Additionally to quit with the joystick you can press SELECT+START.
 
-The joystick layout defaults to Saitek P380 button layout.
+The joystick layout defaults to Saitek P380 button layout. 
 
-All controls are configurable by editing the "fba2x.cfg" file.
+All controls are configurable by editing the "fba2x.cfg" file. If your joystick uses axis different than 0 and 1 you can change this in the fbax2.cfg file.
 
 The frontend displays the list of ROMS in the following colours:
 RED = missing
 ORANGE = clone rom detected
 YELLOW = parent rom detected or clone rom detected & parent rom detected
-GREEN = clone rom detected & parent rom detected & cache detected
-BLUE = parent rom detected & cache detected
+GREEN = clone rom detected & parent rom detected 
 
 
 *INSTALLATION*
@@ -74,6 +73,8 @@ To run piFBA simple run the "fbacapex" executable. At the command line "./fbacap
 This runs the GUI frontend. To simply run piFBA without the GUI enter "./fba2x roms/{gamerom}" where "{gamerom}" is the game rom filename to run. A number of options are available for "fba2x", enter "fba2x -h" on the command line for a list.
 
 For the frontend screenshots you need to put the relevant screenshot files in the preview subdirectory. These files should be BMP and 192x112 dimensions.
+
+An output file called "output.log" is generated for each game which may show useful information for problem ROMS.
 
 
 *Pi CONFIGURATION*
