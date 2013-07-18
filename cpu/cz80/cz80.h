@@ -2,7 +2,7 @@
  *
  * CZ80 (Z80 CPU emulator) version 0.9
  * Compiled with Dev-C++
- * Copyright 2004-2005 Stéphane Dallongeville
+ * Copyright 2004-2005 Stphane Dallongeville
  *
  * (Modified by NJ)
  *
@@ -29,11 +29,7 @@ extern "C" {
 #define CZ80_FETCH_BANK         (1 << CZ80_FETCH_BITS)
 
 #define CZ80_LITTLE_ENDIAN		1
-#ifdef _MSC_VER
-#define CZ80_USE_JUMPTABLE		0
-#else
 #define CZ80_USE_JUMPTABLE		1
-#endif
 #define CZ80_BIG_FLAGS_ARRAY	1
 #define CZ80_ENCRYPTED_ROM		0
 #define CZ80_EMULATE_R_EXACTLY	0
@@ -157,7 +153,7 @@ typedef struct cz80_t
 	{
 		unsigned char r8[8];
 		union16 r16[4];
-#ifndef __cplusplus
+/*#ifndef __cplusplus*/
 		struct
 		{
 			union16 BC;
@@ -165,7 +161,7 @@ typedef struct cz80_t
 			union16 HL;
 			union16 AF;
 		};
-#endif
+/*#endif*/
 	};
 
 	union16 IX;
@@ -184,7 +180,7 @@ typedef struct cz80_t
 	union16 IFF;
 
 	unsigned int PC;
-	unsigned int BasePC;
+	int BasePC;
 
 	int nCyclesTotal;
 	int nCyclesSegment;
@@ -233,10 +229,13 @@ int  Cz80_Set_NMI(cz80_struc*);
 
 unsigned int Cz80_Get_BC(cz80_struc*);
 
+unsigned int Cz80_Get_DE(cz80_struc*);
+
 unsigned int Cz80_Get_HL(cz80_struc*);
 
 unsigned int Cz80_Get_PC(cz80_struc*);
 
+void Cz80_Set_PC(cz80_struc *CPU, UINT32 val);
 
 #ifdef __cplusplus
 };

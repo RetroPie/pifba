@@ -2,7 +2,7 @@
  *
  * CZ80 (Z80 CPU emulator) version 0.9
  * Compiled with Dev-C++
- * Copyright 2004-2005 Stéphane Dallongeville
+ * Copyright 2004-2005 Stphane Dallongeville
  *
  * (Modified by NJ)
  *
@@ -59,7 +59,12 @@
 
 #define SET_PC(A)															\
 	CPU->BasePC = (unsigned int)CPU->FetchData[(A) >> CZ80_FETCH_SFT];		\
-	PCDiff = (UINT32)CPU->Fetch[(A) >> CZ80_FETCH_SFT] - (UINT32)CPU->FetchData[(A) >> CZ80_FETCH_SFT];	\
+	 if(CPU->BasePC<=0) \
+	{ \
+		CPU->nCyclesLeft=-1; \
+		goto Cz80_Exec_Really_End; \
+	} \
+	PCDiff = (UINT32)CPU->Fetch[(A) >> CZ80_FETCH_SFT] - (UINT32)CPU->FetchData[(A) >> CZ80_FETCH_SFT];\
 	PC = (unsigned int)(A) + CPU->BasePC;
 
 #define GET_OP()			(*(UINT8 *)(PC + PCDiff))
@@ -153,7 +158,7 @@ static UINT8 SZHVC_sub[2*256*256];
 
 
 /******************************************************************************
-	CZ80ƒCƒ“ƒ^ƒtƒF[ƒXŠÖ”
+	CZ80Céƒƒ^tF[XÖ
 ******************************************************************************/
 
 void Cz80_InitFlags()
@@ -248,8 +253,8 @@ void Cz80_Init(cz80_struc *CPU)
 	CPU->pzR8[3] = &zE;
 	CPU->pzR8[4] = &zH;
 	CPU->pzR8[5] = &zL;
-	CPU->pzR8[6] = &zF;	// ˆ—‚Ì“s‡ãAA‚Æ“ü‚ê‘Ö‚¦
-	CPU->pzR8[7] = &zA;	// ˆ—‚Ì“s‡ãAF‚Æ“ü‚ê‘Ö‚¦
+	CPU->pzR8[6] = &zF;	// Ì“sAAã‚Æ“Ö‚
+	CPU->pzR8[7] = &zA;	// Ì“sAFã‚Æ“Ö‚
 
 	CPU->pzR16[0] = pzBC;
 	CPU->pzR16[1] = pzDE;
@@ -259,7 +264,7 @@ void Cz80_Init(cz80_struc *CPU)
 }
 
 /*--------------------------------------------------------
-	CPUŽÀs
+	CPUs
 --------------------------------------------------------*/
 
 INT32 Cz80_Exec(cz80_struc* CPU)
@@ -282,7 +287,7 @@ INT32 Cz80_Exec(cz80_struc* CPU)
 
     PC = CPU->PC;
     PCDiff = (UINT32)CPU->Fetch[(zRealPC) >> CZ80_FETCH_SFT] - (UINT32)CPU->FetchData[(zRealPC) >> CZ80_FETCH_SFT];
-	
+    
 //	CPU->nEI = 0;
 	
 	goto Cz80_Try_Int;
@@ -388,6 +393,11 @@ UINT32 Cz80_Get_BC(cz80_struc *CPU)
     return zBC;
 }
 
+UINT32 Cz80_Get_DE(cz80_struc *CPU)
+{
+    return zDE;
+} 
+
 UINT32 Cz80_Get_HL(cz80_struc *CPU)
 {
     return zHL;
@@ -402,6 +412,7 @@ void Cz80_Set_PC(cz80_struc *CPU, UINT32 val)
 {
 	// don't not use this while CZ80 is executting !!!
     CPU->BasePC = (UINT32) CPU->FetchData[val >> CZ80_FETCH_SFT];
+    if(CPU->BasePC<=0) return;
     CPU->PC = val + CPU->BasePC;
 }
 
