@@ -22,7 +22,7 @@ CXXFLAGS += -mstructure-size-boundary=32 -frename-registers
 CXXFLAGSPROFILE= -mcpu=arm920t -mtune=arm920t -pipe -DQWS -fno-exceptions -fno-rtti -Wall -W -O3 -DOOPSWARE_FIX -D_T="" -DNEOGEO_HACKS -D__cdecl="" -D__fastcall="" -DUSE_SPEEDHACKS -DNEO_DISPLAY_OVERSCAN 
 CXXFLAGSPROFILE += -falign-functions=32 -falign-loops -falign-labels -falign-jumps -fomit-frame-pointer -ffast-math -fexpensive-optimizations -finline -finline-functions
 CXXFLAGSPROFILE += -mstructure-size-boundary=32 -frename-registers 
-INCPATH	= -I. -I./burn -I./burn/neogeo -I./burn/capcom -I./burn/cave -I./burn/toaplan -I./cpu/cz80 -I./cpu/cyclone -I./cpu/drz80 -I./cpu/nec -I./cpu/sh2 -I./burn/misc -I$(EZX_BASE)/include/3pt -I$(EZX_BASE)/include/qt -I$(EZX_BASE)/include/ezx -I$(SDKSTAGE)/opt/vc/include -I$(SDKSTAGE)/opt/vc/include/interface/vcos/pthreads \
+INCPATH	= -I. -I./burn -I./burn/neogeo -I./burn/capcom -I./burn/cave -I./burn/toaplan -I./cpu/cz80 -I./cpu/cyclone -I./cpu/z80 -I./cpu/nec -I./cpu/sh2 -I./burn/misc -I$(EZX_BASE)/include/3pt -I$(EZX_BASE)/include/qt -I$(EZX_BASE)/include/ezx -I$(SDKSTAGE)/opt/vc/include -I$(SDKSTAGE)/opt/vc/include/interface/vcos/pthreads \
 	-I$(SDKSTAGE)/opt/vc/include/interface/vmcs_host/linux -I/usr/include/SDL -I/usr/include/glib-2.0 -I/usr/lib/arm-linux-gnueabihf/glib-2.0/include 
 LINK	= arm-linux-gnueabihf-g++
 LFLAGS	= 
@@ -30,6 +30,8 @@ LIBS	= -lz -lpthread -lm -lpthread -lSDL -L/opt/vc/lib -lbcm_host -lGLESv2 -lEGL
 
 TAR	=	tar -cf
 GZIP	=	gzip -9f
+
+OBJ = .obj
 
 ####### Files
 
@@ -41,7 +43,7 @@ HEADERS = gp2xsdk.h \
 		fba_player.h \
 		font.h \
 		snd.h \
-		DrZ80.h \
+		z80.h \
 		cyclone.h \
 		burn.h \
 		burnint.h \
@@ -86,7 +88,7 @@ SOURCES = memcpy.s \
 		cache.cpp \
 		cpu/cz80/cz80.c \
 		cpu/cyclone/cyclone.s \
-		cpu/drz80/DrZ80.s \
+		cpu/z80/z80.cpp \
 		cpu/nec/nec.cpp \
 		cpu/nec/sh2.cpp \
 		burn/ay8910.c \
@@ -290,225 +292,226 @@ SOURCES = memcpy.s \
 		drv.cpp \
 		run.cpp \
 		input.cpp 
-OBJECTS = .obj/memcpy.o \
-		.obj/memset.o\
-		.obj/gp2xsdk.o \
-		.obj/gles2.o \
-		.obj/thread.o \
-		.obj/fifo_buffer.o \
-		.obj/main.o \
-		.obj/gamewidget.o \
-		.obj/ezxaudio.o \
-		.obj/fba_player.o \
-		.obj/font.o \
-		.obj/snd.o \
-		.obj/cache.o \
-		.obj/cz80.o \
-		.obj/cyclone.o \
-		.obj/DrZ80.o \
-		.obj/nec.o \
-		.obj/sh2.o \
-		.obj/ay8910.o \
-		.obj/burn_ym2151.o \
-		.obj/burn_ym2610.o \
-		.obj/burn_ym3812.o \
-		.obj/burn_ym2203.o \
-		.obj/burn_ym2608.o \
-		.obj/burn_ymf278b.o \
-		.obj/eeprom_93cxx.o \
-		.obj/fm.o \
-		.obj/fmopl.o \
-		.obj/msm5205.o \
-		.obj/msm6295.o \
-		.obj/timer.o \
-		.obj/ym2151.o \
-		.obj/ymdeltat.o \
-		.obj/ymf278b.o \
-		.obj/ymz280b.o \
-		.obj/burn_sound.o \
-		.obj/burn_sound_c.o \
-		.obj/burn.o \
-		.obj/load.o \
-		.obj/sek.o \
-		.obj/czet.o \
-		.obj/zet.o \
-		.obj/vez.o \
-		.obj/cps.o \
-		.obj/cps_draw.o \
-		.obj/cps_mem.o \
-		.obj/cps2_crpt.o \
-		.obj/cps_obj.o \
-		.obj/cps_pal.o \
-		.obj/cps_run.o \
-		.obj/cps_rw.o \
-		.obj/cps_scr.o \
-		.obj/cpsr.o \
-		.obj/cpsrd.o \
-		.obj/cpst.o \
-		.obj/ctv.o \
-		.obj/dc_3wonders.o \
-		.obj/dc_19xx.o \
-		.obj/dc_1941.o \
-		.obj/dc_1944.o \
-		.obj/dc_armwar.o \
-		.obj/dc_avsp.o \
-		.obj/dc_batcir.o \
-		.obj/dc_captcomm.o \
-		.obj/dc_cawing.o \
-		.obj/dc_choko.o \
-		.obj/dc_csclub.o \
-		.obj/dc_cworld2j.o \
-		.obj/dc_cyb.o \
-		.obj/dc_ddsom.o \
-		.obj/dc_ddtod.o \
-		.obj/dc_dimahoo.o \
-		.obj/dc_dino.o \
-		.obj/dc_dstlk.o \
-		.obj/dc_dw.o \
-		.obj/dc_ecofghtr.o \
-		.obj/dc_ffight.o \
-		.obj/dc_forgottn.o \
-		.obj/dc_ghouls.o \
-		.obj/dc_gigawing.o \
-		.obj/dc_hsf2.o \
-		.obj/dc_input.o \
-		.obj/dc_jyangoku.o \
-		.obj/dc_knights.o \
-		.obj/dc_kod.o \
-		.obj/dc_megaman2.o \
-		.obj/dc_megaman.o \
-		.obj/dc_mercs.o \
-		.obj/dc_mmatrix.o \
-		.obj/dc_mpang.o \
-		.obj/dc_msh.o \
-		.obj/dc_mshvsf.o \
-		.obj/dc_msword.o \
-		.obj/dc_mtwins.o \
-		.obj/dc_mvsc.o \
-		.obj/dc_nemo.o \
-		.obj/dc_nwarr.o \
-		.obj/dc_pang3.o \
-		.obj/dc_pnickj.o \
-		.obj/dc_progear.o \
-		.obj/dc_punisher.o \
-		.obj/dc_pzloop2.o \
-		.obj/dc_qad.o \
-		.obj/dc_qnd.o \
-		.obj/dc_qtono2.o \
-		.obj/dc_ringdest.o \
-		.obj/dc_sf2.o \
-		.obj/dc_sf2t.o \
-		.obj/dc_sfa2.o \
-		.obj/dc_sfa3.o \
-		.obj/dc_sfa.o \
-		.obj/dc_sfzch.o \
-		.obj/dc_sgemf.o \
-		.obj/dc_slammast.o \
-		.obj/dc_spf.o \
-		.obj/dc_ssf2.o \
-		.obj/dc_ssf2t.o \
-		.obj/dc_strider.o \
-		.obj/dc_unsquad.o \
-		.obj/dc_varth.o \
-		.obj/dc_vhunt2.o \
-		.obj/dc_vsav2.o \
-		.obj/dc_vsav.o \
-		.obj/dc_willow.o \
-		.obj/dc_wof.o \
-		.obj/dc_xmcota.o \
-		.obj/dc_xmvsf.o \
-		.obj/kabuki.o \
-		.obj/ps.o \
-		.obj/ps_m.o \
-		.obj/ps_z.o \
-		.obj/qs.o \
-		.obj/qs_c.o \
-		.obj/qs_z.o \
-		.obj/cps3run.o \
-		.obj/cps3snd.o \
-		.obj/d_cps3.o \
-		.obj/d_psikyosh.o \
-		.obj/d_suprnova.o \
-		.obj/neo_decrypt.o \
-		.obj/neo_palette.o \
-		.obj/neo_run.o \
-		.obj/neo_sprite.o \
-		.obj/neo_text.o \
-		.obj/neo_upd4990a.o \
-		.obj/neogeo.o \
-		.obj/d_neogeo.o \
-		.obj/d_parent.o \
-		.obj/d_aerofgt.o \
-		.obj/d_galpanic.o \
-		.obj/d_wwfwfest.o \
-		.obj/d_pgm.o \
-		.obj/pgm_crypt.o \
-		.obj/pgm_draw.o \
-		.obj/pgm_prot.o \
-		.obj/pgm_run.o \
-		.obj/pgm_snd.o \
-		.obj/d_biomtoy.o \
-		.obj/d_bombjack.o \
-		.obj/d_hyperpac.o \
-		.obj/d_kaneko16.o \
-		.obj/d_fstarfrc.o \
-		.obj/d_powerins.o \
-		.obj/d_news.o \
-		.obj/d_ohmygod.o \
-		.obj/d_wc90.o \
-		.obj/d_m92.o \
-		.obj/d_1945kiii.o \
-		.obj/d_tumbleb.o \
-		.obj/d_gaiden.o \
-		.obj/d_unico.o \
-		.obj/d_esd16.o \
-		.obj/tiles_generic.o \
-		.obj/cave.o \
-		.obj/cave_palette.o \
-		.obj/cave_sprite.o \
-		.obj/cave_tile.o \
-		.obj/d_dodonpachi.o \
-		.obj/d_donpachi.o \
-		.obj/d_esprade.o \
-		.obj/d_feversos.o \
-		.obj/d_gaia.o \
-		.obj/d_guwange.o \
-		.obj/d_sailormn.o \
-		.obj/d_uopoko.o \
-		.obj/d_hotdogst.o \
-		.obj/d_mazinger.o \
-		.obj/d_metmqstr.o \
-		.obj/d_pwrinst2.o \
-		.obj/toaplan.o \
-		.obj/toaplan1.o \
-		.obj/toa_palette.o \
-		.obj/toa_gp9001.o \
-		.obj/toa_extratext.o \
-		.obj/toa_bcu2.o \
-		.obj/d_batrider.o \
-		.obj/d_batsugun.o \
-		.obj/d_battleg.o \
-		.obj/d_bbakraid.o \
-		.obj/d_dogyuun.o \
-		.obj/d_kbash.o \
-		.obj/d_mahoudai.o \
-		.obj/d_outzone.o \
-		.obj/d_shippumd.o \
-		.obj/d_snowbro2.o \
-		.obj/d_tekipaki.o \
-		.obj/d_truxton2.o \
-		.obj/d_vfive.o \
-		.obj/d_truxton.o \
-		.obj/d_hellfire.o \
-		.obj/d_zerowing.o \
-		.obj/unzip.o \
-		.obj/zipfn.o \
-		.obj/bzip.o \
-		.obj/statec.o \
-		.obj/state.o \
-		.obj/drv.o \
-		.obj/run.o \
-		.obj/input.o 
+OBJECTS = $(OBJ)/memcpy.o \
+		$(OBJ)/memset.o\
+		$(OBJ)/gp2xsdk.o \
+		$(OBJ)/gles2.o \
+		$(OBJ)/thread.o \
+		$(OBJ)/fifo_buffer.o \
+		$(OBJ)/main.o \
+		$(OBJ)/gamewidget.o \
+		$(OBJ)/ezxaudio.o \
+		$(OBJ)/fba_player.o \
+		$(OBJ)/font.o \
+		$(OBJ)/snd.o \
+		$(OBJ)/cache.o \
+		$(OBJ)/cz80.o \
+		$(OBJ)/cyclone.o \
+		$(OBJ)/z80.o \
+		$(OBJ)/z80daisy.o \
+		$(OBJ)/nec.o \
+		$(OBJ)/sh2.o \
+		$(OBJ)/ay8910.o \
+		$(OBJ)/burn_ym2151.o \
+		$(OBJ)/burn_ym2610.o \
+		$(OBJ)/burn_ym3812.o \
+		$(OBJ)/burn_ym2203.o \
+		$(OBJ)/burn_ym2608.o \
+		$(OBJ)/burn_ymf278b.o \
+		$(OBJ)/eeprom_93cxx.o \
+		$(OBJ)/fm.o \
+		$(OBJ)/fmopl.o \
+		$(OBJ)/msm5205.o \
+		$(OBJ)/msm6295.o \
+		$(OBJ)/timer.o \
+		$(OBJ)/ym2151.o \
+		$(OBJ)/ymdeltat.o \
+		$(OBJ)/ymf278b.o \
+		$(OBJ)/ymz280b.o \
+		$(OBJ)/burn_sound.o \
+		$(OBJ)/burn_sound_c.o \
+		$(OBJ)/burn.o \
+		$(OBJ)/load.o \
+		$(OBJ)/sek.o \
+		$(OBJ)/czet.o \
+		$(OBJ)/zet.o \
+		$(OBJ)/vez.o \
+		$(OBJ)/cps.o \
+		$(OBJ)/cps_draw.o \
+		$(OBJ)/cps_mem.o \
+		$(OBJ)/cps2_crpt.o \
+		$(OBJ)/cps_obj.o \
+		$(OBJ)/cps_pal.o \
+		$(OBJ)/cps_run.o \
+		$(OBJ)/cps_rw.o \
+		$(OBJ)/cps_scr.o \
+		$(OBJ)/cpsr.o \
+		$(OBJ)/cpsrd.o \
+		$(OBJ)/cpst.o \
+		$(OBJ)/ctv.o \
+		$(OBJ)/dc_3wonders.o \
+		$(OBJ)/dc_19xx.o \
+		$(OBJ)/dc_1941.o \
+		$(OBJ)/dc_1944.o \
+		$(OBJ)/dc_armwar.o \
+		$(OBJ)/dc_avsp.o \
+		$(OBJ)/dc_batcir.o \
+		$(OBJ)/dc_captcomm.o \
+		$(OBJ)/dc_cawing.o \
+		$(OBJ)/dc_choko.o \
+		$(OBJ)/dc_csclub.o \
+		$(OBJ)/dc_cworld2j.o \
+		$(OBJ)/dc_cyb.o \
+		$(OBJ)/dc_ddsom.o \
+		$(OBJ)/dc_ddtod.o \
+		$(OBJ)/dc_dimahoo.o \
+		$(OBJ)/dc_dino.o \
+		$(OBJ)/dc_dstlk.o \
+		$(OBJ)/dc_dw.o \
+		$(OBJ)/dc_ecofghtr.o \
+		$(OBJ)/dc_ffight.o \
+		$(OBJ)/dc_forgottn.o \
+		$(OBJ)/dc_ghouls.o \
+		$(OBJ)/dc_gigawing.o \
+		$(OBJ)/dc_hsf2.o \
+		$(OBJ)/dc_input.o \
+		$(OBJ)/dc_jyangoku.o \
+		$(OBJ)/dc_knights.o \
+		$(OBJ)/dc_kod.o \
+		$(OBJ)/dc_megaman2.o \
+		$(OBJ)/dc_megaman.o \
+		$(OBJ)/dc_mercs.o \
+		$(OBJ)/dc_mmatrix.o \
+		$(OBJ)/dc_mpang.o \
+		$(OBJ)/dc_msh.o \
+		$(OBJ)/dc_mshvsf.o \
+		$(OBJ)/dc_msword.o \
+		$(OBJ)/dc_mtwins.o \
+		$(OBJ)/dc_mvsc.o \
+		$(OBJ)/dc_nemo.o \
+		$(OBJ)/dc_nwarr.o \
+		$(OBJ)/dc_pang3.o \
+		$(OBJ)/dc_pnickj.o \
+		$(OBJ)/dc_progear.o \
+		$(OBJ)/dc_punisher.o \
+		$(OBJ)/dc_pzloop2.o \
+		$(OBJ)/dc_qad.o \
+		$(OBJ)/dc_qnd.o \
+		$(OBJ)/dc_qtono2.o \
+		$(OBJ)/dc_ringdest.o \
+		$(OBJ)/dc_sf2.o \
+		$(OBJ)/dc_sf2t.o \
+		$(OBJ)/dc_sfa2.o \
+		$(OBJ)/dc_sfa3.o \
+		$(OBJ)/dc_sfa.o \
+		$(OBJ)/dc_sfzch.o \
+		$(OBJ)/dc_sgemf.o \
+		$(OBJ)/dc_slammast.o \
+		$(OBJ)/dc_spf.o \
+		$(OBJ)/dc_ssf2.o \
+		$(OBJ)/dc_ssf2t.o \
+		$(OBJ)/dc_strider.o \
+		$(OBJ)/dc_unsquad.o \
+		$(OBJ)/dc_varth.o \
+		$(OBJ)/dc_vhunt2.o \
+		$(OBJ)/dc_vsav2.o \
+		$(OBJ)/dc_vsav.o \
+		$(OBJ)/dc_willow.o \
+		$(OBJ)/dc_wof.o \
+		$(OBJ)/dc_xmcota.o \
+		$(OBJ)/dc_xmvsf.o \
+		$(OBJ)/kabuki.o \
+		$(OBJ)/ps.o \
+		$(OBJ)/ps_m.o \
+		$(OBJ)/ps_z.o \
+		$(OBJ)/qs.o \
+		$(OBJ)/qs_c.o \
+		$(OBJ)/qs_z.o \
+		$(OBJ)/cps3run.o \
+		$(OBJ)/cps3snd.o \
+		$(OBJ)/d_cps3.o \
+		$(OBJ)/d_psikyosh.o \
+		$(OBJ)/d_suprnova.o \
+		$(OBJ)/neo_decrypt.o \
+		$(OBJ)/neo_palette.o \
+		$(OBJ)/neo_run.o \
+		$(OBJ)/neo_sprite.o \
+		$(OBJ)/neo_text.o \
+		$(OBJ)/neo_upd4990a.o \
+		$(OBJ)/neogeo.o \
+		$(OBJ)/d_neogeo.o \
+		$(OBJ)/d_parent.o \
+		$(OBJ)/d_aerofgt.o \
+		$(OBJ)/d_galpanic.o \
+		$(OBJ)/d_wwfwfest.o \
+		$(OBJ)/d_pgm.o \
+		$(OBJ)/pgm_crypt.o \
+		$(OBJ)/pgm_draw.o \
+		$(OBJ)/pgm_prot.o \
+		$(OBJ)/pgm_run.o \
+		$(OBJ)/pgm_snd.o \
+		$(OBJ)/d_biomtoy.o \
+		$(OBJ)/d_bombjack.o \
+		$(OBJ)/d_hyperpac.o \
+		$(OBJ)/d_kaneko16.o \
+		$(OBJ)/d_fstarfrc.o \
+		$(OBJ)/d_powerins.o \
+		$(OBJ)/d_news.o \
+		$(OBJ)/d_ohmygod.o \
+		$(OBJ)/d_wc90.o \
+		$(OBJ)/d_m92.o \
+		$(OBJ)/d_1945kiii.o \
+		$(OBJ)/d_tumbleb.o \
+		$(OBJ)/d_gaiden.o \
+		$(OBJ)/d_unico.o \
+		$(OBJ)/d_esd16.o \
+		$(OBJ)/tiles_generic.o \
+		$(OBJ)/cave.o \
+		$(OBJ)/cave_palette.o \
+		$(OBJ)/cave_sprite.o \
+		$(OBJ)/cave_tile.o \
+		$(OBJ)/d_dodonpachi.o \
+		$(OBJ)/d_donpachi.o \
+		$(OBJ)/d_esprade.o \
+		$(OBJ)/d_feversos.o \
+		$(OBJ)/d_gaia.o \
+		$(OBJ)/d_guwange.o \
+		$(OBJ)/d_sailormn.o \
+		$(OBJ)/d_uopoko.o \
+		$(OBJ)/d_hotdogst.o \
+		$(OBJ)/d_mazinger.o \
+		$(OBJ)/d_metmqstr.o \
+		$(OBJ)/d_pwrinst2.o \
+		$(OBJ)/toaplan.o \
+		$(OBJ)/toaplan1.o \
+		$(OBJ)/toa_palette.o \
+		$(OBJ)/toa_gp9001.o \
+		$(OBJ)/toa_extratext.o \
+		$(OBJ)/toa_bcu2.o \
+		$(OBJ)/d_batrider.o \
+		$(OBJ)/d_batsugun.o \
+		$(OBJ)/d_battleg.o \
+		$(OBJ)/d_bbakraid.o \
+		$(OBJ)/d_dogyuun.o \
+		$(OBJ)/d_kbash.o \
+		$(OBJ)/d_mahoudai.o \
+		$(OBJ)/d_outzone.o \
+		$(OBJ)/d_shippumd.o \
+		$(OBJ)/d_snowbro2.o \
+		$(OBJ)/d_tekipaki.o \
+		$(OBJ)/d_truxton2.o \
+		$(OBJ)/d_vfive.o \
+		$(OBJ)/d_truxton.o \
+		$(OBJ)/d_hellfire.o \
+		$(OBJ)/d_zerowing.o \
+		$(OBJ)/unzip.o \
+		$(OBJ)/zipfn.o \
+		$(OBJ)/bzip.o \
+		$(OBJ)/statec.o \
+		$(OBJ)/state.o \
+		$(OBJ)/drv.o \
+		$(OBJ)/run.o \
+		$(OBJ)/input.o 
 
 INTERFACES =	
 DIST	=	
@@ -555,79 +558,82 @@ clean:
 
 ####### Compile
 
-.obj/gp2xsdk.o: gp2xsdk.cpp gp2xsdk.h
-	$(CC) -c $(CXXFLAGS) $(INCPATH) -o .obj/gp2xsdk.o gp2xsdk.cpp
+$(OBJ)/gp2xsdk.o: gp2xsdk.cpp gp2xsdk.h
+	$(CC) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/gp2xsdk.o gp2xsdk.cpp
 
-.obj/gles2.o: gles2.cpp
-	$(CC) -c $(CXXFLAGS) $(INCPATH) -o .obj/gles2.o gles2.cpp
+$(OBJ)/gles2.o: gles2.cpp
+	$(CC) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/gles2.o gles2.cpp
 
-.obj/thread.o: thread.c
-	$(CC) -c $(CFLAGS) $(INCPATH) -o .obj/thread.o thread.c
+$(OBJ)/thread.o: thread.c
+	$(CC) -c $(CFLAGS) $(INCPATH) -o $(OBJ)/thread.o thread.c
 
-.obj/fifo_buffer.o: fifo_buffer.c
-	$(CC) -c $(CFLAGS) $(INCPATH) -o .obj/fifo_buffer.o fifo_buffer.c
+$(OBJ)/fifo_buffer.o: fifo_buffer.c
+	$(CC) -c $(CFLAGS) $(INCPATH) -o $(OBJ)/fifo_buffer.o fifo_buffer.c
 
-.obj/main.o: main.cpp \
+$(OBJ)/main.o: main.cpp \
 		main.h \
 		configfile.h \
 		fba_player.h \
 		gamewidget.h \
 		burner.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/main.o main.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/main.o main.cpp
 
-.obj/gamewidget.o: gamewidget.cpp \
+$(OBJ)/gamewidget.o: gamewidget.cpp \
 		gamewidget.h \
 		configfile.h \
 		font.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/gamewidget.o gamewidget.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/gamewidget.o gamewidget.cpp
 
-.obj/ezxaudio.o: ezxaudio.cpp \
+$(OBJ)/ezxaudio.o: ezxaudio.cpp \
 		ezxaudio.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/ezxaudio.o ezxaudio.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/ezxaudio.o ezxaudio.cpp
 
-.obj/fba_player.o: fba_player.cpp \
+$(OBJ)/fba_player.o: fba_player.cpp \
 		fba_player.h \
 		gamewidget.h \
 		ezxaudio.h \
 		font.h \
 		snd.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/fba_player.o fba_player.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/fba_player.o fba_player.cpp
 
-.obj/font.o: font.cpp \
+$(OBJ)/font.o: font.cpp \
 		font.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/font.o font.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/font.o font.cpp
 
-.obj/snd.o: snd.cpp \
+$(OBJ)/snd.o: snd.cpp \
 		burner.h \
 		snd.h \
 		ezxaudio.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/snd.o snd.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/snd.o snd.cpp
 
-.obj/cache.o: cache.cpp
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/cache.o cache.cpp
+$(OBJ)/cache.o: cache.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/cache.o cache.cpp
 
-.obj/cz80.o: cpu/cz80/cz80.c
-	$(CC) -c $(CFLAGSPROFILE) $(INCPATH) -o .obj/cz80.o cpu/cz80/cz80.c
+$(OBJ)/cz80.o: cpu/cz80/cz80.c
+	$(CC) -c $(CFLAGSPROFILE) $(INCPATH) -o $(OBJ)/cz80.o cpu/cz80/cz80.c
 
-.obj/cyclone.o: cpu/cyclone/cyclone.s
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/cyclone.o cpu/cyclone/cyclone.s
+$(OBJ)/cyclone.o: cpu/cyclone/cyclone.s
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/cyclone.o cpu/cyclone/cyclone.s
 
-.obj/DrZ80.o: cpu/drz80/DrZ80.s
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/DrZ80.o cpu/drz80/DrZ80.s
+$(OBJ)/z80.o: cpu/z80/z80.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/z80.o cpu/z80/z80.cpp
 
-.obj/nec.o: cpu/nec/nec.cpp
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/nec.o cpu/nec/nec.cpp
+$(OBJ)/z80daisy.o: cpu/z80/z80daisy.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/z80daisy.o cpu/z80/z80daisy.cpp
 
-.obj/sh2.o: cpu/sh2/sh2.cpp
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/sh2.o cpu/sh2/sh2.cpp
+$(OBJ)/nec.o: cpu/nec/nec.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/nec.o cpu/nec/nec.cpp
 
-.obj/ay8910.o: burn/ay8910.c \
+$(OBJ)/sh2.o: cpu/sh2/sh2.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/sh2.o cpu/sh2/sh2.cpp
+
+$(OBJ)/ay8910.o: burn/ay8910.c \
 		burn/driver.h \
 		burn/state.h \
 		burn/ay8910.h
-	$(CC) -c $(CFLAGS) $(INCPATH) -o .obj/ay8910.o burn/ay8910.c
+	$(CC) -c $(CFLAGS) $(INCPATH) -o $(OBJ)/ay8910.o burn/ay8910.c
 
-.obj/burn_ym2151.o: burn/burn_ym2151.cpp \
+$(OBJ)/burn_ym2151.o: burn/burn_ym2151.cpp \
 		burn/burnint.h \
 		burn/tchar.h \
 		burn/burn.h \
@@ -640,9 +646,9 @@ clean:
 		burn/burn_ym2151.h \
 		burn/driver.h \
 		burn/ym2151.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/burn_ym2151.o burn/burn_ym2151.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/burn_ym2151.o burn/burn_ym2151.cpp
 
-.obj/burn_ym2610.o: burn/burn_ym2610.cpp \
+$(OBJ)/burn_ym2610.o: burn/burn_ym2610.cpp \
 		burn/burnint.h \
 		burn/tchar.h \
 		burn/burn.h \
@@ -657,9 +663,9 @@ clean:
 		burn/ay8910.h \
 		burn/fm.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/burn_ym2610.o burn/burn_ym2610.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/burn_ym2610.o burn/burn_ym2610.cpp
 
-.obj/burn_ym3812.o: burn/burn_ym3812.cpp \
+$(OBJ)/burn_ym3812.o: burn/burn_ym3812.cpp \
 		burn/burnint.h \
 		burn/tchar.h \
 		burn/burn.h \
@@ -673,15 +679,15 @@ clean:
 		burn/driver.h \
 		burn/fmopl.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/burn_ym3812.o burn/burn_ym3812.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/burn_ym3812.o burn/burn_ym3812.cpp
 
-.obj/burn_ym2203.o: burn/burn_ym2203.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/burn_ym2203.o burn/burn_ym2203.cpp
+$(OBJ)/burn_ym2203.o: burn/burn_ym2203.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/burn_ym2203.o burn/burn_ym2203.cpp
 
-.obj/burn_ym2608.o: burn/burn_ym2608.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/burn_ym2608.o burn/burn_ym2608.cpp
+$(OBJ)/burn_ym2608.o: burn/burn_ym2608.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/burn_ym2608.o burn/burn_ym2608.cpp
 
-.obj/burn_ymf278b.o: burn/burn_ymf278b.cpp \
+$(OBJ)/burn_ymf278b.o: burn/burn_ymf278b.cpp \
 		burn/burnint.h \
 		burn/tchar.h \
 		burn/burn.h \
@@ -695,9 +701,9 @@ clean:
 		burn/driver.h \
 		burn/ymf278b.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/burn_ymf278b.o burn/burn_ymf278b.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/burn_ymf278b.o burn/burn_ymf278b.cpp
 
-.obj/eeprom_93cxx.o: burn/eeprom_93cxx.cpp \
+$(OBJ)/eeprom_93cxx.o: burn/eeprom_93cxx.cpp \
 		burn/burnint.h \
 		burn/tchar.h \
 		burn/burn.h \
@@ -707,23 +713,23 @@ clean:
 		burn/zet.h \
 		burn/stdfunc.h \
 		burn/eeprom_93cxx.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/eeprom_93cxx.o burn/eeprom_93cxx.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/eeprom_93cxx.o burn/eeprom_93cxx.cpp
 
-.obj/fm.o: burn/fm.c \
+$(OBJ)/fm.o: burn/fm.c \
 		burn/driver.h \
 		burn/state.h \
 		burn/ay8910.h \
 		burn/fm.h \
 		burn/ymdeltat.h
-	$(CC) -c $(CFLAGS) $(INCPATH) -o .obj/fm.o burn/fm.c
+	$(CC) -c $(CFLAGS) $(INCPATH) -o $(OBJ)/fm.o burn/fm.c
 
-.obj/fmopl.o: burn/fmopl.c \
+$(OBJ)/fmopl.o: burn/fmopl.c \
 		burn/driver.h \
 		burn/ymdeltat.h \
 		burn/fmopl.h
-	$(CC) -c $(CFLAGS) $(INCPATH) -o .obj/fmopl.o burn/fmopl.c
+	$(CC) -c $(CFLAGS) $(INCPATH) -o $(OBJ)/fmopl.o burn/fmopl.c
 
-.obj/msm5205.o: burn/msm5205.cpp \
+$(OBJ)/msm5205.o: burn/msm5205.cpp \
 		burn/burnint.h \
 		burn/tchar.h \
 		burn/burn.h \
@@ -734,9 +740,9 @@ clean:
 		burn/stdfunc.h \
 		burn/msm5205.h \
 		burn/burn_sound.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/msm5205.o burn/msm5205.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/msm5205.o burn/msm5205.cpp
 
-.obj/msm6295.o: burn/msm6295.cpp \
+$(OBJ)/msm6295.o: burn/msm6295.cpp \
 		burn/burnint.h \
 		burn/tchar.h \
 		burn/burn.h \
@@ -747,9 +753,9 @@ clean:
 		burn/stdfunc.h \
 		burn/msm6295.h \
 		burn/burn_sound.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/msm6295.o burn/msm6295.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/msm6295.o burn/msm6295.cpp
 
-.obj/timer.o: burn/timer.cpp \
+$(OBJ)/timer.o: burn/timer.cpp \
 		burn/burnint.h \
 		burn/tchar.h \
 		burn/burn.h \
@@ -759,26 +765,26 @@ clean:
 		burn/zet.h \
 		burn/stdfunc.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/timer.o burn/timer.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/timer.o burn/timer.cpp
 
-.obj/ym2151.o: burn/ym2151.c \
+$(OBJ)/ym2151.o: burn/ym2151.c \
 		burn/driver.h \
 		burn/state.h \
 		burn/ym2151.h
-	$(CC) -c $(CFLAGS) $(INCPATH) -o .obj/ym2151.o burn/ym2151.c
+	$(CC) -c $(CFLAGS) $(INCPATH) -o $(OBJ)/ym2151.o burn/ym2151.c
 
-.obj/ymdeltat.o: burn/ymdeltat.c \
+$(OBJ)/ymdeltat.o: burn/ymdeltat.c \
 		burn/driver.h \
 		burn/state.h \
 		burn/ymdeltat.h
-	$(CC) -c $(CFLAGS) $(INCPATH) -o .obj/ymdeltat.o burn/ymdeltat.c
+	$(CC) -c $(CFLAGS) $(INCPATH) -o $(OBJ)/ymdeltat.o burn/ymdeltat.c
 
-.obj/ymf278b.o: burn/ymf278b.c \
+$(OBJ)/ymf278b.o: burn/ymf278b.c \
 		burn/driver.h \
 		burn/ymf278b.h
-	$(CC) -c $(CFLAGS) $(INCPATH) -o .obj/ymf278b.o burn/ymf278b.c
+	$(CC) -c $(CFLAGS) $(INCPATH) -o $(OBJ)/ymf278b.o burn/ymf278b.c
 
-.obj/ymz280b.o: burn/ymz280b.cpp \
+$(OBJ)/ymz280b.o: burn/ymz280b.cpp \
 		burn/burnint.h \
 		burn/tchar.h \
 		burn/burn.h \
@@ -789,9 +795,9 @@ clean:
 		burn/stdfunc.h \
 		burn/ymz280b.h \
 		burn/burn_sound.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/ymz280b.o burn/ymz280b.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/ymz280b.o burn/ymz280b.cpp
 
-.obj/burn_sound.o: burn/burn_sound.cpp \
+$(OBJ)/burn_sound.o: burn/burn_sound.cpp \
 		burn/burnint.h \
 		burn/tchar.h \
 		burn/burn.h \
@@ -801,9 +807,9 @@ clean:
 		burn/zet.h \
 		burn/stdfunc.h \
 		burn/burn_sound.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/burn_sound.o burn/burn_sound.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/burn_sound.o burn/burn_sound.cpp
 
-.obj/burn_sound_c.o: burn/burn_sound_c.cpp \
+$(OBJ)/burn_sound_c.o: burn/burn_sound_c.cpp \
 		burn/burnint.h \
 		burn/tchar.h \
 		burn/burn.h \
@@ -813,9 +819,9 @@ clean:
 		burn/zet.h \
 		burn/stdfunc.h \
 		burn/burn_sound.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/burn_sound_c.o burn/burn_sound_c.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/burn_sound_c.o burn/burn_sound_c.cpp
 
-.obj/burn.o: burn/burn.cpp \
+$(OBJ)/burn.o: burn/burn.cpp \
 		burn/version.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -828,9 +834,9 @@ clean:
 		burn/burn_sound.h \
 		burn/driverlist.h \
 		burn/driver.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/burn.o burn/burn.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/burn.o burn/burn.cpp
 
-.obj/load.o: burn/load.cpp \
+$(OBJ)/load.o: burn/load.cpp \
 		burn/burnint.h \
 		burn/tchar.h \
 		burn/burn.h \
@@ -839,9 +845,9 @@ clean:
 		burn/sek.h \
 		burn/zet.h \
 		burn/stdfunc.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/load.o burn/load.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/load.o burn/load.cpp
 
-.obj/sek.o: burn/sek.cpp \
+$(OBJ)/sek.o: burn/sek.cpp \
 		burn/burnint.h \
 		burn/tchar.h \
 		burn/burn.h \
@@ -851,12 +857,12 @@ clean:
 		burn/zet.h \
 		burn/stdfunc.h \
 		burn/sekdebug.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/sek.o burn/sek.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/sek.o burn/sek.cpp
 
-.obj/czet.o: burn/czet.cpp
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/czet.o burn/czet.cpp
+$(OBJ)/czet.o: burn/czet.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/czet.o burn/czet.cpp
 
-.obj/zet.o: burn/zet.cpp \
+$(OBJ)/zet.o: burn/zet.cpp \
 		burn/burnint.h \
 		burn/tchar.h \
 		burn/burn.h \
@@ -865,12 +871,12 @@ clean:
 		burn/sek.h \
 		burn/zet.h \
 		burn/stdfunc.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/zet.o burn/zet.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/zet.o burn/zet.cpp
 
-.obj/vez.o: burn/vez.cpp
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/vez.o burn/vez.cpp
+$(OBJ)/vez.o: burn/vez.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/vez.o burn/vez.cpp
 
-.obj/cps.o: burn/capcom/cps.cpp \
+$(OBJ)/cps.o: burn/capcom/cps.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -883,9 +889,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/cps.o burn/capcom/cps.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/cps.o burn/capcom/cps.cpp
 
-.obj/cps_draw.o: burn/capcom/cps_draw.cpp \
+$(OBJ)/cps_draw.o: burn/capcom/cps_draw.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -898,9 +904,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/cps_draw.o burn/capcom/cps_draw.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/cps_draw.o burn/capcom/cps_draw.cpp
 
-.obj/cps_mem.o: burn/capcom/cps_mem.cpp \
+$(OBJ)/cps_mem.o: burn/capcom/cps_mem.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -913,9 +919,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/cps_mem.o burn/capcom/cps_mem.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/cps_mem.o burn/capcom/cps_mem.cpp
 
-.obj/cps2_crpt.o: burn/capcom/cps2_crpt.cpp \
+$(OBJ)/cps2_crpt.o: burn/capcom/cps2_crpt.cpp \
 		burn/driver.h \
 		burn/capcom/cps.h \
 		burn/burnint.h \
@@ -929,9 +935,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/cps2_crpt.o burn/capcom/cps2_crpt.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/cps2_crpt.o burn/capcom/cps2_crpt.cpp
 
-.obj/cps_obj.o: burn/capcom/cps_obj.cpp \
+$(OBJ)/cps_obj.o: burn/capcom/cps_obj.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -944,9 +950,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/cps_obj.o burn/capcom/cps_obj.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/cps_obj.o burn/capcom/cps_obj.cpp
 
-.obj/cps_pal.o: burn/capcom/cps_pal.cpp \
+$(OBJ)/cps_pal.o: burn/capcom/cps_pal.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -959,9 +965,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/cps_pal.o burn/capcom/cps_pal.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/cps_pal.o burn/capcom/cps_pal.cpp
 
-.obj/cps_run.o: burn/capcom/cps_run.cpp \
+$(OBJ)/cps_run.o: burn/capcom/cps_run.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -974,9 +980,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/cps_run.o burn/capcom/cps_run.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/cps_run.o burn/capcom/cps_run.cpp
 
-.obj/cps_rw.o: burn/capcom/cps_rw.cpp \
+$(OBJ)/cps_rw.o: burn/capcom/cps_rw.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -989,9 +995,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/cps_rw.o burn/capcom/cps_rw.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/cps_rw.o burn/capcom/cps_rw.cpp
 
-.obj/cps_scr.o: burn/capcom/cps_scr.cpp \
+$(OBJ)/cps_scr.o: burn/capcom/cps_scr.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1004,9 +1010,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/cps_scr.o burn/capcom/cps_scr.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/cps_scr.o burn/capcom/cps_scr.cpp
 
-.obj/cpsr.o: burn/capcom/cpsr.cpp \
+$(OBJ)/cpsr.o: burn/capcom/cpsr.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1019,9 +1025,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/cpsr.o burn/capcom/cpsr.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/cpsr.o burn/capcom/cpsr.cpp
 
-.obj/cpsrd.o: burn/capcom/cpsrd.cpp \
+$(OBJ)/cpsrd.o: burn/capcom/cpsrd.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1034,9 +1040,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/cpsrd.o burn/capcom/cpsrd.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/cpsrd.o burn/capcom/cpsrd.cpp
 
-.obj/cpst.o: burn/capcom/cpst.cpp \
+$(OBJ)/cpst.o: burn/capcom/cpst.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1049,9 +1055,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/cpst.o burn/capcom/cpst.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/cpst.o burn/capcom/cpst.cpp
 
-.obj/ctv.o: burn/capcom/ctv.cpp \
+$(OBJ)/ctv.o: burn/capcom/ctv.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1066,9 +1072,9 @@ clean:
 		burn/timer.h \
 		burn/capcom/ctv.h \
 		burn/capcom/ctv_do.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/ctv.o burn/capcom/ctv.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/ctv.o burn/capcom/ctv.cpp
 
-.obj/dc_3wonders.o: burn/capcom/dc_3wonders.cpp \
+$(OBJ)/dc_3wonders.o: burn/capcom/dc_3wonders.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1081,9 +1087,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_3wonders.o burn/capcom/dc_3wonders.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_3wonders.o burn/capcom/dc_3wonders.cpp
 
-.obj/dc_19xx.o: burn/capcom/dc_19xx.cpp \
+$(OBJ)/dc_19xx.o: burn/capcom/dc_19xx.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1096,9 +1102,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_19xx.o burn/capcom/dc_19xx.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_19xx.o burn/capcom/dc_19xx.cpp
 
-.obj/dc_1941.o: burn/capcom/dc_1941.cpp \
+$(OBJ)/dc_1941.o: burn/capcom/dc_1941.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1111,9 +1117,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_1941.o burn/capcom/dc_1941.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_1941.o burn/capcom/dc_1941.cpp
 
-.obj/dc_1944.o: burn/capcom/dc_1944.cpp \
+$(OBJ)/dc_1944.o: burn/capcom/dc_1944.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1126,9 +1132,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_1944.o burn/capcom/dc_1944.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_1944.o burn/capcom/dc_1944.cpp
 
-.obj/dc_armwar.o: burn/capcom/dc_armwar.cpp \
+$(OBJ)/dc_armwar.o: burn/capcom/dc_armwar.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1141,9 +1147,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_armwar.o burn/capcom/dc_armwar.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_armwar.o burn/capcom/dc_armwar.cpp
 
-.obj/dc_avsp.o: burn/capcom/dc_avsp.cpp \
+$(OBJ)/dc_avsp.o: burn/capcom/dc_avsp.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1156,9 +1162,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_avsp.o burn/capcom/dc_avsp.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_avsp.o burn/capcom/dc_avsp.cpp
 
-.obj/dc_batcir.o: burn/capcom/dc_batcir.cpp \
+$(OBJ)/dc_batcir.o: burn/capcom/dc_batcir.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1171,9 +1177,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_batcir.o burn/capcom/dc_batcir.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_batcir.o burn/capcom/dc_batcir.cpp
 
-.obj/dc_captcomm.o: burn/capcom/dc_captcomm.cpp \
+$(OBJ)/dc_captcomm.o: burn/capcom/dc_captcomm.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1186,9 +1192,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_captcomm.o burn/capcom/dc_captcomm.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_captcomm.o burn/capcom/dc_captcomm.cpp
 
-.obj/dc_cawing.o: burn/capcom/dc_cawing.cpp \
+$(OBJ)/dc_cawing.o: burn/capcom/dc_cawing.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1201,9 +1207,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_cawing.o burn/capcom/dc_cawing.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_cawing.o burn/capcom/dc_cawing.cpp
 
-.obj/dc_choko.o: burn/capcom/dc_choko.cpp \
+$(OBJ)/dc_choko.o: burn/capcom/dc_choko.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1216,9 +1222,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_choko.o burn/capcom/dc_choko.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_choko.o burn/capcom/dc_choko.cpp
 
-.obj/dc_csclub.o: burn/capcom/dc_csclub.cpp \
+$(OBJ)/dc_csclub.o: burn/capcom/dc_csclub.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1231,9 +1237,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_csclub.o burn/capcom/dc_csclub.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_csclub.o burn/capcom/dc_csclub.cpp
 
-.obj/dc_cworld2j.o: burn/capcom/dc_cworld2j.cpp \
+$(OBJ)/dc_cworld2j.o: burn/capcom/dc_cworld2j.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1246,9 +1252,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_cworld2j.o burn/capcom/dc_cworld2j.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_cworld2j.o burn/capcom/dc_cworld2j.cpp
 
-.obj/dc_cyb.o: burn/capcom/dc_cyb.cpp \
+$(OBJ)/dc_cyb.o: burn/capcom/dc_cyb.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1261,9 +1267,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_cyb.o burn/capcom/dc_cyb.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_cyb.o burn/capcom/dc_cyb.cpp
 
-.obj/dc_ddsom.o: burn/capcom/dc_ddsom.cpp \
+$(OBJ)/dc_ddsom.o: burn/capcom/dc_ddsom.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1276,9 +1282,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_ddsom.o burn/capcom/dc_ddsom.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_ddsom.o burn/capcom/dc_ddsom.cpp
 
-.obj/dc_ddtod.o: burn/capcom/dc_ddtod.cpp \
+$(OBJ)/dc_ddtod.o: burn/capcom/dc_ddtod.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1291,9 +1297,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_ddtod.o burn/capcom/dc_ddtod.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_ddtod.o burn/capcom/dc_ddtod.cpp
 
-.obj/dc_dimahoo.o: burn/capcom/dc_dimahoo.cpp \
+$(OBJ)/dc_dimahoo.o: burn/capcom/dc_dimahoo.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1306,9 +1312,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_dimahoo.o burn/capcom/dc_dimahoo.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_dimahoo.o burn/capcom/dc_dimahoo.cpp
 
-.obj/dc_dino.o: burn/capcom/dc_dino.cpp \
+$(OBJ)/dc_dino.o: burn/capcom/dc_dino.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1321,9 +1327,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_dino.o burn/capcom/dc_dino.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_dino.o burn/capcom/dc_dino.cpp
 
-.obj/dc_dstlk.o: burn/capcom/dc_dstlk.cpp \
+$(OBJ)/dc_dstlk.o: burn/capcom/dc_dstlk.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1336,9 +1342,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_dstlk.o burn/capcom/dc_dstlk.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_dstlk.o burn/capcom/dc_dstlk.cpp
 
-.obj/dc_dw.o: burn/capcom/dc_dw.cpp \
+$(OBJ)/dc_dw.o: burn/capcom/dc_dw.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1351,9 +1357,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_dw.o burn/capcom/dc_dw.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_dw.o burn/capcom/dc_dw.cpp
 
-.obj/dc_ecofghtr.o: burn/capcom/dc_ecofghtr.cpp \
+$(OBJ)/dc_ecofghtr.o: burn/capcom/dc_ecofghtr.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1366,9 +1372,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_ecofghtr.o burn/capcom/dc_ecofghtr.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_ecofghtr.o burn/capcom/dc_ecofghtr.cpp
 
-.obj/dc_ffight.o: burn/capcom/dc_ffight.cpp \
+$(OBJ)/dc_ffight.o: burn/capcom/dc_ffight.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1381,9 +1387,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_ffight.o burn/capcom/dc_ffight.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_ffight.o burn/capcom/dc_ffight.cpp
 
-.obj/dc_forgottn.o: burn/capcom/dc_forgottn.cpp \
+$(OBJ)/dc_forgottn.o: burn/capcom/dc_forgottn.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1396,9 +1402,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_forgottn.o burn/capcom/dc_forgottn.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_forgottn.o burn/capcom/dc_forgottn.cpp
 
-.obj/dc_ghouls.o: burn/capcom/dc_ghouls.cpp \
+$(OBJ)/dc_ghouls.o: burn/capcom/dc_ghouls.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1411,9 +1417,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_ghouls.o burn/capcom/dc_ghouls.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_ghouls.o burn/capcom/dc_ghouls.cpp
 
-.obj/dc_gigawing.o: burn/capcom/dc_gigawing.cpp \
+$(OBJ)/dc_gigawing.o: burn/capcom/dc_gigawing.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1426,9 +1432,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_gigawing.o burn/capcom/dc_gigawing.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_gigawing.o burn/capcom/dc_gigawing.cpp
 
-.obj/dc_hsf2.o: burn/capcom/dc_hsf2.cpp \
+$(OBJ)/dc_hsf2.o: burn/capcom/dc_hsf2.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1441,9 +1447,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_hsf2.o burn/capcom/dc_hsf2.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_hsf2.o burn/capcom/dc_hsf2.cpp
 
-.obj/dc_input.o: burn/capcom/dc_input.cpp \
+$(OBJ)/dc_input.o: burn/capcom/dc_input.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1456,9 +1462,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_input.o burn/capcom/dc_input.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_input.o burn/capcom/dc_input.cpp
 
-.obj/dc_jyangoku.o: burn/capcom/dc_jyangoku.cpp \
+$(OBJ)/dc_jyangoku.o: burn/capcom/dc_jyangoku.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1471,9 +1477,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_jyangoku.o burn/capcom/dc_jyangoku.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_jyangoku.o burn/capcom/dc_jyangoku.cpp
 
-.obj/dc_knights.o: burn/capcom/dc_knights.cpp \
+$(OBJ)/dc_knights.o: burn/capcom/dc_knights.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1486,9 +1492,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_knights.o burn/capcom/dc_knights.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_knights.o burn/capcom/dc_knights.cpp
 
-.obj/dc_kod.o: burn/capcom/dc_kod.cpp \
+$(OBJ)/dc_kod.o: burn/capcom/dc_kod.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1501,9 +1507,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_kod.o burn/capcom/dc_kod.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_kod.o burn/capcom/dc_kod.cpp
 
-.obj/dc_megaman2.o: burn/capcom/dc_megaman2.cpp \
+$(OBJ)/dc_megaman2.o: burn/capcom/dc_megaman2.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1516,9 +1522,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_megaman2.o burn/capcom/dc_megaman2.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_megaman2.o burn/capcom/dc_megaman2.cpp
 
-.obj/dc_megaman.o: burn/capcom/dc_megaman.cpp \
+$(OBJ)/dc_megaman.o: burn/capcom/dc_megaman.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1531,9 +1537,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_megaman.o burn/capcom/dc_megaman.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_megaman.o burn/capcom/dc_megaman.cpp
 
-.obj/dc_mercs.o: burn/capcom/dc_mercs.cpp \
+$(OBJ)/dc_mercs.o: burn/capcom/dc_mercs.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1546,9 +1552,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_mercs.o burn/capcom/dc_mercs.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_mercs.o burn/capcom/dc_mercs.cpp
 
-.obj/dc_mmatrix.o: burn/capcom/dc_mmatrix.cpp \
+$(OBJ)/dc_mmatrix.o: burn/capcom/dc_mmatrix.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1561,9 +1567,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_mmatrix.o burn/capcom/dc_mmatrix.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_mmatrix.o burn/capcom/dc_mmatrix.cpp
 
-.obj/dc_mpang.o: burn/capcom/dc_mpang.cpp \
+$(OBJ)/dc_mpang.o: burn/capcom/dc_mpang.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1576,9 +1582,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_mpang.o burn/capcom/dc_mpang.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_mpang.o burn/capcom/dc_mpang.cpp
 
-.obj/dc_msh.o: burn/capcom/dc_msh.cpp \
+$(OBJ)/dc_msh.o: burn/capcom/dc_msh.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1591,9 +1597,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_msh.o burn/capcom/dc_msh.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_msh.o burn/capcom/dc_msh.cpp
 
-.obj/dc_mshvsf.o: burn/capcom/dc_mshvsf.cpp \
+$(OBJ)/dc_mshvsf.o: burn/capcom/dc_mshvsf.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1606,9 +1612,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_mshvsf.o burn/capcom/dc_mshvsf.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_mshvsf.o burn/capcom/dc_mshvsf.cpp
 
-.obj/dc_msword.o: burn/capcom/dc_msword.cpp \
+$(OBJ)/dc_msword.o: burn/capcom/dc_msword.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1621,9 +1627,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_msword.o burn/capcom/dc_msword.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_msword.o burn/capcom/dc_msword.cpp
 
-.obj/dc_mtwins.o: burn/capcom/dc_mtwins.cpp \
+$(OBJ)/dc_mtwins.o: burn/capcom/dc_mtwins.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1636,9 +1642,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_mtwins.o burn/capcom/dc_mtwins.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_mtwins.o burn/capcom/dc_mtwins.cpp
 
-.obj/dc_mvsc.o: burn/capcom/dc_mvsc.cpp \
+$(OBJ)/dc_mvsc.o: burn/capcom/dc_mvsc.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1651,9 +1657,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_mvsc.o burn/capcom/dc_mvsc.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_mvsc.o burn/capcom/dc_mvsc.cpp
 
-.obj/dc_nemo.o: burn/capcom/dc_nemo.cpp \
+$(OBJ)/dc_nemo.o: burn/capcom/dc_nemo.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1666,9 +1672,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_nemo.o burn/capcom/dc_nemo.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_nemo.o burn/capcom/dc_nemo.cpp
 
-.obj/dc_nwarr.o: burn/capcom/dc_nwarr.cpp \
+$(OBJ)/dc_nwarr.o: burn/capcom/dc_nwarr.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1681,9 +1687,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_nwarr.o burn/capcom/dc_nwarr.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_nwarr.o burn/capcom/dc_nwarr.cpp
 
-.obj/dc_pang3.o: burn/capcom/dc_pang3.cpp \
+$(OBJ)/dc_pang3.o: burn/capcom/dc_pang3.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1696,9 +1702,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_pang3.o burn/capcom/dc_pang3.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_pang3.o burn/capcom/dc_pang3.cpp
 
-.obj/dc_pnickj.o: burn/capcom/dc_pnickj.cpp \
+$(OBJ)/dc_pnickj.o: burn/capcom/dc_pnickj.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1711,9 +1717,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_pnickj.o burn/capcom/dc_pnickj.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_pnickj.o burn/capcom/dc_pnickj.cpp
 
-.obj/dc_progear.o: burn/capcom/dc_progear.cpp \
+$(OBJ)/dc_progear.o: burn/capcom/dc_progear.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1726,9 +1732,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_progear.o burn/capcom/dc_progear.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_progear.o burn/capcom/dc_progear.cpp
 
-.obj/dc_punisher.o: burn/capcom/dc_punisher.cpp \
+$(OBJ)/dc_punisher.o: burn/capcom/dc_punisher.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1741,9 +1747,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_punisher.o burn/capcom/dc_punisher.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_punisher.o burn/capcom/dc_punisher.cpp
 
-.obj/dc_pzloop2.o: burn/capcom/dc_pzloop2.cpp \
+$(OBJ)/dc_pzloop2.o: burn/capcom/dc_pzloop2.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1756,9 +1762,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_pzloop2.o burn/capcom/dc_pzloop2.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_pzloop2.o burn/capcom/dc_pzloop2.cpp
 
-.obj/dc_qad.o: burn/capcom/dc_qad.cpp \
+$(OBJ)/dc_qad.o: burn/capcom/dc_qad.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1771,9 +1777,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_qad.o burn/capcom/dc_qad.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_qad.o burn/capcom/dc_qad.cpp
 
-.obj/dc_qnd.o: burn/capcom/dc_qnd.cpp \
+$(OBJ)/dc_qnd.o: burn/capcom/dc_qnd.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1786,9 +1792,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_qnd.o burn/capcom/dc_qnd.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_qnd.o burn/capcom/dc_qnd.cpp
 
-.obj/dc_qtono2.o: burn/capcom/dc_qtono2.cpp \
+$(OBJ)/dc_qtono2.o: burn/capcom/dc_qtono2.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1801,10 +1807,10 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_qtono2.o burn/capcom/dc_qtono2.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_qtono2.o burn/capcom/dc_qtono2.cpp
 
 
-.obj/dc_ringdest.o: burn/capcom/dc_ringdest.cpp \
+$(OBJ)/dc_ringdest.o: burn/capcom/dc_ringdest.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1817,9 +1823,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_ringdest.o burn/capcom/dc_ringdest.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_ringdest.o burn/capcom/dc_ringdest.cpp
 
-.obj/dc_sf2.o: burn/capcom/dc_sf2.cpp \
+$(OBJ)/dc_sf2.o: burn/capcom/dc_sf2.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1832,9 +1838,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_sf2.o burn/capcom/dc_sf2.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_sf2.o burn/capcom/dc_sf2.cpp
 
-.obj/dc_sf2t.o: burn/capcom/dc_sf2t.cpp \
+$(OBJ)/dc_sf2t.o: burn/capcom/dc_sf2t.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1847,9 +1853,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_sf2t.o burn/capcom/dc_sf2t.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_sf2t.o burn/capcom/dc_sf2t.cpp
 
-.obj/dc_sfa2.o: burn/capcom/dc_sfa2.cpp \
+$(OBJ)/dc_sfa2.o: burn/capcom/dc_sfa2.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1862,9 +1868,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_sfa2.o burn/capcom/dc_sfa2.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_sfa2.o burn/capcom/dc_sfa2.cpp
 
-.obj/dc_sfa3.o: burn/capcom/dc_sfa3.cpp \
+$(OBJ)/dc_sfa3.o: burn/capcom/dc_sfa3.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1877,9 +1883,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_sfa3.o burn/capcom/dc_sfa3.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_sfa3.o burn/capcom/dc_sfa3.cpp
 
-.obj/dc_sfa.o: burn/capcom/dc_sfa.cpp \
+$(OBJ)/dc_sfa.o: burn/capcom/dc_sfa.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1892,9 +1898,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_sfa.o burn/capcom/dc_sfa.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_sfa.o burn/capcom/dc_sfa.cpp
 
-.obj/dc_sfzch.o: burn/capcom/dc_sfzch.cpp \
+$(OBJ)/dc_sfzch.o: burn/capcom/dc_sfzch.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1907,9 +1913,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_sfzch.o burn/capcom/dc_sfzch.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_sfzch.o burn/capcom/dc_sfzch.cpp
 
-.obj/dc_sgemf.o: burn/capcom/dc_sgemf.cpp \
+$(OBJ)/dc_sgemf.o: burn/capcom/dc_sgemf.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1922,9 +1928,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_sgemf.o burn/capcom/dc_sgemf.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_sgemf.o burn/capcom/dc_sgemf.cpp
 
-.obj/dc_slammast.o: burn/capcom/dc_slammast.cpp \
+$(OBJ)/dc_slammast.o: burn/capcom/dc_slammast.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1937,9 +1943,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_slammast.o burn/capcom/dc_slammast.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_slammast.o burn/capcom/dc_slammast.cpp
 
-.obj/dc_spf.o: burn/capcom/dc_spf.cpp \
+$(OBJ)/dc_spf.o: burn/capcom/dc_spf.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1952,9 +1958,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_spf.o burn/capcom/dc_spf.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_spf.o burn/capcom/dc_spf.cpp
 
-.obj/dc_ssf2.o: burn/capcom/dc_ssf2.cpp \
+$(OBJ)/dc_ssf2.o: burn/capcom/dc_ssf2.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1967,9 +1973,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_ssf2.o burn/capcom/dc_ssf2.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_ssf2.o burn/capcom/dc_ssf2.cpp
 
-.obj/dc_ssf2t.o: burn/capcom/dc_ssf2t.cpp \
+$(OBJ)/dc_ssf2t.o: burn/capcom/dc_ssf2t.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1982,9 +1988,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_ssf2t.o burn/capcom/dc_ssf2t.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_ssf2t.o burn/capcom/dc_ssf2t.cpp
 
-.obj/dc_strider.o: burn/capcom/dc_strider.cpp \
+$(OBJ)/dc_strider.o: burn/capcom/dc_strider.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -1997,9 +2003,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_strider.o burn/capcom/dc_strider.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_strider.o burn/capcom/dc_strider.cpp
 
-.obj/dc_unsquad.o: burn/capcom/dc_unsquad.cpp \
+$(OBJ)/dc_unsquad.o: burn/capcom/dc_unsquad.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2012,9 +2018,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_unsquad.o burn/capcom/dc_unsquad.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_unsquad.o burn/capcom/dc_unsquad.cpp
 
-.obj/dc_varth.o: burn/capcom/dc_varth.cpp \
+$(OBJ)/dc_varth.o: burn/capcom/dc_varth.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2027,9 +2033,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_varth.o burn/capcom/dc_varth.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_varth.o burn/capcom/dc_varth.cpp
 
-.obj/dc_vhunt2.o: burn/capcom/dc_vhunt2.cpp \
+$(OBJ)/dc_vhunt2.o: burn/capcom/dc_vhunt2.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2042,9 +2048,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_vhunt2.o burn/capcom/dc_vhunt2.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_vhunt2.o burn/capcom/dc_vhunt2.cpp
 
-.obj/dc_vsav2.o: burn/capcom/dc_vsav2.cpp \
+$(OBJ)/dc_vsav2.o: burn/capcom/dc_vsav2.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2057,9 +2063,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_vsav2.o burn/capcom/dc_vsav2.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_vsav2.o burn/capcom/dc_vsav2.cpp
 
-.obj/dc_vsav.o: burn/capcom/dc_vsav.cpp \
+$(OBJ)/dc_vsav.o: burn/capcom/dc_vsav.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2072,9 +2078,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_vsav.o burn/capcom/dc_vsav.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_vsav.o burn/capcom/dc_vsav.cpp
 
-.obj/dc_willow.o: burn/capcom/dc_willow.cpp \
+$(OBJ)/dc_willow.o: burn/capcom/dc_willow.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2087,9 +2093,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_willow.o burn/capcom/dc_willow.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_willow.o burn/capcom/dc_willow.cpp
 
-.obj/dc_wof.o: burn/capcom/dc_wof.cpp \
+$(OBJ)/dc_wof.o: burn/capcom/dc_wof.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2102,9 +2108,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_wof.o burn/capcom/dc_wof.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_wof.o burn/capcom/dc_wof.cpp
 
-.obj/dc_xmcota.o: burn/capcom/dc_xmcota.cpp \
+$(OBJ)/dc_xmcota.o: burn/capcom/dc_xmcota.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2117,9 +2123,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_xmcota.o burn/capcom/dc_xmcota.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_xmcota.o burn/capcom/dc_xmcota.cpp
 
-.obj/dc_xmvsf.o: burn/capcom/dc_xmvsf.cpp \
+$(OBJ)/dc_xmvsf.o: burn/capcom/dc_xmvsf.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2132,9 +2138,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/dc_xmvsf.o burn/capcom/dc_xmvsf.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/dc_xmvsf.o burn/capcom/dc_xmvsf.cpp
 
-.obj/kabuki.o: burn/capcom/kabuki.cpp \
+$(OBJ)/kabuki.o: burn/capcom/kabuki.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2147,9 +2153,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/kabuki.o burn/capcom/kabuki.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/kabuki.o burn/capcom/kabuki.cpp
 
-.obj/ps.o: burn/capcom/ps.cpp \
+$(OBJ)/ps.o: burn/capcom/ps.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2164,27 +2170,9 @@ clean:
 		burn/timer.h \
 		burn/driver.h \
 		burn/ym2151.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/ps.o burn/capcom/ps.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/ps.o burn/capcom/ps.cpp
 
-.obj/ps_m.o: burn/capcom/ps_m.cpp \
-		burn/capcom/cps.h \
-		burn/burnint.h \
-		burn/tchar.h \
-		burn/burn.h \
-		burn/cheat.h \
-		burn/state.h \
-		burn/sek.h \
-		burn/zet.h \
-		burn/stdfunc.h \
-		burn/msm6295.h \
-		burn/eeprom_93cxx.h \
-		burn/timer.h \
-		burn/burn_ym2151.h \
-		burn/driver.h \
-		burn/ym2151.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/ps_m.o burn/capcom/ps_m.cpp
-
-.obj/ps_z.o: burn/capcom/ps_z.cpp \
+$(OBJ)/ps_m.o: burn/capcom/ps_m.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2200,9 +2188,27 @@ clean:
 		burn/burn_ym2151.h \
 		burn/driver.h \
 		burn/ym2151.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/ps_z.o burn/capcom/ps_z.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/ps_m.o burn/capcom/ps_m.cpp
 
-.obj/qs.o: burn/capcom/qs.cpp \
+$(OBJ)/ps_z.o: burn/capcom/ps_z.cpp \
+		burn/capcom/cps.h \
+		burn/burnint.h \
+		burn/tchar.h \
+		burn/burn.h \
+		burn/cheat.h \
+		burn/state.h \
+		burn/sek.h \
+		burn/zet.h \
+		burn/stdfunc.h \
+		burn/msm6295.h \
+		burn/eeprom_93cxx.h \
+		burn/timer.h \
+		burn/burn_ym2151.h \
+		burn/driver.h \
+		burn/ym2151.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/ps_z.o burn/capcom/ps_z.cpp
+
+$(OBJ)/qs.o: burn/capcom/qs.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2215,9 +2221,9 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/qs.o burn/capcom/qs.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/qs.o burn/capcom/qs.cpp
 
-.obj/qs_c.o: burn/capcom/qs_c.cpp \
+$(OBJ)/qs_c.o: burn/capcom/qs_c.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2231,9 +2237,9 @@ clean:
 		burn/eeprom_93cxx.h \
 		burn/timer.h \
 		burn/burn_sound.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/qs_c.o burn/capcom/qs_c.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/qs_c.o burn/capcom/qs_c.cpp
 
-.obj/qs_z.o: burn/capcom/qs_z.cpp \
+$(OBJ)/qs_z.o: burn/capcom/qs_z.cpp \
 		burn/capcom/cps.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2246,24 +2252,24 @@ clean:
 		burn/msm6295.h \
 		burn/eeprom_93cxx.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/qs_z.o burn/capcom/qs_z.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/qs_z.o burn/capcom/qs_z.cpp
 
-.obj/cps3run.o: burn/cps3/cps3run.cpp
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/cps3run.o burn/cps3/cps3run.cpp
+$(OBJ)/cps3run.o: burn/cps3/cps3run.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/cps3run.o burn/cps3/cps3run.cpp
 
-.obj/cps3snd.o: burn/cps3/cps3snd.cpp
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/cps3snd.o burn/cps3/cps3snd.cpp
+$(OBJ)/cps3snd.o: burn/cps3/cps3snd.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/cps3snd.o burn/cps3/cps3snd.cpp
 
-.obj/d_cps3.o: burn/cps3/d_cps3.cpp
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/d_cps3.o burn/cps3/d_cps3.cpp
+$(OBJ)/d_cps3.o: burn/cps3/d_cps3.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/d_cps3.o burn/cps3/d_cps3.cpp
 
-.obj/d_psikyosh.o: burn/cps3/d_psikyosh.cpp
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/d_psikyosh.o burn/cps3/d_psikyosh.cpp
+$(OBJ)/d_psikyosh.o: burn/cps3/d_psikyosh.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/d_psikyosh.o burn/cps3/d_psikyosh.cpp
 
-.obj/d_suprnova.o: burn/cps3/d_suprnova.cpp
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/d_suprnova.o burn/cps3/d_suprnova.cpp
+$(OBJ)/d_suprnova.o: burn/cps3/d_suprnova.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/d_suprnova.o burn/cps3/d_suprnova.cpp
 
-.obj/neo_decrypt.o: burn/neogeo/neo_decrypt.cpp \
+$(OBJ)/neo_decrypt.o: burn/neogeo/neo_decrypt.cpp \
 		burn/neogeo/neogeo.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2273,9 +2279,9 @@ clean:
 		burn/sek.h \
 		burn/zet.h \
 		burn/stdfunc.h
-	$(CXX) -c $(CXXFLAGSPROFILE) $(INCPATH) -o .obj/neo_decrypt.o burn/neogeo/neo_decrypt.cpp
+	$(CXX) -c $(CXXFLAGSPROFILE) $(INCPATH) -o $(OBJ)/neo_decrypt.o burn/neogeo/neo_decrypt.cpp
 
-.obj/neo_palette.o: burn/neogeo/neo_palette.cpp \
+$(OBJ)/neo_palette.o: burn/neogeo/neo_palette.cpp \
 		burn/neogeo/neogeo.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2285,9 +2291,9 @@ clean:
 		burn/sek.h \
 		burn/zet.h \
 		burn/stdfunc.h
-	$(CXX) -c $(CXXFLAGSPROFILE) $(INCPATH) -o .obj/neo_palette.o burn/neogeo/neo_palette.cpp
+	$(CXX) -c $(CXXFLAGSPROFILE) $(INCPATH) -o $(OBJ)/neo_palette.o burn/neogeo/neo_palette.cpp
 
-.obj/neo_run.o: burn/neogeo/neo_run.cpp \
+$(OBJ)/neo_run.o: burn/neogeo/neo_run.cpp \
 		burn/neogeo/neogeo.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2302,9 +2308,9 @@ clean:
 		burn/ay8910.h \
 		burn/fm.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGSPROFILE) $(INCPATH) -o .obj/neo_run.o burn/neogeo/neo_run.cpp
+	$(CXX) -c $(CXXFLAGSPROFILE) $(INCPATH) -o $(OBJ)/neo_run.o burn/neogeo/neo_run.cpp
 
-.obj/neo_sprite.o: burn/neogeo/neo_sprite.cpp \
+$(OBJ)/neo_sprite.o: burn/neogeo/neo_sprite.cpp \
 		burn/neogeo/neogeo.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2317,9 +2323,9 @@ clean:
 		burn/neogeo/neo_sprite_func.h \
 		burn/neogeo/neo_sprite_render.h \
 		burn/neogeo/neo_sprite_func_table.h
-	$(CXX) -c $(CXXFLAGSPROFILE) $(INCPATH) -o .obj/neo_sprite.o burn/neogeo/neo_sprite.cpp
+	$(CXX) -c $(CXXFLAGSPROFILE) $(INCPATH) -o $(OBJ)/neo_sprite.o burn/neogeo/neo_sprite.cpp
 
-.obj/neo_text.o: burn/neogeo/neo_text.cpp \
+$(OBJ)/neo_text.o: burn/neogeo/neo_text.cpp \
 		burn/neogeo/neogeo.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2330,9 +2336,9 @@ clean:
 		burn/zet.h \
 		burn/stdfunc.h \
 		burn/neogeo/neo_text_render.h
-	$(CXX) -c $(CXXFLAGSPROFILE) $(INCPATH) -o .obj/neo_text.o burn/neogeo/neo_text.cpp
+	$(CXX) -c $(CXXFLAGSPROFILE) $(INCPATH) -o $(OBJ)/neo_text.o burn/neogeo/neo_text.cpp
 
-.obj/neo_upd4990a.o: burn/neogeo/neo_upd4990a.cpp \
+$(OBJ)/neo_upd4990a.o: burn/neogeo/neo_upd4990a.cpp \
 		burn/neogeo/neogeo.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2342,9 +2348,9 @@ clean:
 		burn/sek.h \
 		burn/zet.h \
 		burn/stdfunc.h
-	$(CXX) -c $(CXXFLAGSPROFILE) $(INCPATH) -o .obj/neo_upd4990a.o burn/neogeo/neo_upd4990a.cpp
+	$(CXX) -c $(CXXFLAGSPROFILE) $(INCPATH) -o $(OBJ)/neo_upd4990a.o burn/neogeo/neo_upd4990a.cpp
 
-.obj/neogeo.o: burn/neogeo/neogeo.cpp \
+$(OBJ)/neogeo.o: burn/neogeo/neogeo.cpp \
 		burn/neogeo/neogeo.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2354,9 +2360,9 @@ clean:
 		burn/sek.h \
 		burn/zet.h \
 		burn/stdfunc.h
-	$(CXX) -c $(CXXFLAGSPROFILE) $(INCPATH) -o .obj/neogeo.o burn/neogeo/neogeo.cpp
+	$(CXX) -c $(CXXFLAGSPROFILE) $(INCPATH) -o $(OBJ)/neogeo.o burn/neogeo/neogeo.cpp
 
-.obj/d_neogeo.o: burn/neogeo/d_neogeo.cpp \
+$(OBJ)/d_neogeo.o: burn/neogeo/d_neogeo.cpp \
 		burn/neogeo/neogeo.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2366,12 +2372,12 @@ clean:
 		burn/sek.h \
 		burn/zet.h \
 		burn/stdfunc.h
-	$(CXX) -c $(CXXFLAGSPROFILE) $(INCPATH) -o .obj/d_neogeo.o burn/neogeo/d_neogeo.cpp
+	$(CXX) -c $(CXXFLAGSPROFILE) $(INCPATH) -o $(OBJ)/d_neogeo.o burn/neogeo/d_neogeo.cpp
 
-.obj/d_parent.o: burn/misc/d_parent.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/d_parent.o burn/misc/d_parent.cpp
+$(OBJ)/d_parent.o: burn/misc/d_parent.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/d_parent.o burn/misc/d_parent.cpp
 
-.obj/d_aerofgt.o: burn/misc/d_aerofgt.cpp \
+$(OBJ)/d_aerofgt.o: burn/misc/d_aerofgt.cpp \
 		burn/burnint.h \
 		burn/tchar.h \
 		burn/burn.h \
@@ -2385,9 +2391,9 @@ clean:
 		burn/ay8910.h \
 		burn/fm.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/d_aerofgt.o burn/misc/d_aerofgt.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/d_aerofgt.o burn/misc/d_aerofgt.cpp
 
-.obj/d_galpanic.o: burn/misc/d_galpanic.cpp \
+$(OBJ)/d_galpanic.o: burn/misc/d_galpanic.cpp \
 		burn/burnint.h \
 		burn/tchar.h \
 		burn/burn.h \
@@ -2398,9 +2404,9 @@ clean:
 		burn/stdfunc.h \
 		burn/driver.h \
 		burn/msm6295.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/d_galpanic.o burn/misc/d_galpanic.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/d_galpanic.o burn/misc/d_galpanic.cpp
 
-.obj/d_wwfwfest.o: burn/misc/d_wwfwfest.cpp \
+$(OBJ)/d_wwfwfest.o: burn/misc/d_wwfwfest.cpp \
 		burn/burnint.h \
 		burn/tchar.h \
 		burn/burn.h \
@@ -2411,75 +2417,75 @@ clean:
 		burn/stdfunc.h \
 		burn/driver.h \
 		burn/msm6295.h
-	$(CXX) -c $(CXXFLAGSPROFILE) $(INCPATH) -o .obj/d_wwfwfest.o burn/misc/d_wwfwfest.cpp
+	$(CXX) -c $(CXXFLAGSPROFILE) $(INCPATH) -o $(OBJ)/d_wwfwfest.o burn/misc/d_wwfwfest.cpp
 
-.obj/d_gaiden.o: burn/misc/d_gaiden.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/d_gaiden.o burn/misc/d_gaiden.cpp
+$(OBJ)/d_gaiden.o: burn/misc/d_gaiden.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/d_gaiden.o burn/misc/d_gaiden.cpp
 
-.obj/d_unico.o: burn/misc/d_unico.cpp 
-	$(CXX) -c $(CXXFLAGSPROFILE) $(INCPATH) -o .obj/d_unico.o burn/misc/d_unico.cpp
+$(OBJ)/d_unico.o: burn/misc/d_unico.cpp 
+	$(CXX) -c $(CXXFLAGSPROFILE) $(INCPATH) -o $(OBJ)/d_unico.o burn/misc/d_unico.cpp
 
-.obj/d_esd16.o: burn/misc/d_esd16.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/d_esd16.o burn/misc/d_esd16.cpp
+$(OBJ)/d_esd16.o: burn/misc/d_esd16.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/d_esd16.o burn/misc/d_esd16.cpp
 
-.obj/d_pgm.o: burn/pgm/d_pgm.cpp
-	$(CXX) -c $(CXXFLAGSPROFILE) $(INCPATH) -o .obj/d_pgm.o burn/pgm/d_pgm.cpp
+$(OBJ)/d_pgm.o: burn/pgm/d_pgm.cpp
+	$(CXX) -c $(CXXFLAGSPROFILE) $(INCPATH) -o $(OBJ)/d_pgm.o burn/pgm/d_pgm.cpp
 
-.obj/pgm_crypt.o: burn/pgm/pgm_crypt.cpp
-	$(CXX) -c $(CXXFLAGSPROFILE) $(INCPATH) -o .obj/pgm_crypt.o burn/pgm/pgm_crypt.cpp
+$(OBJ)/pgm_crypt.o: burn/pgm/pgm_crypt.cpp
+	$(CXX) -c $(CXXFLAGSPROFILE) $(INCPATH) -o $(OBJ)/pgm_crypt.o burn/pgm/pgm_crypt.cpp
 
-.obj/pgm_draw.o: burn/pgm/pgm_draw.cpp
-	$(CXX) -c $(CXXFLAGSPROFILE) $(INCPATH) -o .obj/pgm_draw.o burn/pgm/pgm_draw.cpp
+$(OBJ)/pgm_draw.o: burn/pgm/pgm_draw.cpp
+	$(CXX) -c $(CXXFLAGSPROFILE) $(INCPATH) -o $(OBJ)/pgm_draw.o burn/pgm/pgm_draw.cpp
 
-.obj/pgm_prot.o: burn/pgm/pgm_prot.cpp
-	$(CXX) -c $(CXXFLAGSPROFILE) $(INCPATH) -o .obj/pgm_prot.o burn/pgm/pgm_prot.cpp
+$(OBJ)/pgm_prot.o: burn/pgm/pgm_prot.cpp
+	$(CXX) -c $(CXXFLAGSPROFILE) $(INCPATH) -o $(OBJ)/pgm_prot.o burn/pgm/pgm_prot.cpp
 
-.obj/pgm_snd.o: burn/pgm/pgm_snd.cpp
-	$(CXX) -c $(CXXFLAGSPROFILE) $(INCPATH) -o .obj/pgm_snd.o burn/pgm/pgm_snd.cpp
+$(OBJ)/pgm_snd.o: burn/pgm/pgm_snd.cpp
+	$(CXX) -c $(CXXFLAGSPROFILE) $(INCPATH) -o $(OBJ)/pgm_snd.o burn/pgm/pgm_snd.cpp
 
-.obj/pgm_run.o: burn/pgm/pgm_run.cpp 
-	$(CXX) -c $(CXXFLAGSPROFILE) $(INCPATH) -o .obj/pgm_run.o burn/pgm/pgm_run.cpp
+$(OBJ)/pgm_run.o: burn/pgm/pgm_run.cpp 
+	$(CXX) -c $(CXXFLAGSPROFILE) $(INCPATH) -o $(OBJ)/pgm_run.o burn/pgm/pgm_run.cpp
 
-.obj/d_biomtoy.o: burn/misc/d_biomtoy.cpp
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/d_biomtoy.o burn/misc/d_biomtoy.cpp
+$(OBJ)/d_biomtoy.o: burn/misc/d_biomtoy.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/d_biomtoy.o burn/misc/d_biomtoy.cpp
 
-.obj/d_bombjack.o: burn/misc/d_bombjack.cpp
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/d_bombjack.o burn/misc/d_bombjack.cpp
+$(OBJ)/d_bombjack.o: burn/misc/d_bombjack.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/d_bombjack.o burn/misc/d_bombjack.cpp
 
-.obj/d_hyperpac.o: burn/misc/d_hyperpac.cpp
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/d_hyperpac.o burn/misc/d_hyperpac.cpp
+$(OBJ)/d_hyperpac.o: burn/misc/d_hyperpac.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/d_hyperpac.o burn/misc/d_hyperpac.cpp
 
-.obj/d_kaneko16.o: burn/misc/d_kaneko16.cpp
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/d_kaneko16.o burn/misc/d_kaneko16.cpp
+$(OBJ)/d_kaneko16.o: burn/misc/d_kaneko16.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/d_kaneko16.o burn/misc/d_kaneko16.cpp
 
-.obj/d_fstarfrc.o: burn/misc/d_fstarfrc.cpp
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/d_fstarfrc.o burn/misc/d_fstarfrc.cpp
+$(OBJ)/d_fstarfrc.o: burn/misc/d_fstarfrc.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/d_fstarfrc.o burn/misc/d_fstarfrc.cpp
 
-.obj/d_powerins.o: burn/misc/d_powerins.cpp
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/d_powerins.o burn/misc/d_powerins.cpp
+$(OBJ)/d_powerins.o: burn/misc/d_powerins.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/d_powerins.o burn/misc/d_powerins.cpp
 
-.obj/d_news.o: burn/misc/d_news.cpp
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/d_news.o burn/misc/d_news.cpp
+$(OBJ)/d_news.o: burn/misc/d_news.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/d_news.o burn/misc/d_news.cpp
 
-.obj/d_ohmygod.o: burn/misc/d_ohmygod.cpp
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/d_ohmygod.o burn/misc/d_ohmygod.cpp
+$(OBJ)/d_ohmygod.o: burn/misc/d_ohmygod.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/d_ohmygod.o burn/misc/d_ohmygod.cpp
 
-.obj/d_wc90.o: burn/misc/d_wc90.cpp
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/d_wc90.o burn/misc/d_wc90.cpp
+$(OBJ)/d_wc90.o: burn/misc/d_wc90.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/d_wc90.o burn/misc/d_wc90.cpp
 
-.obj/d_m92.o: burn/misc/d_m92.cpp
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/d_m92.o burn/misc/d_m92.cpp
+$(OBJ)/d_m92.o: burn/misc/d_m92.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/d_m92.o burn/misc/d_m92.cpp
 
-.obj/d_1945kiii.o: burn/misc/d_1945kiii.cpp
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/d_1945kiii.o burn/misc/d_1945kiii.cpp
+$(OBJ)/d_1945kiii.o: burn/misc/d_1945kiii.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/d_1945kiii.o burn/misc/d_1945kiii.cpp
 
-.obj/d_tumbleb.o: burn/misc/d_tumbleb.cpp
-	$(CXX) -c $(CXXFLAGSPROFILE) $(INCPATH) -o .obj/d_tumbleb.o burn/misc/d_tumbleb.cpp
+$(OBJ)/d_tumbleb.o: burn/misc/d_tumbleb.cpp
+	$(CXX) -c $(CXXFLAGSPROFILE) $(INCPATH) -o $(OBJ)/d_tumbleb.o burn/misc/d_tumbleb.cpp
 
-.obj/tiles_generic.o: burn/misc/tiles_generic.cpp
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/tiles_generic.o burn/misc/tiles_generic.cpp
+$(OBJ)/tiles_generic.o: burn/misc/tiles_generic.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/tiles_generic.o burn/misc/tiles_generic.cpp
 
-.obj/cave.o: burn/cave/cave.cpp \
+$(OBJ)/cave.o: burn/cave/cave.cpp \
 		burn/cave/cave.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2490,9 +2496,9 @@ clean:
 		burn/zet.h \
 		burn/stdfunc.h \
 		burn/eeprom_93cxx.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/cave.o burn/cave/cave.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/cave.o burn/cave/cave.cpp
 
-.obj/cave_palette.o: burn/cave/cave_palette.cpp \
+$(OBJ)/cave_palette.o: burn/cave/cave_palette.cpp \
 		burn/cave/cave.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2503,9 +2509,9 @@ clean:
 		burn/zet.h \
 		burn/stdfunc.h \
 		burn/eeprom_93cxx.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/cave_palette.o burn/cave/cave_palette.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/cave_palette.o burn/cave/cave_palette.cpp
 
-.obj/cave_sprite.o: burn/cave/cave_sprite.cpp \
+$(OBJ)/cave_sprite.o: burn/cave/cave_sprite.cpp \
 		burn/cave/cave.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2520,9 +2526,9 @@ clean:
 		burn/cave/cave_sprite_render.h \
 		burn/cave/cave_sprite_render_zoom.h \
 		burn/cave/cave_sprite_func_table.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/cave_sprite.o burn/cave/cave_sprite.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/cave_sprite.o burn/cave/cave_sprite.cpp
 
-.obj/cave_tile.o: burn/cave/cave_tile.cpp \
+$(OBJ)/cave_tile.o: burn/cave/cave_tile.cpp \
 		burn/cave/cave.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2536,9 +2542,9 @@ clean:
 		burn/cave/cave_tile_func.h \
 		burn/cave/cave_tile_render.h \
 		burn/cave/cave_tile_func_table.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/cave_tile.o burn/cave/cave_tile.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/cave_tile.o burn/cave/cave_tile.cpp
 
-.obj/d_dodonpachi.o: burn/cave/d_dodonpachi.cpp \
+$(OBJ)/d_dodonpachi.o: burn/cave/d_dodonpachi.cpp \
 		burn/cave/cave.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2550,9 +2556,9 @@ clean:
 		burn/stdfunc.h \
 		burn/eeprom_93cxx.h \
 		burn/ymz280b.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/d_dodonpachi.o burn/cave/d_dodonpachi.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/d_dodonpachi.o burn/cave/d_dodonpachi.cpp
 
-.obj/d_donpachi.o: burn/cave/d_donpachi.cpp \
+$(OBJ)/d_donpachi.o: burn/cave/d_donpachi.cpp \
 		burn/cave/cave.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2564,9 +2570,9 @@ clean:
 		burn/stdfunc.h \
 		burn/eeprom_93cxx.h \
 		burn/msm6295.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/d_donpachi.o burn/cave/d_donpachi.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/d_donpachi.o burn/cave/d_donpachi.cpp
 
-.obj/d_esprade.o: burn/cave/d_esprade.cpp \
+$(OBJ)/d_esprade.o: burn/cave/d_esprade.cpp \
 		burn/cave/cave.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2578,9 +2584,9 @@ clean:
 		burn/stdfunc.h \
 		burn/eeprom_93cxx.h \
 		burn/ymz280b.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/d_esprade.o burn/cave/d_esprade.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/d_esprade.o burn/cave/d_esprade.cpp
 
-.obj/d_feversos.o: burn/cave/d_feversos.cpp \
+$(OBJ)/d_feversos.o: burn/cave/d_feversos.cpp \
 		burn/cave/cave.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2592,9 +2598,9 @@ clean:
 		burn/stdfunc.h \
 		burn/eeprom_93cxx.h \
 		burn/ymz280b.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/d_feversos.o burn/cave/d_feversos.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/d_feversos.o burn/cave/d_feversos.cpp
 
-.obj/d_gaia.o: burn/cave/d_gaia.cpp \
+$(OBJ)/d_gaia.o: burn/cave/d_gaia.cpp \
 		burn/cave/cave.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2606,9 +2612,9 @@ clean:
 		burn/stdfunc.h \
 		burn/eeprom_93cxx.h \
 		burn/ymz280b.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/d_gaia.o burn/cave/d_gaia.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/d_gaia.o burn/cave/d_gaia.cpp
 
-.obj/d_guwange.o: burn/cave/d_guwange.cpp \
+$(OBJ)/d_guwange.o: burn/cave/d_guwange.cpp \
 		burn/cave/cave.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2620,9 +2626,9 @@ clean:
 		burn/stdfunc.h \
 		burn/eeprom_93cxx.h \
 		burn/ymz280b.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/d_guwange.o burn/cave/d_guwange.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/d_guwange.o burn/cave/d_guwange.cpp
 
-.obj/d_sailormn.o: burn/cave/d_sailormn.cpp \
+$(OBJ)/d_sailormn.o: burn/cave/d_sailormn.cpp \
 		burn/cave/cave.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2637,9 +2643,9 @@ clean:
 		burn/burn_ym2151.h \
 		burn/driver.h \
 		burn/ym2151.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/d_sailormn.o burn/cave/d_sailormn.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/d_sailormn.o burn/cave/d_sailormn.cpp
 
-.obj/d_uopoko.o: burn/cave/d_uopoko.cpp \
+$(OBJ)/d_uopoko.o: burn/cave/d_uopoko.cpp \
 		burn/cave/cave.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2651,9 +2657,9 @@ clean:
 		burn/stdfunc.h \
 		burn/eeprom_93cxx.h \
 		burn/ymz280b.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/d_uopoko.o burn/cave/d_uopoko.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/d_uopoko.o burn/cave/d_uopoko.cpp
 
-.obj/d_hotdogst.o: burn/cave/d_hotdogst.cpp \
+$(OBJ)/d_hotdogst.o: burn/cave/d_hotdogst.cpp \
 		burn/cave/cave.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2665,9 +2671,9 @@ clean:
 		burn/stdfunc.h \
 		burn/eeprom_93cxx.h \
 		burn/ymz280b.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/d_hotdogst.o burn/cave/d_hotdogst.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/d_hotdogst.o burn/cave/d_hotdogst.cpp
 
-.obj/d_mazinger.o: burn/cave/d_mazinger.cpp \
+$(OBJ)/d_mazinger.o: burn/cave/d_mazinger.cpp \
 		burn/cave/cave.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2679,9 +2685,9 @@ clean:
 		burn/stdfunc.h \
 		burn/eeprom_93cxx.h \
 		burn/ymz280b.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/d_mazinger.o burn/cave/d_mazinger.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/d_mazinger.o burn/cave/d_mazinger.cpp
 
-.obj/d_metmqstr.o: burn/cave/d_metmqstr.cpp \
+$(OBJ)/d_metmqstr.o: burn/cave/d_metmqstr.cpp \
 		burn/cave/cave.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2693,9 +2699,9 @@ clean:
 		burn/stdfunc.h \
 		burn/eeprom_93cxx.h \
 		burn/ymz280b.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/d_metmqstr.o burn/cave/d_metmqstr.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/d_metmqstr.o burn/cave/d_metmqstr.cpp
 
-.obj/d_pwrinst2.o: burn/cave/d_pwrinst2.cpp \
+$(OBJ)/d_pwrinst2.o: burn/cave/d_pwrinst2.cpp \
 		burn/cave/cave.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2707,9 +2713,9 @@ clean:
 		burn/stdfunc.h \
 		burn/eeprom_93cxx.h \
 		burn/ymz280b.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/d_pwrinst2.o burn/cave/d_pwrinst2.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/d_pwrinst2.o burn/cave/d_pwrinst2.cpp
 
-.obj/toaplan.o: burn/toaplan/toaplan.cpp \
+$(OBJ)/toaplan.o: burn/toaplan/toaplan.cpp \
 		burn/toaplan/toaplan.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2726,9 +2732,9 @@ clean:
 		burn/burn_ym3812.h \
 		burn/fmopl.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/toaplan.o burn/toaplan/toaplan.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/toaplan.o burn/toaplan/toaplan.cpp
 
-.obj/toaplan1.o: burn/toaplan/toaplan1.cpp \
+$(OBJ)/toaplan1.o: burn/toaplan/toaplan1.cpp \
 		burn/toaplan/toaplan.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2745,9 +2751,9 @@ clean:
 		burn/burn_ym3812.h \
 		burn/fmopl.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/toaplan1.o burn/toaplan/toaplan1.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/toaplan1.o burn/toaplan/toaplan1.cpp
 
-.obj/toa_palette.o: burn/toaplan/toa_palette.cpp \
+$(OBJ)/toa_palette.o: burn/toaplan/toa_palette.cpp \
 		burn/toaplan/toaplan.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2764,9 +2770,9 @@ clean:
 		burn/burn_ym3812.h \
 		burn/fmopl.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/toa_palette.o burn/toaplan/toa_palette.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/toa_palette.o burn/toaplan/toa_palette.cpp
 
-.obj/toa_gp9001.o: burn/toaplan/toa_gp9001.cpp \
+$(OBJ)/toa_gp9001.o: burn/toaplan/toa_gp9001.cpp \
 		burn/toaplan/toaplan.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2786,9 +2792,9 @@ clean:
 		burn/toaplan/toa_gp9001_func.h \
 		burn/toaplan/toa_gp9001_render.h \
 		burn/toaplan/toa_gp9001_func_table.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/toa_gp9001.o burn/toaplan/toa_gp9001.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/toa_gp9001.o burn/toaplan/toa_gp9001.cpp
 
-.obj/toa_extratext.o: burn/toaplan/toa_extratext.cpp \
+$(OBJ)/toa_extratext.o: burn/toaplan/toa_extratext.cpp \
 		burn/toaplan/toaplan.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2806,9 +2812,9 @@ clean:
 		burn/fmopl.h \
 		burn/timer.h \
 		burn/toaplan/toa_extratext.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/toa_extratext.o burn/toaplan/toa_extratext.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/toa_extratext.o burn/toaplan/toa_extratext.cpp
 
-.obj/toa_bcu2.o: burn/toaplan/toa_bcu2.cpp \
+$(OBJ)/toa_bcu2.o: burn/toaplan/toa_bcu2.cpp \
 		burn/toaplan/toaplan.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2828,9 +2834,9 @@ clean:
 		burn/toaplan/toa_gp9001_func.h \
 		burn/toaplan/toa_gp9001_render.h \
 		burn/toaplan/toa_gp9001_func_table.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/toa_bcu2.o burn/toaplan/toa_bcu2.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/toa_bcu2.o burn/toaplan/toa_bcu2.cpp
 
-.obj/d_batrider.o: burn/toaplan/d_batrider.cpp \
+$(OBJ)/d_batrider.o: burn/toaplan/d_batrider.cpp \
 		burn/toaplan/toaplan.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2847,9 +2853,9 @@ clean:
 		burn/burn_ym3812.h \
 		burn/fmopl.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/d_batrider.o burn/toaplan/d_batrider.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/d_batrider.o burn/toaplan/d_batrider.cpp
 
-.obj/d_batsugun.o: burn/toaplan/d_batsugun.cpp \
+$(OBJ)/d_batsugun.o: burn/toaplan/d_batsugun.cpp \
 		burn/toaplan/toaplan.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2866,9 +2872,9 @@ clean:
 		burn/burn_ym3812.h \
 		burn/fmopl.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/d_batsugun.o burn/toaplan/d_batsugun.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/d_batsugun.o burn/toaplan/d_batsugun.cpp
 
-.obj/d_battleg.o: burn/toaplan/d_battleg.cpp \
+$(OBJ)/d_battleg.o: burn/toaplan/d_battleg.cpp \
 		burn/toaplan/toaplan.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2885,9 +2891,9 @@ clean:
 		burn/burn_ym3812.h \
 		burn/fmopl.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/d_battleg.o burn/toaplan/d_battleg.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/d_battleg.o burn/toaplan/d_battleg.cpp
 
-.obj/d_bbakraid.o: burn/toaplan/d_bbakraid.cpp \
+$(OBJ)/d_bbakraid.o: burn/toaplan/d_bbakraid.cpp \
 		burn/toaplan/toaplan.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2906,9 +2912,9 @@ clean:
 		burn/timer.h \
 		burn/ymz280b.h \
 		burn/eeprom_93cxx.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/d_bbakraid.o burn/toaplan/d_bbakraid.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/d_bbakraid.o burn/toaplan/d_bbakraid.cpp
 
-.obj/d_dogyuun.o: burn/toaplan/d_dogyuun.cpp \
+$(OBJ)/d_dogyuun.o: burn/toaplan/d_dogyuun.cpp \
 		burn/toaplan/toaplan.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2925,9 +2931,9 @@ clean:
 		burn/burn_ym3812.h \
 		burn/fmopl.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/d_dogyuun.o burn/toaplan/d_dogyuun.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/d_dogyuun.o burn/toaplan/d_dogyuun.cpp
 
-.obj/d_kbash.o: burn/toaplan/d_kbash.cpp \
+$(OBJ)/d_kbash.o: burn/toaplan/d_kbash.cpp \
 		burn/toaplan/toaplan.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2944,9 +2950,9 @@ clean:
 		burn/burn_ym3812.h \
 		burn/fmopl.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/d_kbash.o burn/toaplan/d_kbash.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/d_kbash.o burn/toaplan/d_kbash.cpp
 
-.obj/d_mahoudai.o: burn/toaplan/d_mahoudai.cpp \
+$(OBJ)/d_mahoudai.o: burn/toaplan/d_mahoudai.cpp \
 		burn/toaplan/toaplan.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2963,9 +2969,9 @@ clean:
 		burn/burn_ym3812.h \
 		burn/fmopl.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/d_mahoudai.o burn/toaplan/d_mahoudai.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/d_mahoudai.o burn/toaplan/d_mahoudai.cpp
 
-.obj/d_outzone.o: burn/toaplan/d_outzone.cpp \
+$(OBJ)/d_outzone.o: burn/toaplan/d_outzone.cpp \
 		burn/toaplan/toaplan.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -2982,9 +2988,9 @@ clean:
 		burn/burn_ym3812.h \
 		burn/fmopl.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/d_outzone.o burn/toaplan/d_outzone.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/d_outzone.o burn/toaplan/d_outzone.cpp
 
-.obj/d_shippumd.o: burn/toaplan/d_shippumd.cpp \
+$(OBJ)/d_shippumd.o: burn/toaplan/d_shippumd.cpp \
 		burn/toaplan/toaplan.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -3001,9 +3007,9 @@ clean:
 		burn/burn_ym3812.h \
 		burn/fmopl.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/d_shippumd.o burn/toaplan/d_shippumd.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/d_shippumd.o burn/toaplan/d_shippumd.cpp
 
-.obj/d_snowbro2.o: burn/toaplan/d_snowbro2.cpp \
+$(OBJ)/d_snowbro2.o: burn/toaplan/d_snowbro2.cpp \
 		burn/toaplan/toaplan.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -3020,9 +3026,9 @@ clean:
 		burn/burn_ym3812.h \
 		burn/fmopl.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/d_snowbro2.o burn/toaplan/d_snowbro2.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/d_snowbro2.o burn/toaplan/d_snowbro2.cpp
 
-.obj/d_tekipaki.o: burn/toaplan/d_tekipaki.cpp \
+$(OBJ)/d_tekipaki.o: burn/toaplan/d_tekipaki.cpp \
 		burn/toaplan/toaplan.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -3039,9 +3045,9 @@ clean:
 		burn/burn_ym3812.h \
 		burn/fmopl.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/d_tekipaki.o burn/toaplan/d_tekipaki.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/d_tekipaki.o burn/toaplan/d_tekipaki.cpp
 
-.obj/d_truxton2.o: burn/toaplan/d_truxton2.cpp \
+$(OBJ)/d_truxton2.o: burn/toaplan/d_truxton2.cpp \
 		burn/toaplan/toaplan.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -3058,9 +3064,9 @@ clean:
 		burn/burn_ym3812.h \
 		burn/fmopl.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/d_truxton2.o burn/toaplan/d_truxton2.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/d_truxton2.o burn/toaplan/d_truxton2.cpp
 
-.obj/d_vfive.o: burn/toaplan/d_vfive.cpp \
+$(OBJ)/d_vfive.o: burn/toaplan/d_vfive.cpp \
 		burn/toaplan/toaplan.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -3077,9 +3083,9 @@ clean:
 		burn/burn_ym3812.h \
 		burn/fmopl.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/d_vfive.o burn/toaplan/d_vfive.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/d_vfive.o burn/toaplan/d_vfive.cpp
 
-.obj/d_truxton.o: burn/toaplan/d_truxton.cpp \
+$(OBJ)/d_truxton.o: burn/toaplan/d_truxton.cpp \
 		burn/toaplan/toaplan.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -3096,9 +3102,9 @@ clean:
 		burn/burn_ym3812.h \
 		burn/fmopl.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/d_truxton.o burn/toaplan/d_truxton.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/d_truxton.o burn/toaplan/d_truxton.cpp
 
-.obj/d_hellfire.o: burn/toaplan/d_hellfire.cpp \
+$(OBJ)/d_hellfire.o: burn/toaplan/d_hellfire.cpp \
 		burn/toaplan/toaplan.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -3115,9 +3121,9 @@ clean:
 		burn/burn_ym3812.h \
 		burn/fmopl.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/d_hellfire.o burn/toaplan/d_hellfire.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/d_hellfire.o burn/toaplan/d_hellfire.cpp
 
-.obj/d_zerowing.o: burn/toaplan/d_zerowing.cpp \
+$(OBJ)/d_zerowing.o: burn/toaplan/d_zerowing.cpp \
 		burn/toaplan/toaplan.h \
 		burn/burnint.h \
 		burn/tchar.h \
@@ -3134,30 +3140,30 @@ clean:
 		burn/burn_ym3812.h \
 		burn/fmopl.h \
 		burn/timer.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/d_zerowing.o burn/toaplan/d_zerowing.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/d_zerowing.o burn/toaplan/d_zerowing.cpp
 
-.obj/unzip.o: unzip.c \
+$(OBJ)/unzip.o: unzip.c \
 		unzip.h
-	$(CC) -c $(CFLAGS) $(INCPATH) -o .obj/unzip.o unzip.c
+	$(CC) -c $(CFLAGS) $(INCPATH) -o $(OBJ)/unzip.o unzip.c
 
-.obj/zipfn.o: zipfn.cpp \
+$(OBJ)/zipfn.o: zipfn.cpp \
 		burner.h \
 		burn/tchar.h \
 		burn/burn.h \
 		burn/cheat.h \
 		burn/state.h \
 		unzip.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/zipfn.o zipfn.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/zipfn.o zipfn.cpp
 
-.obj/bzip.o: bzip.cpp \
+$(OBJ)/bzip.o: bzip.cpp \
 		burner.h \
 		burn/tchar.h \
 		burn/burn.h \
 		burn/cheat.h \
 		burn/state.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/bzip.o bzip.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/bzip.o bzip.cpp
 
-.obj/statec.o: statec.cpp \
+$(OBJ)/statec.o: statec.cpp \
 		burn/burnint.h \
 		burn/tchar.h \
 		burn/burn.h \
@@ -3166,43 +3172,43 @@ clean:
 		burn/sek.h \
 		burn/zet.h \
 		burn/stdfunc.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/statec.o statec.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/statec.o statec.cpp
 
-.obj/state.o: state.cpp \
+$(OBJ)/state.o: state.cpp \
 		burner.h \
 		burn/tchar.h \
 		burn/burn.h \
 		burn/cheat.h \
 		burn/state.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/state.o state.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/state.o state.cpp
 
-.obj/drv.o: drv.cpp \
+$(OBJ)/drv.o: drv.cpp \
 		burner.h \
 		burn/tchar.h \
 		burn/burn.h \
 		burn/cheat.h \
 		burn/state.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/drv.o drv.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/drv.o drv.cpp
 
-.obj/run.o: run.cpp \
+$(OBJ)/run.o: run.cpp \
 		burner.h \
 		burn/tchar.h \
 		burn/burn.h \
 		burn/cheat.h \
 		burn/state.h \
 		gamewidget.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/run.o run.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/run.o run.cpp
 
-.obj/input.o: input.cpp \
+$(OBJ)/input.o: input.cpp \
 		burner.h \
 		burn/tchar.h \
 		burn/burn.h \
 		burn/cheat.h \
 		burn/state.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/input.o input.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/input.o input.cpp
 
-.obj/memset.o: memset.s
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/memset.o memset.s
+$(OBJ)/memset.o: memset.s
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/memset.o memset.s
 
-.obj/memcpy.o: memcpy.s
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/memcpy.o memcpy.s
+$(OBJ)/memcpy.o: memcpy.s
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/memcpy.o memcpy.s
