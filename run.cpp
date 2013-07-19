@@ -17,11 +17,10 @@ static int VideoBufferHeight = 0;
 static int PhysicalBufferWidth = 0;
 
 
-//static unsigned short BurnVideoBuffer[384 * 224];	// think max enough
-static unsigned short * BurnVideoBuffer = NULL;	// think max enough
+static unsigned short * BurnVideoBuffer = NULL;	
 static bool BurnVideoBufferAlloced = false;
 
-static unsigned short * BurnVideoBufferSave = NULL;	// think max enough
+static unsigned short * BurnVideoBufferSave = NULL;	
 
 bool bShowFPS = false;
 
@@ -78,7 +77,6 @@ int RunOneFrame(bool bDraw, int fps)
 		if (bShowFPS)
 		{
 			char buf[10];
-			int x;
 			sprintf(buf, "FPS: %2d", fps);
 			//draw_text(buf, x, 0, 0xBDF7, 0x2020);
 			DrawRect((uint16 *) (unsigned short *) &VideoBuffer[0],0, 0, 60, 9, 0,PhysicalBufferWidth);
@@ -86,6 +84,8 @@ int RunOneFrame(bool bDraw, int fps)
 		}
 		pi_video_flip();
 	}
+
+	return 0;
 }
 
 static unsigned int HighCol16(int r, int g, int b, int  /* i */)
@@ -103,13 +103,6 @@ static void BurnerVideoTransDemo(){}
 
 static void (*BurnerVideoTrans) () = BurnerVideoTransDemo;
 
-static void BurnerVideoCopy()
-{
-	unsigned short * p = VideoBuffer;
-	unsigned short * q = BurnVideoBuffer;
-    gp2x_memcpy (p, q, nBurnPitch*VideoBufferHeight);
-}
-
 static void BurnerVideoDoNothing()
 {
     return;
@@ -122,8 +115,8 @@ static void BurnerVideoRotate()
     register unsigned short *pS = BurnVideoBuffer;
     
     unsigned int r, c, dr, dc;
-    int row = VideoBufferHeight;
-    int col = VideoBufferWidth;
+    unsigned int row = VideoBufferHeight;
+    unsigned int col = VideoBufferWidth;
     for(r = 0; r < row; r++)
     {
         dr = VideoBufferHeight-r;
@@ -156,6 +149,7 @@ int VideoInit()
     {
         BurnerVideoTrans = BurnerVideoRotate;
         BurnVideoBuffer = (unsigned short *)malloc( VideoBufferWidth * VideoBufferHeight * 2 );
+		BurnVideoBufferAlloced = true;
         BurnVideoBufferSave = BurnVideoBuffer;
         PhysicalBufferWidth = VideoBufferHeight;
     }
