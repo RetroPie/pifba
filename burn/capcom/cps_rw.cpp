@@ -457,11 +457,11 @@ void __fastcall CpsWriteWord(unsigned int a, unsigned short d)
 // Reset all inputs to zero
 static int InpBlank()
 {
-#define INP(nnn) Inp##nnn = 0; gp2x_memset(CpsInp##nnn, 0, sizeof(CpsInp##nnn));
+#define INP(nnn) Inp##nnn = 0; memset(CpsInp##nnn, 0, sizeof(CpsInp##nnn));
 	CPSINPSET
 #undef INP
 
-#define INP(nnnn) Inp##nnnn = 0; gp2x_memset(CpsInp##nnnn, 0, sizeof(CpsInp##nnnn));
+#define INP(nnnn) Inp##nnnn = 0; memset(CpsInp##nnnn, 0, sizeof(CpsInp##nnnn));
 	CPSINPEX
 #undef INP
 

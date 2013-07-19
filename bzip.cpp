@@ -84,7 +84,7 @@ static int FindRom(int i)
 	struct BurnRomInfo ri;
 	int nRet;
 
-	gp2x_memset(&ri, 0, sizeof(ri));
+	memset(&ri, 0, sizeof(ri));
 
 	nRet = BurnDrvGetRomInfo(&ri, i);
 	if (nRet != 0) {											// Failure: no such rom
@@ -152,7 +152,7 @@ static int CheckRomsBoot()
 		struct BurnRomInfo ri;
 		int nState;
 
-		gp2x_memset(&ri, 0, sizeof(ri));
+		memset(&ri, 0, sizeof(ri));
 		BurnDrvGetRomInfo(&ri, i);			// Find information about the wanted rom
 		nState = RomFind[i].nState;			// Get the state of the rom in the zip file
 
@@ -189,7 +189,7 @@ static int CheckRoms()
 	for (int i = 0; i < nRomCount; i++) {
 		struct BurnRomInfo ri;
 
-		gp2x_memset(&ri, 0, sizeof(ri));
+		memset(&ri, 0, sizeof(ri));
 		BurnDrvGetRomInfo(&ri, i);							// Find information about the wanted rom
 		if (/* ri.nCrc && */ (ri.nType & BRF_OPT) == 0) {
 			int nState = RomFind[i].nState;					// Get the state of the rom in the zip file
@@ -350,7 +350,7 @@ int BzipOpen(bool bootApp)
 	if (RomFind == NULL) {
 		return 1;
 	}
-	gp2x_memset(RomFind, 0, nMemLen);
+	memset(RomFind, 0, nMemLen);
 
 	for (int y = 0; y < BZIP_MAX; y++) {
 		free(szBzipName[y]);
@@ -417,7 +417,7 @@ int BzipOpen(bool bootApp)
 					continue;
 				}
 
-				gp2x_memset(&ri, 0, sizeof(ri));
+				memset(&ri, 0, sizeof(ri));
 
 				nFind = FindRom(i);
 

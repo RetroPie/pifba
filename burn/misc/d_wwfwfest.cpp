@@ -588,7 +588,7 @@ void __fastcall WwfwfestZ80Write(unsigned short a, unsigned char d)
 		
 		case 0xe800: {
 			DrvOkiBank = d & 1;
-			gp2x_memcpy(MSM6295ROM + 0x00000, DrvMSM6295ROMSrc + (0x40000 * DrvOkiBank), 0x40000);
+			memcpy(MSM6295ROM + 0x00000, DrvMSM6295ROMSrc + (0x40000 * DrvOkiBank), 0x40000);
 			return;
 		}
 		
@@ -631,7 +631,7 @@ static int DrvInit()
 	MemIndex();
 	nLen = MemEnd - (unsigned char *)0;
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) return 1;
-	gp2x_memset(Mem, 0, nLen);
+	memset(Mem, 0, nLen);
 	MemIndex();
 
 	DrvTempRom = (unsigned char *)UpperMalloc(0x800000);
@@ -648,7 +648,7 @@ static int DrvInit()
 	GfxDecode(0x1000, 4, 8, 8, CharPlaneOffsets, CharXOffsets, CharYOffsets, 0x100, DrvTempRom, DrvChars);
 
 	// Load and decode the tiles
-	gp2x_memset(DrvTempRom, 0, 0x800000);
+	memset(DrvTempRom, 0, 0x800000);
 	if (!strcmp(BurnDrvGetTextA(DRV_NAME), "wwfwfstb")) {
 		nRet = BurnLoadRom(DrvTempRom + 0x040000, 4, 2); if (nRet != 0) return 1;
 		nRet = BurnLoadRom(DrvTempRom + 0x040001, 5, 2); if (nRet != 0) return 1;
@@ -661,7 +661,7 @@ static int DrvInit()
 	GfxDecode(0x1000, 4, 16, 16, TilePlaneOffsets, TileXOffsets, TileYOffsets, 0x200, DrvTempRom, DrvTiles);
 	
 	// Load and decode the sprites
-	gp2x_memset(DrvTempRom, 0, 0x800000);
+	memset(DrvTempRom, 0, 0x800000);
 	nRet = BurnLoadRom(DrvTempRom + 0x000000,  6 + RomOffset, 1); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(DrvTempRom + 0x100000,  7 + RomOffset, 1); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(DrvTempRom + 0x200000,  8 + RomOffset, 1); if (nRet != 0) return 1;
@@ -674,7 +674,7 @@ static int DrvInit()
 	
 	// Load Sample Roms
 	nRet = BurnLoadRom(DrvMSM6295ROMSrc + 0x00000, 14 + RomOffset, 1); if (nRet != 0) return 1;
-	gp2x_memcpy(MSM6295ROM, DrvMSM6295ROMSrc, 0x40000);
+	memcpy(MSM6295ROM, DrvMSM6295ROMSrc, 0x40000);
 	
 	UpperFree(DrvTempRom);
 	
@@ -1118,7 +1118,7 @@ static int DrvFrame()
 	
 	if (pBurnDraw) DrvDraw();
 	
-	gp2x_memcpy(DrvSpriteRamBuff, DrvSpriteRam, 0x2000);
+	memcpy(DrvSpriteRamBuff, DrvSpriteRam, 0x2000);
 
 	return 0;
 }
@@ -1132,7 +1132,7 @@ static int DrvScan(int nAction, int *pnMin)
 	}
 
 	if (nAction & ACB_MEMORY_RAM) {
-		gp2x_memset(&ba, 0, sizeof(ba));
+		memset(&ba, 0, sizeof(ba));
 		ba.Data	  = RamStart;
 		ba.nLen	  = RamEnd-RamStart;
 		ba.szName = "All Ram";
@@ -1161,7 +1161,7 @@ static int DrvScan(int nAction, int *pnMin)
 	}
 	
 	if (nAction & ACB_WRITE) {
-		gp2x_memcpy(MSM6295ROM + 0x00000, DrvMSM6295ROMSrc + (0x40000 * DrvOkiBank), 0x40000);
+		memcpy(MSM6295ROM + 0x00000, DrvMSM6295ROMSrc + (0x40000 * DrvOkiBank), 0x40000);
 	}
 	
 	return 0;

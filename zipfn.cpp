@@ -29,7 +29,7 @@ int ZipGetList(struct ZipEntry **pList,int *pnListCount)
   if (Zip==NULL) return 1;
   if (pList==NULL) return 1;
 
-  gp2x_memset(&ZipGlobalInfo,0,sizeof(ZipGlobalInfo));
+  memset(&ZipGlobalInfo,0,sizeof(ZipGlobalInfo));
 
   unzGetGlobalInfo(Zip,&ZipGlobalInfo);
   nListLen=ZipGlobalInfo.number_entry;
@@ -37,7 +37,7 @@ int ZipGetList(struct ZipEntry **pList,int *pnListCount)
   // Make an array of File Entries
   List=(struct ZipEntry *)malloc(nListLen*sizeof(struct ZipEntry));
   if (List==NULL)  { unzClose(Zip); return 1; }
-  gp2x_memset(List,0,nListLen*sizeof(struct ZipEntry));
+  memset(List,0,nListLen*sizeof(struct ZipEntry));
 
   nRet=unzGoToFirstFile(Zip); if (nRet!=UNZ_OK) { unzClose(Zip); return 1; }
 
@@ -49,7 +49,7 @@ int ZipGetList(struct ZipEntry **pList,int *pnListCount)
   {
     unz_file_info FileInfo;
     char *szName=NULL;
-    gp2x_memset(&FileInfo,0,sizeof(FileInfo));
+    memset(&FileInfo,0,sizeof(FileInfo));
 
     nRet=unzGetCurrentFileInfo(Zip,&FileInfo,NULL,0,NULL,0,NULL,0); if (nRet!=UNZ_OK) continue;
 

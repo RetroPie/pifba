@@ -314,7 +314,7 @@ void kof2003biosdecode()
 		pData[i] = (pTemp[j] ^ (((pTemp[j] >> 3) & 2) | ((pTemp[j] >> 2) & 9)));
 	}
 
-	gp2x_memcpy (pTemp, pData, 0x80000);
+	memcpy (pTemp, pData, 0x80000);
 
 	free(pData);
 }
@@ -429,8 +429,8 @@ static int NeoLoad68KBIOS(int nNewBIOS)
 	// Hacks for Neo-Geo BIOS
 	install_BIOS_memory_patch();
 	// Create copy of 68K with BIOS vector table
-	gp2x_memcpy(Neo68KVectors + 0x00, Neo68KBIOS,	   0x0080);
-	gp2x_memcpy(Neo68KVectors + 0x80, Neo68KROM + 0x80, 0x0380);
+	memcpy(Neo68KVectors + 0x00, Neo68KBIOS,	   0x0080);
+	memcpy(Neo68KVectors + 0x80, Neo68KROM + 0x80, 0x0380);
 
 	return 0;
 }
@@ -487,10 +487,9 @@ static int FindROMs(unsigned int nType, int* pOffset, int* pNum)
 
 static int LoadRoms(NeoGameInfo* pInfo)
 {
-//	NeoSpriteROM = (unsigned char*)malloc(nSpriteSize);
-unsigned int nSpriteROMSize = nSpriteSize < (nNeoTileMask << 7) ? ((nNeoTileMask + 1) << 7) : nSpriteSize;
-	if (nSpriteROMSize > 0x1600000)
-		return 1;
+	unsigned int nSpriteROMSize = nSpriteSize < (nNeoTileMask << 7) ? ((nNeoTileMask + 1) << 7) : nSpriteSize;
+//sq if (nSpriteROMSize > 0x1600000)
+//sq		return 1;
 	NeoSpriteROM = (unsigned char*)UpperMalloc(nSpriteROMSize);
 	if (NeoSpriteROM == NULL) {
 		return 1;
@@ -538,7 +537,7 @@ unsigned int nSpriteROMSize = nSpriteSize < (nNeoTileMask << 7) ? ((nNeoTileMask
 		if ((AllROM = (unsigned char*)malloc(nLen)) == NULL) {		// Allocate memory
 			return 1;
 		}
-		gp2x_memset(AllROM, 0, nLen);									// Initialise memory
+		memset(AllROM, 0, nLen);									// Initialise memory
 		ROMIndex();													// Index the allocated memory
 	}
 
@@ -1820,7 +1819,7 @@ static int neogeoReset()
 		switch (NeoSystem & 0x03) {
 			case 0x02:
 			case 0x03:
-				gp2x_memcpy(Neo68KBIOS, Neo68KBIOS + 0x20000 + harddip3 * 0x20000, 0x20000);
+				memcpy(Neo68KBIOS, Neo68KBIOS + 0x20000 + harddip3 * 0x20000, 0x20000);
 				// No way... the trick in NeoLoad68KBIOS doesn't work so I decided to add this here...
 				install_BIOS_memory_patch();
 				break;
@@ -2175,7 +2174,7 @@ int NeoInit()
 		if ((AllRAM = (unsigned char*)malloc(nLen)) == NULL) {		// Allocate memory
 			return 1;
 		}
-		gp2x_memset(AllRAM, 0, nLen);									// Initialise memory
+		memset(AllRAM, 0, nLen);									// Initialise memory
 		RAMIndex();													// Index the allocated memory
 	}
 

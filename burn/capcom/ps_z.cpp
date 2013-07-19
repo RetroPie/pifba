@@ -196,7 +196,7 @@ int PsndZScan(int nAction)
 	SCAN_VAR(nPsndZBank);
 
 	// Scan Ram
-	gp2x_memset(&ba, 0, sizeof(ba));
+	memset(&ba, 0, sizeof(ba));
 	ba.szName = "Z80 RAM";
 	ba.Data = PsndZRam;
 	ba.nLen = 0x800;

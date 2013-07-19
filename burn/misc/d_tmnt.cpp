@@ -544,7 +544,7 @@ STD_ROM_FN(Tmnt2po);
 int TmntInpMake()
 {
 	int i=0;
-	gp2x_memset(&TmntAoo,0,sizeof(TmntAoo));
+	memset(&TmntAoo,0,sizeof(TmntAoo));
 
 	for (i=0;i<4;i++)
 	{
@@ -596,7 +596,7 @@ static int Interleve2(unsigned char *pd,int i,int nLen)
 	int a;
 
 	pt=(unsigned char *)malloc(nLen); if (pt==NULL) return 1;
-	gp2x_memset(pt,0,nLen);
+	memset(pt,0,nLen);
 	BurnLoadRom(pt,i,1);
 
 	nLen>>=1; pts=(unsigned short *)pt;
@@ -651,8 +651,8 @@ static int LoadRoms()
 int TmntPalExit()
 {
 	bAnyDirt=0;
-	gp2x_memset(Dirt   ,0,sizeof(Dirt));    // Mark all colors as clean
-	gp2x_memset(TmntPal,0,sizeof(TmntPal)); // All colors black
+	memset(Dirt   ,0,sizeof(Dirt));    // Mark all colors as clean
+	memset(TmntPal,0,sizeof(TmntPal)); // All colors black
 	return 0;
 }
 
@@ -681,7 +681,7 @@ int TmntPalUpdate(int bRecalc)
 	if (bRecalc)
 	{
 		bAnyDirt=1;
-		gp2x_memset(Dirt,0xff,sizeof(Dirt)); // Mark all colors as dirty
+		memset(Dirt,0xff,sizeof(Dirt)); // Mark all colors as dirty
 	}
 	if (!bAnyDirt) 
 	{
@@ -1366,7 +1366,7 @@ static int TmntScan(int nAction,int *pnMin)
 
 	if (nAction & ACB_MEMORY_RAM) {		// Scan volatile ram
 
-		gp2x_memset(&ba,0,sizeof(ba));
+		memset(&ba,0,sizeof(ba));
 		ba.Data=RamStart;
 		ba.nLen=RamEnd-RamStart;
 		ba.szName="All Ram";
@@ -1400,7 +1400,7 @@ int TmntInit()
 	Mem=(unsigned char *)malloc(nLen);
 	if (Mem==NULL)
 		return 1;
-	gp2x_memset(Mem,0,nLen); // blank all memory
+	memset(Mem,0,nLen); // blank all memory
 	MemIndex(); // Index the allocated memory
 
 	nRet=LoadRoms();

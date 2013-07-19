@@ -66,7 +66,7 @@ static int* YMZ280BChannelData[8];
 
 void YMZ280BReset()
 {
-	gp2x_memset(&YMZ280BChannelInfo[0], 0, sizeof(YMZ280BChannelInfo));
+	memset(&YMZ280BChannelInfo[0], 0, sizeof(YMZ280BChannelInfo));
 
 	nYMZ280BIRQMask = 0;
 	nYMZ280BIRQStatus = 0;
@@ -74,7 +74,7 @@ void YMZ280BReset()
 	bYMZ280BEnable = false;
 
 	for (int j = 0; j < 8; j++) {
-		gp2x_memset(YMZ280BChannelData[j], 0, 0x1000 * sizeof(int));
+		memset(YMZ280BChannelData[j], 0, 0x1000 * sizeof(int));
 		YMZ280BChannelInfo[j].nBufPos = 4;
 	}
 
@@ -410,7 +410,7 @@ inline static void RenderADPCMLoop_Cubic()
 
 int YMZ280BRender(short* pSoundBuf, int nSegmentLength)
 {
-	gp2x_memset(pBuffer, 0, nSegmentLength * 2 * sizeof(int));
+	memset(pBuffer, 0, nSegmentLength * 2 * sizeof(int));
 
 	for (nActiveChannel = 0; nActiveChannel < 8; nActiveChannel++) {
 		nCount = nSegmentLength;

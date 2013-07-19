@@ -88,7 +88,7 @@ static void CalcAdvance(struct QChan* pc)
 
 void QscReset()
 {
-	gp2x_memset(QChan, 0, sizeof(QChan));
+	memset(QChan, 0, sizeof(QChan));
 
 	// Point all to bank 0
 	for (int i = 0; i < 16; i++) {
@@ -270,7 +270,7 @@ int QscUpdate(int nEnd)
 		Qs_s = (int*)malloc(sizeof(int) * 2 * Tams);
 	}
 
-	gp2x_memset(Qs_s, 0, nLen * 2 * sizeof(int));
+	memset(Qs_s, 0, nLen * 2 * sizeof(int));
 
 	if (nInterpolation < 3) {
 

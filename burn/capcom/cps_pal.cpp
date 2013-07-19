@@ -46,7 +46,7 @@ static int CalcAll()
 				CpsPal[i ^ 15] = CalcCol(*ps);
 			}
 
-			gp2x_memcpy(CpsPal + 0x0E00, CpsPal + 0x0C00, 0x0200 << 2);
+			memcpy(CpsPal + 0x0E00, CpsPal + 0x0C00, 0x0200 << 2);
 		} else {
 			ps = (unsigned short*)CpsPalSrc;
 			for (int i = 0x0000; i < 0x0800; i++, ps++) {
@@ -83,7 +83,7 @@ int CpsPalInit()
 	if (CpsPalSrc == NULL) {
 		return 1;
 	}
-	gp2x_memset(CpsPalSrc, 0, nLen);
+	memset(CpsPalSrc, 0, nLen);
 
 	// The star layer palettes are at the end of the normal palette, so double the size
 	nLen = 0x1000 * sizeof(int);
@@ -136,13 +136,13 @@ int CpsPalUpdate(unsigned char* pNewPal, int bRecalcAll)
 		if (nLagObjectPalettes) {
 			int nBuffer = 0x0C00 + ((GetCurrentFrame() & 1) << 9);
 
-			gp2x_memcpy(ps + 0x0200, pn + 0x0200, 0x0600 << 1);
-			gp2x_memcpy(ps + nBuffer, pn, 0x0200 << 1);
-			gp2x_memcpy(ps + 0x0E00, pn, 0x0200 << 1);
+			memcpy(ps + 0x0200, pn + 0x0200, 0x0600 << 1);
+			memcpy(ps + nBuffer, pn, 0x0200 << 1);
+			memcpy(ps + 0x0E00, pn, 0x0200 << 1);
 
 			CpsObjPal = CpsPal + nBuffer;
 		} else {
-			gp2x_memcpy(ps, pn, 0x0800 << 1);
+			memcpy(ps, pn, 0x0800 << 1);
 		}
 
 		CalcAll();
@@ -230,7 +230,7 @@ int CpsStarPalUpdate(unsigned char* pNewPal, int nLayer, int bRecalcAll)
 		pn = (unsigned short*)pNewPal + 0x0800;
 
 		if (bRecalcAll) {
-			gp2x_memcpy(ps, pn, 256);
+			memcpy(ps, pn, 256);
 			CalcAllStar(nLayer);
 			return 0;
 		}
@@ -251,7 +251,7 @@ int CpsStarPalUpdate(unsigned char* pNewPal, int nLayer, int bRecalcAll)
 		pn = (unsigned short*)pNewPal + 0x0A00;
 
 		if (bRecalcAll) {
-			gp2x_memcpy(ps, pn, 256);
+			memcpy(ps, pn, 256);
 			CalcAllStar(nLayer);
 			return 0;
 		}

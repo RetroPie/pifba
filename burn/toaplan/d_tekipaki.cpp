@@ -184,7 +184,7 @@ static int DrvScan(int nAction,int *pnMin)
 	}
 
 	if (nAction & ACB_VOLATILE) {		// Scan volatile ram
-		gp2x_memset(&ba, 0, sizeof(ba));
+		memset(&ba, 0, sizeof(ba));
     	ba.Data		= RamStart;
 		ba.nLen		= RamEnd-RamStart;
 		ba.szName	= "All Ram";
@@ -332,7 +332,7 @@ static int DrvInit()
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) {
 		return 1;
 	}
-	gp2x_memset(Mem, 0, nLen);										// blank all memory
+	memset(Mem, 0, nLen);										// blank all memory
 	MemIndex();													// Index the allocated memory
 
 	// Load the roms into memory

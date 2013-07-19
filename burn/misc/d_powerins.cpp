@@ -393,7 +393,7 @@ void __fastcall powerinsWriteByte(unsigned int sekAddress, unsigned char byteVal
 //			bprintf(PRINT_NORMAL, _T("oki_bank %2x\n"), byteValue);
 			if (oki_bank != (byteValue & 7)) {
 				oki_bank = byteValue & 7;
-				gp2x_memcpy(&MSM6295ROM[0x30000],&MSM6295ROM[0x40000 + 0x10000*oki_bank],0x10000);
+				memcpy(&MSM6295ROM[0x30000],&MSM6295ROM[0x40000 + 0x10000*oki_bank],0x10000);
 			}
 			break;
 
@@ -684,7 +684,7 @@ static int powerinsInit()
 	MemIndex();
 	int nLen = MemEnd - (unsigned char *)0;
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) return 1;
-	gp2x_memset(Mem, 0, nLen);										// blank all memory
+	memset(Mem, 0, nLen);										// blank all memory
 	MemIndex();	
 
 	// load roms
@@ -732,7 +732,7 @@ static int powerinsInit()
 			LoadDecodeSprRom(tmp, RomSpr+0x400000*i, i+5, 0x200000);
 
 		BurnLoadRom(MSM6295ROM + 0x10000, 9, 1);
-		gp2x_memcpy(MSM6295ROM, MSM6295ROM + 0x10000, 0x30000);
+		memcpy(MSM6295ROM, MSM6295ROM + 0x10000, 0x30000);
 
 	} else 
 	if ( game_drv == GAME_POWERINB ) {
@@ -1109,7 +1109,7 @@ static void DrawSprites()
 
 static void DrvDraw()
 {
-	gp2x_memset(pBurnDraw, 0, 320*224*2);
+	memset(pBurnDraw, 0, 320*224*2);
 	
 	TileBackground();
 	DrawSprites();
@@ -1165,7 +1165,7 @@ static int powerinsFrame()
 		short * pSoundBuf = pBurnSoundOut;
 
 		if (pBurnSoundOut)
-			gp2x_memset(pBurnSoundOut, 0, nBurnSoundLen * 4);
+			memset(pBurnSoundOut, 0, nBurnSoundLen * 4);
 
 		static int z80i = 0;
 
@@ -1205,7 +1205,7 @@ static int powerinsFrame()
 
 /*
 	if (pBurnSoundOut) {
-		gp2x_memset(pBurnSoundOut, 0, nBurnSoundLen * 4);
+		memset(pBurnSoundOut, 0, nBurnSoundLen * 4);
 		MSM6295Render(0, pBurnSoundOut, nBurnSoundLen);
 		if (game_drv != GAME_POWERINA ) 
 			MSM6295Render(1, pBurnSoundOut, nBurnSoundLen);
@@ -1223,7 +1223,7 @@ static int powerinsScan(int nAction,int *pnMin)
 	}
 
 	if (nAction & ACB_MEMORY_RAM) {				// Scan all memory, devices & variables
-		gp2x_memset(&ba, 0, sizeof(ba));
+		memset(&ba, 0, sizeof(ba));
 		ba.Data	  = RamStart;
 		ba.nLen	  = RamEnd-RamStart;
 		ba.szName = "All Ram";
@@ -1255,7 +1255,7 @@ static int powerinsScan(int nAction,int *pnMin)
 		if (nAction & ACB_WRITE) {
 			bRecalcPalette = 1;
 	   if ( game_drv == GAME_POWERINA )
-			gp2x_memcpy(&MSM6295ROM[0x30000],&MSM6295ROM[0x40000 + 0x10000*oki_bank],0x10000);
+			memcpy(&MSM6295ROM[0x30000],&MSM6295ROM[0x40000 + 0x10000*oki_bank],0x10000);
 		}
 	}
 

@@ -376,9 +376,9 @@ int ToaBufferGP9001Sprites()
 
 	nSpriteBuffer ^= 1;
 
-	gp2x_memcpy(pSpriteBufferData[0] + 0x0800 * nSpriteBuffer, GP9001RAM[0] + 0x3000, 0x0800);
+	memcpy(pSpriteBufferData[0] + 0x0800 * nSpriteBuffer, GP9001RAM[0] + 0x3000, 0x0800);
 	if (nControllers > 1) {
-		gp2x_memcpy(pSpriteBufferData[1] + 0x0800 * nSpriteBuffer, GP9001RAM[1] + 0x3000, 0x0800);
+		memcpy(pSpriteBufferData[1] + 0x0800 * nSpriteBuffer, GP9001RAM[1] + 0x3000, 0x0800);
 	}
 #endif
 
@@ -489,15 +489,15 @@ int ToaInitGP9001(int n)
 
 		nSize = 512 * 3 * 0x10 * 2 * sizeof(int);
 		pTileQueueData[i] = (unsigned int*)malloc(nSize);
-		gp2x_memset(pTileQueueData[i], 0, nSize);
+		memset(pTileQueueData[i], 0, nSize);
 
 		nSize = 0x10 * 0x101 * sizeof(int);
 		pSpriteQueueData[i] = (unsigned char**)malloc(nSize);
-		gp2x_memset(pSpriteQueueData[i], 0, nSize);
+		memset(pSpriteQueueData[i], 0, nSize);
 
 		nSize = 0x0800 * 2;
 		pSpriteBufferData[i] = (unsigned char*)malloc(nSize);
-		gp2x_memset(pSpriteBufferData[i], 0, nSize);
+		memset(pSpriteBufferData[i], 0, nSize);
 
 		GP9001TileAttrib[i] = (unsigned char*)malloc(nGP9001ROMSize[i] >> 5);
 		for (unsigned int j = 0; j < (nGP9001ROMSize[i] >> 5); j++) {

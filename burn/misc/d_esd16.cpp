@@ -617,7 +617,7 @@ static int DrvDoReset()
 {
 	DrvReset = 0;
 
-	gp2x_memset (AllRam, 0, RamEnd - AllRam);
+	memset (AllRam, 0, RamEnd - AllRam);
 
 	EEPROMReset();
 
@@ -648,9 +648,9 @@ static int DrvDoReset()
 
 static void calculate_transparency_tables()
 {
-	gp2x_memset (DrvGfx0Trans, 1, 0x08000);
-	gp2x_memset (DrvGfx1Trans, 1, 0x10000);
-	gp2x_memset (DrvGfx2Trans, 1, 0x06000);
+	memset (DrvGfx0Trans, 1, 0x08000);
+	memset (DrvGfx1Trans, 1, 0x10000);
+	memset (DrvGfx2Trans, 1, 0x06000);
 
 	for (int i = 0; i < 0x800000; i++) {
 		if (DrvGfxROM0[i]) DrvGfx0Trans[i>>8] = 0;
@@ -699,11 +699,11 @@ static int DrvGfxDecode()
 		return 1;
 	}
 
-	gp2x_memcpy (tmp, DrvGfxROM0, 0x140000);
+	memcpy (tmp, DrvGfxROM0, 0x140000);
 
 	GfxDecode(0x02000, 5, 16, 16, Planes0, XOffs0, YOffs0, 0x100, tmp, DrvGfxROM0);
 
-	gp2x_memcpy (tmp, DrvGfxROM1, 0x400000);
+	memcpy (tmp, DrvGfxROM1, 0x400000);
 
 	GfxDecode(0x10000, 8,  8,  8, Planes1, XOffs1, YOffs1, 0x080, tmp, DrvGfxROM1);
 
@@ -745,11 +745,11 @@ static int HedpanicGfxDecode()
 		return 1;
 	}
 
-	gp2x_memcpy (tmp, DrvGfxROM0, 0x500000);
+	memcpy (tmp, DrvGfxROM0, 0x500000);
 
 	GfxDecode(0x08000, 5, 16, 16, Planes0, XOffs0, YOffs0, 0x200, tmp, DrvGfxROM0);
 
-	gp2x_memcpy (tmp, DrvGfxROM1, 0x400000);
+	memcpy (tmp, DrvGfxROM1, 0x400000);
 
 	GfxDecode(0x10000, 8,  8,  8, Planes1, XOffs1, YOffs1, 0x200, tmp, DrvGfxROM1);
 	GfxDecode(0x04000, 8, 16, 16, Planes1, XOffs1, YOffs1, 0x800, tmp, DrvGfxROM2);
@@ -794,11 +794,11 @@ static int TangtangGfxDecode()
 		return 1;
 	}
 
-	gp2x_memcpy (tmp, DrvGfxROM0, 0x280000);
+	memcpy (tmp, DrvGfxROM0, 0x280000);
 
 	GfxDecode(0x04000, 5, 16, 16, Planes0, XOffs0, YOffs0, 0x100, tmp, DrvGfxROM0);
 
-	gp2x_memcpy (tmp, DrvGfxROM1, 0x400000);
+	memcpy (tmp, DrvGfxROM1, 0x400000);
 
 	GfxDecode(0x10000, 8,  8,  8, Planes1, XOffs1, YOffs1, 0x200, tmp, DrvGfxROM1);
 	GfxDecode(0x04000, 8, 16, 16, Planes1, XOffs1, YOffs1, 0x800, tmp, DrvGfxROM2);
@@ -865,7 +865,7 @@ static int DrvInit(int (*pInitCallback)())
 	MemIndex();
 	nLen = MemEnd - (unsigned char *)0;
 	if ((AllMem = (unsigned char *)malloc(nLen)) == NULL) return 1;
-	gp2x_memset(AllMem, 0, nLen);
+	memset(AllMem, 0, nLen);
 	MemIndex();
 
 	if (pInitCallback()) return 1;
@@ -1184,7 +1184,7 @@ static int DrvScan(int nAction,int *pnMin)
 	}
 
 	if (nAction & ACB_VOLATILE) {	
-		gp2x_memset(&ba, 0, sizeof(ba));
+		memset(&ba, 0, sizeof(ba));
 
 		ba.Data	  = AllRam;
 		ba.nLen	  = RamEnd - AllRam;

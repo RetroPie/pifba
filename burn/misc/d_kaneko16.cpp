@@ -1139,7 +1139,7 @@ static void Decode4BppGfx(int num, unsigned char *pDest)
 	int plane, x, y;
 	
 	UINT8 *dp = pDest + (num * 256);
-	gp2x_memset(dp, 0, 256);
+	memset(dp, 0, 256);
 	
 	int planeoffsets[4] = { 0, 1, 2, 3 };
 	int yoffsets[16] = { 0, 32, 64, 96, 128, 160, 192, 224, 512, 544, 576, 608, 640, 672, 704, 736 };
@@ -1165,7 +1165,7 @@ static void Decode8BppGfx(int num)
 	int plane, x, y;
 	
 	UINT8 *dp = Kaneko16Sprites + (num * 256);
-	gp2x_memset(dp, 0, 256);
+	memset(dp, 0, 256);
 	
 	int planeoffsets[8] = { 0, 1, 2, 3, 4, 5, 6, 7 };
 	int yoffsets[16] = { 0, 64, 128, 192, 256, 320, 384, 448, 1024, 1088, 1152, 1216, 1280, 1344, 1408, 1472 };
@@ -1263,8 +1263,8 @@ static void ExpandSampleBanks()
 		UINT8 *srcn = src0 + 0x10000 * (bank < 3 ? 3 : bank);
 		UINT8 *dst = src0 + 0x40000 * bank;
 
-		gp2x_memcpy(dst + 0x30000, srcn + 0x00000, 0x10000);
-		gp2x_memcpy(dst + 0x00000, src0 + 0x00000, 0x30000);
+		memcpy(dst + 0x30000, srcn + 0x00000, 0x10000);
+		memcpy(dst + 0x00000, src0 + 0x00000, 0x30000);
 	}
 }
 
@@ -1320,13 +1320,13 @@ static int GtmrMemIndex()
 	{
 		Kaneko16Sprites       = (unsigned char*)UpperMalloc(Kaneko16NumSprites * 16 * 16);
 		if (Kaneko16Sprites)
-			gp2x_memset(Kaneko16Sprites,0,Kaneko16NumSprites * 16 * 16);
+			memset(Kaneko16Sprites,0,Kaneko16NumSprites * 16 * 16);
 	}
 	if (Kaneko16Tiles == NULL)
 	{
 		Kaneko16Tiles         = (unsigned char*)UpperMalloc(Kaneko16NumTiles * 16 * 16);
 		if (Kaneko16Tiles)
-			gp2x_memset(Kaneko16Tiles,0,Kaneko16NumTiles * 16 * 16);
+			memset(Kaneko16Tiles,0,Kaneko16NumTiles * 16 * 16);
 	}
 
 	return 0;
@@ -1604,7 +1604,7 @@ Toybox MCU
 
 static void ToyboxMCUInit()
 {
-	gp2x_memset(ToyboxMCUCom, 0, 4 * sizeof(UINT16));
+	memset(ToyboxMCUCom, 0, 4 * sizeof(UINT16));
 }
 
 static UINT16 ToyboxMCUStatusRead()
@@ -1612,7 +1612,7 @@ static UINT16 ToyboxMCUStatusRead()
 	return 0;
 }
 
-#define MCU_RESPONSE(d) gp2x_memcpy(&MCURam[MCUOffset], d, sizeof(d))
+#define MCU_RESPONSE(d) memcpy(&MCURam[MCUOffset], d, sizeof(d))
 
 static void BloodwarMCURun()
 {
@@ -1625,7 +1625,7 @@ static void BloodwarMCURun()
 	
 	switch (MCUCommand >> 8) {
 		case 0x02: {
-			gp2x_memcpy(MCURam + MCUOffset, NVRam, 128);
+			memcpy(MCURam + MCUOffset, NVRam, 128);
 			return;
 		}
 		
@@ -1693,7 +1693,7 @@ static void BloodwarMCURun()
 		}
 		
 		case 0x42: {
-			gp2x_memcpy(NVRam, MCURam + MCUOffset, 128);
+			memcpy(NVRam, MCURam + MCUOffset, 128);
 			return;
 		}
 	}
@@ -1710,7 +1710,7 @@ static void BonkadvMCURun()
 	
 	switch (MCUCommand >> 8) {
 		case 0x02: {
-			gp2x_memcpy(MCURam + MCUOffset, NVRam, 128);
+			memcpy(MCURam + MCUOffset, NVRam, 128);
 			return;
 		}
 		
@@ -1763,13 +1763,13 @@ static void BonkadvMCURun()
 		}
 		
 		case 0x42: {
-			gp2x_memcpy(NVRam, MCURam + MCUOffset, 128);
+			memcpy(NVRam, MCURam + MCUOffset, 128);
 			return;
 		}
 		
 		case 0x43: {
 			// Reset defaults
-			gp2x_memcpy(NVRam, bonkadv_mcu_43, sizeof(bonkadv_mcu_43));
+			memcpy(NVRam, bonkadv_mcu_43, sizeof(bonkadv_mcu_43));
 			return;
 		}
 	}	
@@ -1787,7 +1787,7 @@ static void GtmrMCURun()
 	
 	switch (MCUCommand >> 8) {
 		case 0x02: {
-			gp2x_memcpy(MCURam + MCUOffset, NVRam, 128);
+			memcpy(MCURam + MCUOffset, NVRam, 128);
 			return;
 		}
 		
@@ -1810,7 +1810,7 @@ static void GtmrMCURun()
 		}
 		
 		case 0x42: {
-			gp2x_memcpy(NVRam, MCURam + MCUOffset, 128);
+			memcpy(NVRam, MCURam + MCUOffset, 128);
 			return;
 		}
 	}
@@ -1826,7 +1826,7 @@ static void GtmrevoMCURun()
 	
 	switch (MCUCommand >> 8) {
 		case 0x02: {
-			gp2x_memcpy(MCURam + MCUOffset, NVRam, 128);
+			memcpy(MCURam + MCUOffset, NVRam, 128);
 			return;
 		}
 		
@@ -1849,7 +1849,7 @@ static void GtmrevoMCURun()
 		}
 		
 		case 0x42: {
-			gp2x_memcpy(NVRam, MCURam + MCUOffset, 128);
+			memcpy(NVRam, MCURam + MCUOffset, 128);
 			return;
 		}
 	}
@@ -1863,7 +1863,7 @@ static void ToyboxMCUComWrite(int which, UINT16 data)
 	if (ToyboxMCUCom[2] != 0xffff) return;
 	if (ToyboxMCUCom[3] != 0xffff) return;
 	
-	gp2x_memset(ToyboxMCUCom, 0, 4 * sizeof(UINT16));
+	memset(ToyboxMCUCom, 0, 4 * sizeof(UINT16));
 	ToyboxMCURun();
 }
 
@@ -1880,9 +1880,9 @@ static int Kaneko16DoReset()
 	Kaneko16SpriteFlipX = 0;
 	Kaneko16SpriteFlipY = 0;
 	Kaneko16DisplayEnable = 0;
-	gp2x_memset(Kaneko16SpriteRegs, 0, 0x20 * sizeof(UINT16));
-	gp2x_memset(Kaneko16Layer0Regs, 0, 0x10 * sizeof(UINT16));
-	gp2x_memset(Kaneko16Layer1Regs, 0, 0x10 * sizeof(UINT16));
+	memset(Kaneko16SpriteRegs, 0, 0x20 * sizeof(UINT16));
+	memset(Kaneko16Layer0Regs, 0, 0x10 * sizeof(UINT16));
+	memset(Kaneko16Layer1Regs, 0, 0x10 * sizeof(UINT16));
 
 	return 0;
 }
@@ -2369,7 +2369,7 @@ void __fastcall ExplbrkrWriteWord(unsigned int a, unsigned short d)
 				AY8910Write(0, 1, d & 0xff);
 			} else {
 				MSM6295Bank0 = d & 7;
-				gp2x_memcpy(MSM6295ROM + 0x0000000, MSM6295ROMData + (0x40000 * (d & 7)), 0x40000);
+				memcpy(MSM6295ROM + 0x0000000, MSM6295ROMData + (0x40000 * (d & 7)), 0x40000);
 			}
 			return;
 		}
@@ -2758,17 +2758,17 @@ void __fastcall GtmrWriteWord(unsigned int a, unsigned short d)
 		
 		case 0xe00000: {
 			MSM6295Bank0 = d & 0xf;
-			gp2x_memcpy(MSM6295ROM + 0x0000000, MSM6295ROMData + (0x40000 * (d & 0x0f)),0x40000);
+			memcpy(MSM6295ROM + 0x0000000, MSM6295ROMData + (0x40000 * (d & 0x0f)),0x40000);
 			return;
 		}
 		
 		case 0xe80000: {
 			if (Gtmr) {
 				MSM6295Bank1 = d & 1;
-				gp2x_memcpy(MSM6295ROM + 0x0100000, MSM6295ROMData2 + (0x40000 * (d & 0x01)),0x40000);
+				memcpy(MSM6295ROM + 0x0100000, MSM6295ROMData2 + (0x40000 * (d & 0x01)),0x40000);
 			} else {
 				MSM6295Bank1 = d;
-				gp2x_memcpy(MSM6295ROM + 0x0100000, MSM6295ROMData2 + (0x40000 * d),0x40000);
+				memcpy(MSM6295ROM + 0x0100000, MSM6295ROMData2 + (0x40000 * d),0x40000);
 			}
 			return;
 		}
@@ -2937,7 +2937,7 @@ static int BerlwallInit()
 	ExplbrkrMemIndex();
 	nLen = MemEnd - (unsigned char *)0;
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) return 1;
-	gp2x_memset(Mem, 0, nLen);
+	memset(Mem, 0, nLen);
 	ExplbrkrMemIndex();
 
 	Kaneko16TempGfx = (unsigned char*)malloc(0x400000);
@@ -2953,13 +2953,13 @@ static int BerlwallInit()
 	Kaneko16Decode4BppGfx(Kaneko16Sprites, Kaneko16NumSprites);
 	
 	// Load and Decode Tile Roms
-	gp2x_memset(Kaneko16TempGfx, 0, 0x400000);
+	memset(Kaneko16TempGfx, 0, 0x400000);
 	nRet = BurnLoadRom(Kaneko16TempGfx + 0x000000, 5, 1); if (nRet != 0) return 1;
 	UnscrambleTiles(0x080000);
 	Kaneko16Decode4BppGfx(Kaneko16Tiles, Kaneko16NumTiles);
 	
 	// Load bitmap roms
-	gp2x_memset(Kaneko16TempGfx, 0, 0x400000);
+	memset(Kaneko16TempGfx, 0, 0x400000);
 	nRet = BurnLoadRom(Kaneko16TempGfx + 0x000000,  6, 2); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(Kaneko16TempGfx + 0x000001,  7, 2); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(Kaneko16TempGfx + 0x100000,  8, 2); if (nRet != 0) return 1;
@@ -2973,7 +2973,7 @@ static int BerlwallInit()
 			
 	// Load Sample Rom
 	nRet = BurnLoadRom(MSM6295ROM, 14, 1); if (nRet != 0) return 1;
-	gp2x_memcpy(MSM6295ROMData, MSM6295ROM, 0x40000);
+	memcpy(MSM6295ROMData, MSM6295ROM, 0x40000);
 	
 	SekInit(0, 0x68000);
 	SekOpen(0);
@@ -3031,7 +3031,7 @@ static int BlazeonInit()
 	BlazeonMemIndex();
 	nLen = MemEnd - (unsigned char *)0;
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) return 1;
-	gp2x_memset(Mem, 0, nLen);
+	memset(Mem, 0, nLen);
 	BlazeonMemIndex();
 
 	Kaneko16TempGfx = (unsigned char*)malloc(0x200000);
@@ -3046,7 +3046,7 @@ static int BlazeonInit()
 	Kaneko16Decode4BppGfx(Kaneko16Sprites, Kaneko16NumSprites);
 	
 	// Load and Decode Tile Roms
-	gp2x_memset(Kaneko16TempGfx, 0, 0x200000);
+	memset(Kaneko16TempGfx, 0, 0x200000);
 	nRet = BurnLoadRom(Kaneko16TempGfx + 0x000000, 4, 1); if (nRet != 0) return 1;
 	UnscrambleTiles(0x100000);
 	Kaneko16Decode4BppGfx(Kaneko16Tiles, Kaneko16NumTiles);
@@ -3114,7 +3114,7 @@ static int BloodwarInit()
 	GtmrMemIndex();
 	nLen = MemEnd - (unsigned char *)0;
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) return 1;
-	gp2x_memset(Mem, 0, nLen);
+	memset(Mem, 0, nLen);
 	GtmrMemIndex();
 
 	Kaneko16TempGfx = (unsigned char*)malloc(0x1e00000);
@@ -3148,11 +3148,11 @@ static int BloodwarInit()
 	Kaneko16Decode8BppGfx();
 	
 	// Load and Decode Tile Roms
-	gp2x_memset(Kaneko16TempGfx, 0, 0x1e00000);
+	memset(Kaneko16TempGfx, 0, 0x1e00000);
 	nRet = BurnLoadRom(Kaneko16TempGfx + 0x000000, 24, 1); if (nRet != 0) return 1;
 	UnscrambleTiles(0x100000);
 	Kaneko16Decode4BppGfx(Kaneko16Tiles, Kaneko16NumTiles);
-	gp2x_memset(Kaneko16TempGfx, 0, 0x1e00000);
+	memset(Kaneko16TempGfx, 0, 0x1e00000);
 	nRet = BurnLoadRom(Kaneko16TempGfx + 0x000000, 25, 1); if (nRet != 0) return 1;
 	UnscrambleTiles(0x100000);
 	Kaneko16Decode4BppGfx(Kaneko16Tiles2, Kaneko16NumTiles2);
@@ -3191,7 +3191,7 @@ static int BonkadvInit()
 	GtmrMemIndex();
 	nLen = MemEnd - (unsigned char *)0;
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) return 1;
-	gp2x_memset(Mem, 0, nLen);
+	memset(Mem, 0, nLen);
 	GtmrMemIndex();
 
 	Kaneko16TempGfx = (unsigned char*)malloc(0x500000);
@@ -3209,11 +3209,11 @@ static int BonkadvInit()
 	Kaneko16Decode8BppGfx();
 	
 	// Load and Decode Tile Roms
-	gp2x_memset(Kaneko16TempGfx, 0, 0x500000);
+	memset(Kaneko16TempGfx, 0, 0x500000);
 	nRet = BurnLoadRom(Kaneko16TempGfx + 0x000000, 8, 1); if (nRet != 0) return 1;
 	UnscrambleTiles(0x100000);
 	Kaneko16Decode4BppGfx(Kaneko16Tiles, Kaneko16NumTiles);
-	gp2x_memset(Kaneko16TempGfx, 0, 0x500000);
+	memset(Kaneko16TempGfx, 0, 0x500000);
 	nRet = BurnLoadRom(Kaneko16TempGfx + 0x000000, 9, 1); if (nRet != 0) return 1;
 	UnscrambleTiles(0x100000);
 	Kaneko16Decode4BppGfx(Kaneko16Tiles2, Kaneko16NumTiles2);
@@ -3252,7 +3252,7 @@ static int ExplbrkrInit()
 	ExplbrkrMemIndex();
 	nLen = MemEnd - (unsigned char *)0;
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) return 1;
-	gp2x_memset(Mem, 0, nLen);
+	memset(Mem, 0, nLen);
 	ExplbrkrMemIndex();
 
 	Kaneko16TempGfx = (unsigned char*)malloc(0x240000);
@@ -3270,32 +3270,32 @@ static int ExplbrkrInit()
 	Kaneko16Decode4BppGfx(Kaneko16Sprites, Kaneko16NumSprites);
 	
 	// Load and Decode Tile Roms
-	gp2x_memset(Kaneko16TempGfx, 0, 0x240000);
+	memset(Kaneko16TempGfx, 0, 0x240000);
 	nRet = BurnLoadRom(Kaneko16TempGfx + 0x000000, 5, 1); if (nRet != 0) return 1;
 	UnscrambleTiles(0x100000);
 	Kaneko16Decode4BppGfx(Kaneko16Tiles, Kaneko16NumTiles);
-	gp2x_memset(Kaneko16TempGfx, 0, 0x240000);
+	memset(Kaneko16TempGfx, 0, 0x240000);
 	nRet = BurnLoadRom(Kaneko16TempGfx + 0x000000, 6, 1); if (nRet != 0) return 1;
 	UnscrambleTiles(0x100000);
 	Kaneko16Decode4BppGfx(Kaneko16Tiles2, Kaneko16NumTiles2);
 	
 	// Load Sample Rom
-	gp2x_memset(Kaneko16TempGfx, 0, 0x240000);
+	memset(Kaneko16TempGfx, 0, 0x240000);
 	nRet = BurnLoadRom(Kaneko16TempGfx, 7, 1); if (nRet != 0) return 1;
-	gp2x_memcpy(MSM6295ROMData + 0x000000, Kaneko16TempGfx + 0x000000, 0x20000);
-	gp2x_memcpy(MSM6295ROMData + 0x020000, Kaneko16TempGfx + 0x020000, 0x20000);
-	gp2x_memcpy(MSM6295ROMData + 0x040000, Kaneko16TempGfx + 0x000000, 0x20000);
-	gp2x_memcpy(MSM6295ROMData + 0x060000, Kaneko16TempGfx + 0x040000, 0x20000);
-	gp2x_memcpy(MSM6295ROMData + 0x080000, Kaneko16TempGfx + 0x000000, 0x20000);
-	gp2x_memcpy(MSM6295ROMData + 0x0a0000, Kaneko16TempGfx + 0x060000, 0x20000);
-	gp2x_memcpy(MSM6295ROMData + 0x0c0000, Kaneko16TempGfx + 0x000000, 0x20000);
-	gp2x_memcpy(MSM6295ROMData + 0x0e0000, Kaneko16TempGfx + 0x080000, 0x20000);
-	gp2x_memcpy(MSM6295ROMData + 0x100000, Kaneko16TempGfx + 0x000000, 0x20000);
-	gp2x_memcpy(MSM6295ROMData + 0x120000, Kaneko16TempGfx + 0x0a0000, 0x20000);
-	gp2x_memcpy(MSM6295ROMData + 0x140000, Kaneko16TempGfx + 0x000000, 0x20000);
-	gp2x_memcpy(MSM6295ROMData + 0x160000, Kaneko16TempGfx + 0x0c0000, 0x20000);
-	gp2x_memcpy(MSM6295ROMData + 0x180000, Kaneko16TempGfx + 0x000000, 0x20000);
-	gp2x_memcpy(MSM6295ROMData + 0x1a0000, Kaneko16TempGfx + 0x0e0000, 0x20000);
+	memcpy(MSM6295ROMData + 0x000000, Kaneko16TempGfx + 0x000000, 0x20000);
+	memcpy(MSM6295ROMData + 0x020000, Kaneko16TempGfx + 0x020000, 0x20000);
+	memcpy(MSM6295ROMData + 0x040000, Kaneko16TempGfx + 0x000000, 0x20000);
+	memcpy(MSM6295ROMData + 0x060000, Kaneko16TempGfx + 0x040000, 0x20000);
+	memcpy(MSM6295ROMData + 0x080000, Kaneko16TempGfx + 0x000000, 0x20000);
+	memcpy(MSM6295ROMData + 0x0a0000, Kaneko16TempGfx + 0x060000, 0x20000);
+	memcpy(MSM6295ROMData + 0x0c0000, Kaneko16TempGfx + 0x000000, 0x20000);
+	memcpy(MSM6295ROMData + 0x0e0000, Kaneko16TempGfx + 0x080000, 0x20000);
+	memcpy(MSM6295ROMData + 0x100000, Kaneko16TempGfx + 0x000000, 0x20000);
+	memcpy(MSM6295ROMData + 0x120000, Kaneko16TempGfx + 0x0a0000, 0x20000);
+	memcpy(MSM6295ROMData + 0x140000, Kaneko16TempGfx + 0x000000, 0x20000);
+	memcpy(MSM6295ROMData + 0x160000, Kaneko16TempGfx + 0x0c0000, 0x20000);
+	memcpy(MSM6295ROMData + 0x180000, Kaneko16TempGfx + 0x000000, 0x20000);
+	memcpy(MSM6295ROMData + 0x1a0000, Kaneko16TempGfx + 0x0e0000, 0x20000);
 	free(Kaneko16TempGfx);
 	
 	SekInit(0, 0x68000);
@@ -3363,7 +3363,7 @@ static int GtmrInit()
 	GtmrMemIndex();
 	nLen = MemEnd - (unsigned char *)0;
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) return 1;
-	gp2x_memset(Mem, 0, nLen);
+	memset(Mem, 0, nLen);
 	GtmrMemIndex();
 
 	Kaneko16TempGfx = (unsigned char*)malloc(0x840000);
@@ -3382,12 +3382,12 @@ static int GtmrInit()
 	Kaneko16Decode8BppGfx();
 	
 	// Load and Decode Tile Roms
-	gp2x_memset(Kaneko16TempGfx, 0, 0x840000);
+	memset(Kaneko16TempGfx, 0, 0x840000);
 	nRet = BurnLoadRom(Kaneko16TempGfx + 0x000000, 9, 1); if (nRet != 0) return 1;
 	UnscrambleTiles(0x200000);
 	Kaneko16Decode4BppGfx(Kaneko16Tiles, Kaneko16NumTiles);
 	free(Kaneko16TempGfx);	
-	gp2x_memcpy(Kaneko16Tiles2, Kaneko16Tiles, Kaneko16NumTiles * 16 * 16);
+	memcpy(Kaneko16Tiles2, Kaneko16Tiles, Kaneko16NumTiles * 16 * 16);
 
 	// Load Sample Rom
 	nRet = BurnLoadRom(MSM6295ROMData, 10, 1); if (nRet != 0) return 1;
@@ -3422,7 +3422,7 @@ static int GtmrevoInit()
 	GtmrMemIndex();
 	nLen = MemEnd - (unsigned char *)0;
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) return 1;
-	gp2x_memset(Mem, 0, nLen);
+	memset(Mem, 0, nLen);
 	GtmrMemIndex();
 
 	Kaneko16TempGfx = (unsigned char*)malloc(0x800000);
@@ -3441,12 +3441,12 @@ static int GtmrevoInit()
 	Kaneko16Decode8BppGfx();	
 	
 	// Load and Decode Tile Roms
-	gp2x_memset(Kaneko16TempGfx, 0, 0x800000);
+	memset(Kaneko16TempGfx, 0, 0x800000);
 	nRet = BurnLoadRom(Kaneko16TempGfx + 0x000000, 9, 1); if (nRet != 0) return 1;
 	UnscrambleTiles(0x200000);
 	Kaneko16Decode4BppGfx(Kaneko16Tiles, Kaneko16NumTiles);
 	free(Kaneko16TempGfx);
-	gp2x_memcpy(Kaneko16Tiles2, Kaneko16Tiles, Kaneko16NumTiles * 16 * 16);
+	memcpy(Kaneko16Tiles2, Kaneko16Tiles, Kaneko16NumTiles * 16 * 16);
 
 	// Load Sample Rom
 	nRet = BurnLoadRom(MSM6295ROMData, 10, 1); if (nRet != 0) return 1;
@@ -3482,7 +3482,7 @@ int Gtmr2Init()
 	GtmrMemIndex();
 	nLen = MemEnd - (unsigned char *)0;
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) return 1;
-	gp2x_memset(Mem, 0, nLen);
+	memset(Mem, 0, nLen);
 	GtmrMemIndex();
 
 	Kaneko16TempGfx = (unsigned char*)UpperMalloc(0x800000);
@@ -3500,7 +3500,7 @@ int Gtmr2Init()
 	Kaneko16Decode8BppGfx();	
 	
 	// Load and Decode Tile Roms
-	gp2x_memset(Kaneko16TempGfx, 0, 0x800000);
+	memset(Kaneko16TempGfx, 0, 0x800000);
 	nRet = BurnLoadRom(Kaneko16TempGfx + 0x000000,  8, 1); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(Kaneko16TempGfx + 0x200000,  9, 1); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(Kaneko16TempGfx + 0x400000, 10, 2); if (nRet != 0) return 1;
@@ -3508,7 +3508,7 @@ int Gtmr2Init()
 	UnscrambleTiles(0x440000);
 	Kaneko16Decode4BppGfx(Kaneko16Tiles, Kaneko16NumTiles);
 	UpperFree(Kaneko16TempGfx);
-	gp2x_memcpy(Kaneko16Tiles2, Kaneko16Tiles, Kaneko16NumTiles * 16 * 16);
+	memcpy(Kaneko16Tiles2, Kaneko16Tiles, Kaneko16NumTiles * 16 * 16);
 
 	// Load Sample Rom
 	nRet = BurnLoadRom(MSM6295ROMData, 12, 1); if (nRet != 0) return 1;
@@ -3544,7 +3544,7 @@ int Gtmr2uInit()
 	GtmrMemIndex();
 	nLen = MemEnd - (unsigned char *)0;
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) return 1;
-	gp2x_memset(Mem, 0, nLen);
+	memset(Mem, 0, nLen);
 	GtmrMemIndex();
 
 	Kaneko16TempGfx = (unsigned char*)malloc(0x800000);
@@ -3562,7 +3562,7 @@ int Gtmr2uInit()
 	Kaneko16Decode8BppGfx();	
 	
 	// Load and Decode Tile Roms
-	gp2x_memset(Kaneko16TempGfx, 0, 0x800000);
+	memset(Kaneko16TempGfx, 0, 0x800000);
 	nRet = BurnLoadRom(Kaneko16TempGfx + 0x000000,  8, 1); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(Kaneko16TempGfx + 0x200000,  9, 1); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(Kaneko16TempGfx + 0x400000, 10, 2); if (nRet != 0) return 1;
@@ -3570,7 +3570,7 @@ int Gtmr2uInit()
 	UnscrambleTiles(0x440000);
 	Kaneko16Decode4BppGfx(Kaneko16Tiles, Kaneko16NumTiles);
 	free(Kaneko16TempGfx);
-	gp2x_memcpy(Kaneko16Tiles2, Kaneko16Tiles, Kaneko16NumTiles * 16 * 16);
+	memcpy(Kaneko16Tiles2, Kaneko16Tiles, Kaneko16NumTiles * 16 * 16);
 
 	// Load Sample Rom
 	nRet = BurnLoadRom(MSM6295ROMData, 12, 1); if (nRet != 0) return 1;
@@ -3605,7 +3605,7 @@ static int MgcrystlInit()
 	ExplbrkrMemIndex();
 	nLen = MemEnd - (unsigned char *)0;
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) return 1;
-	gp2x_memset(Mem, 0, nLen);
+	memset(Mem, 0, nLen);
 	ExplbrkrMemIndex();
 
 	Kaneko16TempGfx = (unsigned char*)malloc(0x280000);
@@ -3625,11 +3625,11 @@ static int MgcrystlInit()
 	Kaneko16Decode4BppGfx(Kaneko16Sprites, Kaneko16NumSprites);
 	
 	// Load and Decode Tile Roms
-	gp2x_memset(Kaneko16TempGfx, 0, 0x280000);
+	memset(Kaneko16TempGfx, 0, 0x280000);
 	nRet = BurnLoadRom(Kaneko16TempGfx + 0x000000, 5, 1); if (nRet != 0) return 1;
 	UnscrambleTiles(0x100000);
 	Kaneko16Decode4BppGfx(Kaneko16Tiles, Kaneko16NumTiles);
-	gp2x_memset(Kaneko16TempGfx, 0, 0x280000);
+	memset(Kaneko16TempGfx, 0, 0x280000);
 	nRet = BurnLoadRom(Kaneko16TempGfx + 0x000000, 6, 1); if (nRet != 0) return 1;
 	UnscrambleTiles(0x100000);
 	Kaneko16Decode4BppGfx(Kaneko16Tiles2, Kaneko16NumTiles2);
@@ -3637,7 +3637,7 @@ static int MgcrystlInit()
 	
 	// Load Sample Rom
 	nRet = BurnLoadRom(MSM6295ROM, 7, 1); if (nRet != 0) return 1;
-	gp2x_memcpy(MSM6295ROMData, MSM6295ROM, 0x40000);
+	memcpy(MSM6295ROMData, MSM6295ROM, 0x40000);
 	
 	SekInit(0, 0x68000);
 	SekOpen(0);
@@ -3737,10 +3737,10 @@ int Kaneko16Exit()
 	Kaneko16SoundLatch = 0;
 	MSM6295Bank0 = 0;
 	MSM6295Bank1 = 0;
-	gp2x_memset(Kaneko16SpriteRegs, 0, 0x20 * sizeof(UINT16));
-	gp2x_memset(Kaneko16Layer0Regs, 0, 0x10 * sizeof(UINT16));
-	gp2x_memset(Kaneko16Layer1Regs, 0, 0x10 * sizeof(UINT16));
-	gp2x_memset(ToyboxMCUCom, 0, 0x04 * sizeof(UINT16));
+	memset(Kaneko16SpriteRegs, 0, 0x20 * sizeof(UINT16));
+	memset(Kaneko16Layer0Regs, 0, 0x10 * sizeof(UINT16));
+	memset(Kaneko16Layer1Regs, 0, 0x10 * sizeof(UINT16));
+	memset(ToyboxMCUCom, 0, 0x04 * sizeof(UINT16));
 	
 	ToyboxMCURun = NULL;
 	Kaneko16FrameRender = NULL;
@@ -4859,7 +4859,7 @@ static int Kaneko16Scan(int nAction,int *pnMin)
 	if (Kaneko16Eeprom) EEPROMScan(nAction, pnMin);
 	
 	if (nAction & ACB_NVRAM && Kaneko16NVRam) {
-		gp2x_memset(&ba, 0, sizeof(ba));
+		memset(&ba, 0, sizeof(ba));
 		ba.Data = Kaneko16NVRam;
 		ba.nLen = 0x100;
 		ba.szName = "NVRam";
@@ -4867,7 +4867,7 @@ static int Kaneko16Scan(int nAction,int *pnMin)
 	}
 	
 	if (nAction & ACB_MEMORY_RAM) {
-		gp2x_memset(&ba, 0, sizeof(ba));
+		memset(&ba, 0, sizeof(ba));
     		ba.Data	  = RamStart;
 		ba.nLen	  = RamEnd-RamStart;
 		ba.szName = "All Ram";
@@ -4928,7 +4928,7 @@ static int ExplbrkrScan(int nAction,int *pnMin)
 	}
 	
 	if (nAction & ACB_WRITE) {
-		gp2x_memcpy(MSM6295ROM + 0x0000000, MSM6295ROMData  + (0x40000 * MSM6295Bank0),0x40000);
+		memcpy(MSM6295ROM + 0x0000000, MSM6295ROMData  + (0x40000 * MSM6295Bank0),0x40000);
 	}
 	
 	return Kaneko16Scan(nAction, pnMin);;
@@ -4949,8 +4949,8 @@ static int GtmrScan(int nAction,int *pnMin)
 	}
 	
 	if (nAction & ACB_WRITE) {
-		gp2x_memcpy(MSM6295ROM + 0x0000000, MSM6295ROMData  + (0x40000 * MSM6295Bank0),0x40000);
-		gp2x_memcpy(MSM6295ROM + 0x0100000, MSM6295ROMData2 + (0x40000 * MSM6295Bank1),0x40000);
+		memcpy(MSM6295ROM + 0x0000000, MSM6295ROMData  + (0x40000 * MSM6295Bank0),0x40000);
+		memcpy(MSM6295ROM + 0x0100000, MSM6295ROMData2 + (0x40000 * MSM6295Bank1),0x40000);
 	}
 	
 	return Kaneko16Scan(nAction, pnMin);;

@@ -201,7 +201,7 @@ int BurnYM3812Init(int nClockFrequency, OPL_IRQHANDLER IRQCallback, int (*Stream
 	YM3812SetUpdateHandler(0, &BurnYM3812UpdateRequest, 0);
 
 	pBuffer = (short*)malloc(4096 * sizeof(short));
-	gp2x_memset(pBuffer, 0, 4096 * sizeof(short));
+	memset(pBuffer, 0, 4096 * sizeof(short));
 
 	nYM3812Position = 0;
 

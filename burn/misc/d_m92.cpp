@@ -216,7 +216,7 @@ void __fastcall m92WriteByte(unsigned int vezAddress, unsigned char byteValue)
 			
 			//m92_sprite_buffer_busy = 0;
 			//m92_sprite_buffer_timer = 1;
-			gp2x_memcpy(RamSprCpy, RamSpr, 0x800);
+			memcpy(RamSprCpy, RamSpr, 0x800);
 			
 			break;
 
@@ -430,7 +430,7 @@ static int hookInit()
 	MemIndex();
 	int nLen = MemEnd - (unsigned char *)0;
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) return 1;
-	gp2x_memset(Mem, 0, nLen);										// blank all memory
+	memset(Mem, 0, nLen);										// blank all memory
 	MemIndex();	
 	
 	nRet = BurnLoadRom(RomV33 + 0x000001, 0, 2); if (nRet != 0) return 1;
@@ -466,7 +466,7 @@ static int hookInit()
 	    VezOpen(0);
 
 		VezMapArea(0x00000, 0x9ffff, 0, RomV33 + 0x00000);	// CPU 0 ROM
-//		gp2x_memcpy(RomV33+0xffff0, RomV33+0x7fff0, 0x10);		// V33 Start vector
+//		memcpy(RomV33+0xffff0, RomV33+0x7fff0, 0x10);		// V33 Start vector
 		
 		VezMapArea(0xa0000, 0xbffff, 0, RomV33 + 0xa0000);	// rom bank
 		
@@ -1015,7 +1015,7 @@ static void drawSprites()
 
 static void DrvDraw()
 {
-	gp2x_memset(pBurnDraw, 0, 320 * 240 * 2);
+	memset(pBurnDraw, 0, 320 * 240 * 2);
 
 	if (pf3_enable)
 		tileLayer_3();

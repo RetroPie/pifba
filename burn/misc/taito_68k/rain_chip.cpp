@@ -63,8 +63,8 @@ static void request_round_data(void)
 {
 	int round = CRAM[1][0x141]; /* 0...49 */
 
-	gp2x_memcpy(CRAM[1], CROM_BANK1, sizeof CROM_BANK1);
-	gp2x_memcpy(CRAM[2], CROM_BANK2, sizeof CROM_BANK2);
+	memcpy(CRAM[1], CROM_BANK1, sizeof CROM_BANK1);
+	memcpy(CRAM[2], CROM_BANK2, sizeof CROM_BANK2);
 
 	CRAM[1][1] = cchip_round_height[round] >> 0;
 	CRAM[1][2] = cchip_round_height[round] >> 8;
@@ -96,9 +96,9 @@ static void request_world_data(void)
 
 	/* first two bytes in each bank are left unchanged  */
 
-	gp2x_memcpy(CRAM[4] + 2, CROM_BANK4[world].data, CROM_BANK4[world].size);
-	gp2x_memcpy(CRAM[5] + 2, CROM_BANK5[world].data, CROM_BANK5[world].size);
-	gp2x_memcpy(CRAM[7] + 2, CROM_BANK7[world].data, CROM_BANK7[world].size);
+	memcpy(CRAM[4] + 2, CROM_BANK4[world].data, CROM_BANK4[world].size);
+	memcpy(CRAM[5] + 2, CROM_BANK5[world].data, CROM_BANK5[world].size);
+	memcpy(CRAM[7] + 2, CROM_BANK7[world].data, CROM_BANK7[world].size);
 
 		/* banks 5 and 6 are different in the extra version */
 
@@ -117,11 +117,11 @@ static void request_world_data(void)
 			}
 		}
 
-		gp2x_memcpy(CRAM[6] + 2, CROM_BANK6_EXTRA, sizeof CROM_BANK6_EXTRA);
+		memcpy(CRAM[6] + 2, CROM_BANK6_EXTRA, sizeof CROM_BANK6_EXTRA);
 	}
 	else
 	{
-		gp2x_memcpy(CRAM[6] + 2, CROM_BANK6, sizeof CROM_BANK6);
+		memcpy(CRAM[6] + 2, CROM_BANK6, sizeof CROM_BANK6);
 	}
 
 }
@@ -222,7 +222,7 @@ void rainbow_cchip_init(int version)
 	for (int i = 0; i < 8; i++)
 	{
 		CRAM[i] = (unsigned char*)malloc(0x400);
-		gp2x_memset(CRAM[i],0xFF,0x400);
+		memset(CRAM[i],0xFF,0x400);
 	}
 
 }

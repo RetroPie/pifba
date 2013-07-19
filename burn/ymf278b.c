@@ -257,7 +257,7 @@ void ymf278b_pcm_update(int num, INT16 **outputs, int length)
 	INT32 *mixp;
 	INT32 vl, vr;
 
-	gp2x_memset(mix, 0, sizeof(mix[0])*length*2);
+	memset(mix, 0, sizeof(mix[0])*length*2);
 
 	rombase = YMF278B[num].rom;
 
@@ -667,7 +667,7 @@ int ymf278b_start(INT8 num, UINT8 *rom, void (*irq_cb)(int, int), void (*timer_c
 {
 	int i;
 
-	gp2x_memset(&YMF278B[num], 0, sizeof(YMF278BChip));
+	memset(&YMF278B[num], 0, sizeof(YMF278BChip));
 	YMF278B[num].rom = rom;
 	YMF278B[num].irq_callback = irq_cb;
 	YMF278B[num].timer_callback = timer_cb;
@@ -699,7 +699,7 @@ int ymf278b_start(INT8 num, UINT8 *rom, void (*irq_cb)(int, int), void (*timer_c
 #else																/* !!! FBA */
 static void ymf278b_init(INT8 num, UINT8 *rom, void (*cb)(int), int clock)
 {
-	gp2x_memset(&YMF278B[num], 0, sizeof(YMF278BChip));
+	memset(&YMF278B[num], 0, sizeof(YMF278BChip));
 	YMF278B[num].rom = rom;
 	YMF278B[num].irq_callback = cb;
 	YMF278B[num].timer_a = timer_alloc(ymf278b_timer_a_tick);

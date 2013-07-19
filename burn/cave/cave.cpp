@@ -41,7 +41,7 @@ void CaveClearScreen(unsigned int nColour)
 			*pClear++ = nColour;
 		}
 	} else {
-		gp2x_memset(pBurnDraw, 0, nCaveXSize * nCaveYSize * sizeof(short));
+		memset(pBurnDraw, 0, nCaveXSize * nCaveYSize * sizeof(short));
 	}
 }
 

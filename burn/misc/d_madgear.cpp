@@ -1087,7 +1087,7 @@ static int drvLoadROMs()
 
 	// load and decode char roms	
 	unsigned char* robocopTemp = (unsigned char*) malloc(0xF00000);
-	gp2x_memset(robocopTemp, 0 , sizeof(robocopTemp));
+	memset(robocopTemp, 0 , sizeof(robocopTemp));
 	int nRet = BurnLoadRom(robocopTemp,12,1);
 	if (nRet != 0) return 1;
 
@@ -1128,14 +1128,14 @@ static int drvLoadROMs()
 //	}
 
 
-	gp2x_memset (robocopTemp,0x00, sizeof (robocopTemp));
+	memset (robocopTemp,0x00, sizeof (robocopTemp));
 
 	// Foreground layer
 	if (BurnLoadRom(MadGearFGTileROM, 13, 1)) {
 		return 1;
 	}
 
-	gp2x_memset (robocopTemp,0x00, sizeof (robocopTemp));
+	memset (robocopTemp,0x00, sizeof (robocopTemp));
 
 	// Background layer
 	if (BurnLoadRom(robocopTemp, 14, 1)) 
@@ -1285,7 +1285,7 @@ static int drvInit()
 		return 1;
 	}
 
-	gp2x_memset(Mem, 0, nLen);										   	// blank all memory
+	memset(Mem, 0, nLen);										   	// blank all memory
 	MemIndex();													   	// Index the allocated memory
 
 	// Load the roms into memory
@@ -1332,7 +1332,7 @@ static int drvScan(int nAction,int *pnMin)
 	}
 
 	if (nAction & ACB_VOLATILE) {		// Scan volatile ram		
-		gp2x_memset(&ba, 0, sizeof(ba));
+		memset(&ba, 0, sizeof(ba));
 		ba.Data	  = RamStart;
 		ba.nLen	  = RamEnd-RamStart;
 		ba.szName = "All Ram";

@@ -232,9 +232,9 @@ static int LoadRoms()
 		if (nRet) return 1;
 
 	ttiles=(unsigned char *)malloc(16384*64);
-	gp2x_memset(ttiles,0,16384*64);
+	memset(ttiles,0,16384*64);
 	tsprites=(unsigned char *)malloc(5120*256);
-	gp2x_memset(tsprites,0,5120*256);
+	memset(tsprites,0,5120*256);
 
 	for (c=0;c<16384;c++)
 	{
@@ -250,7 +250,7 @@ static int LoadRoms()
 			ttiles[(c*64)+7+(y*8)]=TempGfx[0x00002 + (y*4) + (c*32)]&0xF;
 		}
 	}
-	gp2x_memset(TempGfx,0,0xa0000);
+	memset(TempGfx,0,0xa0000);
 	nRet = BurnLoadRom(TempGfx + 0x00000, 8, 1);
 		if (nRet) return 1;
 	nRet = BurnLoadRom(TempGfx + 0x80000, 9, 2);
@@ -463,7 +463,7 @@ int rainbowInit()
 	Mem=(unsigned char *)malloc(nLen);
 	if (Mem==NULL)
 		return 1;
-	gp2x_memset(Mem,0,nLen); // blank all memory
+	memset(Mem,0,nLen); // blank all memory
 	MemIndex(); // Index the allocated memory
 
 	//--------------- Load Roms -------------------
@@ -648,7 +648,7 @@ static int rainbowScan(int nAction,int *pnMin)
 
 	if (nAction & ACB_VOLATILE) {		// Scan volatile ram
 
-		gp2x_memset(&ba, 0, sizeof(ba));
+		memset(&ba, 0, sizeof(ba));
     ba.Data		= RamStart;
 		ba.nLen		= RamEnd-RamStart;
 		ba.szName	= "All Ram";

@@ -716,7 +716,7 @@ int FstarfrcInit()
 	FstarfrcMemIndex();
 	nLen = MemEnd - (unsigned char *)0;
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) return 1;
-	gp2x_memset(Mem, 0, nLen);
+	memset(Mem, 0, nLen);
 	FstarfrcMemIndex();
 
 	FstarfrcTempGfx = (unsigned char*)malloc(0x100000);
@@ -726,18 +726,18 @@ int FstarfrcInit()
 	nRet = BurnLoadRom(FstarfrcRom + 0x00000, 1, 2); if (nRet != 0) return 1;
 
 	// Load and decode Char Tiles rom
-	gp2x_memset(FstarfrcTempGfx, 0, 0x100000);
+	memset(FstarfrcTempGfx, 0, 0x100000);
 	nRet = BurnLoadRom(FstarfrcTempGfx, 2, 1); if (nRet != 0) return 1;
 	FstarfrcDecode8x8Tiles(FstarfrcCharTiles, 4096);
 
 	// Load, byteswap and decode Bg and Fg Layer roms
-	gp2x_memset(FstarfrcTempGfx, 0, 0x100000);
+	memset(FstarfrcTempGfx, 0, 0x100000);
 	nRet = BurnLoadRom(FstarfrcTempGfx + 0x000000, 3, 2); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(FstarfrcTempGfx + 0x000001, 4, 2); if (nRet != 0) return 1;
 	FstarfrcDecode16x16Tiles(FstarfrcLayerTiles, 8192);
 
 	// Load, byteswap and decode Sprite Tile roms
-	gp2x_memset(FstarfrcTempGfx, 0, 0x100000);
+	memset(FstarfrcTempGfx, 0, 0x100000);
 	nRet = BurnLoadRom(FstarfrcTempGfx + 0x000000, 5, 2); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(FstarfrcTempGfx + 0x000001, 6, 2); if (nRet != 0) return 1;
 	FstarfrcDecode8x8Tiles(FstarfrcSpriteTiles, 32768);
@@ -1234,7 +1234,7 @@ static int FstarfrcScan(int nAction,int *pnMin)
 	}
 
 	if (nAction & ACB_MEMORY_RAM) {
-		gp2x_memset(&ba, 0, sizeof(ba));
+		memset(&ba, 0, sizeof(ba));
 		ba.Data	  = RamStart;
 		ba.nLen	  = RamEnd-RamStart;
 		ba.szName = "All Ram";

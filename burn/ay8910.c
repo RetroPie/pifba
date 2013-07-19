@@ -664,7 +664,7 @@ int AY8910Init(int chip, int clock, int sample_rate,
 		return 1;
 	}
 
-	gp2x_memset(PSG, 0, sizeof(struct AY8910));
+	memset(PSG, 0, sizeof(struct AY8910));
 	PSG->SampleRate = sample_rate;
 	PSG->PortAread = portAread;
 	PSG->PortBread = portBread;

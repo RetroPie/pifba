@@ -239,9 +239,9 @@ static int LoadRoms()
 	nRet=BurnLoadRom(MSM5205ROM,15,1); // adcpm
 
 	ttiles=(unsigned char *)malloc(16384*64);
-	gp2x_memset(ttiles,0,16384*64);
+	memset(ttiles,0,16384*64);
 	tsprites=(unsigned char *)malloc(5120*256);
-	gp2x_memset(tsprites,0,5120*256);
+	memset(tsprites,0,5120*256);
 
 	unsigned char *TempGfx;
 	unsigned int c,y;
@@ -503,7 +503,7 @@ int rastanInit()
 	Mem=(unsigned char *)malloc(nLen);
 	if (Mem==NULL)
 		return 1;
-	gp2x_memset(Mem,0,nLen); // blank all memory
+	memset(Mem,0,nLen); // blank all memory
 	MemIndex(); // Index the allocated memory
 
 	//--------------- Load Roms -------------------
@@ -671,7 +671,7 @@ static int rastanScan(int nAction,int *pnMin)
 	}
 
 	if (nAction & ACB_VOLATILE) {		// Scan volatile ram
-		gp2x_memset(&ba, 0, sizeof(ba));
+		memset(&ba, 0, sizeof(ba));
     ba.Data		= RamStart;
 		ba.nLen		= RamEnd-RamStart;
 		ba.szName	= "All Ram";

@@ -49,7 +49,7 @@ static bool bAdd;
 
 void MSM5205Reset(int nChip)
 {
-	gp2x_memset(MSM5205ChannelData[nChip], 0, 0x0100 * sizeof(int));
+	memset(MSM5205ChannelData[nChip], 0, 0x0100 * sizeof(int));
 
 	// Set initial bank information
 	MSM5205SampleInfo[nChip]= MSM5205ROM;
@@ -258,7 +258,7 @@ static void MSM5205Render_Linear(int nChip, int* pBuf, int nSegmentLength)
 int MSM5205Render(int nChip, short* pSoundBuf, int nSegmentLength)
 {
 	if (nChip == 0) {
-		gp2x_memset(pBuffer, 0, nSegmentLength * sizeof(int));
+		memset(pBuffer, 0, nSegmentLength * sizeof(int));
 	}
 	if (nInterpolation >= 3) {
 		MSM5205Render_Cubic(nChip, pBuffer, nSegmentLength);

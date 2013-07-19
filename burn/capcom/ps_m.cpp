@@ -30,7 +30,7 @@ int PsmInit()
 		PsmExit();
 		return 1;
 	}
-	gp2x_memset(WaveBuf, 0, nMemLen);						// Init to silence
+	memset(WaveBuf, 0, nMemLen);						// Init to silence
 
 	// Init ADPCM
 	MSM6295ROM = CpsAd;

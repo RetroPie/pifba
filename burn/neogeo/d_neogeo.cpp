@@ -1077,10 +1077,10 @@ static void PCM2DecryptP()
 	if (pTemp) {
 		unsigned int nBank[] = { 0x100000, 0x280000, 0x300000, 0x180000, 0x000000, 0x380000, 0x200000, 0x080000 };
 
-		gp2x_memcpy(pTemp, Neo68KROM + 0x100000, 0x400000);
+		memcpy(pTemp, Neo68KROM + 0x100000, 0x400000);
 
 		for (int i = 0; i < 8; i++) {
-			gp2x_memcpy(Neo68KROM + 0x100000 + i * 0x80000, pTemp + nBank[i], 0x80000);
+			memcpy(Neo68KROM + 0x100000 + i * 0x80000, pTemp + nBank[i], 0x80000);
 		}
 
 		free(pTemp);
@@ -1097,7 +1097,7 @@ static void PCM2DecryptV(PCM2DecryptVInfo* pInfo)
 	unsigned char* pTemp = (unsigned char*)malloc(0x01000000);
 
 	if (pTemp) {
-		gp2x_memcpy(pTemp, YM2610ADPCMAROM, 0x01000000);
+		memcpy(pTemp, YM2610ADPCMAROM, 0x01000000);
 
 		for (int i = 0; i < 0x01000000; i++) {
 			int nAddress = ((i & 0x00FEFFFE) | ((i & 0x00010000) >> 16) | ((i & 0x00000001) << 16)) ^ pInfo->nAddressOffset;
@@ -1118,10 +1118,10 @@ void NeogeoBootlegCXDecrypt(int nSize)
 	UINT8 *rom = NeoSpriteROM;
 	UINT8 *buf = (UINT8*)malloc( nSize );
 
-	gp2x_memcpy( buf, rom, nSize );
+	memcpy( buf, rom, nSize );
 
 	for( i = 0; i < nSize / 0x40; i++ ){
-		gp2x_memcpy( &rom[ i * 0x40 ], &buf[ (i ^ 1) * 0x40 ], 0x40 );
+		memcpy( &rom[ i * 0x40 ], &buf[ (i ^ 1) * 0x40 ], 0x40 );
 	}
 
 	free( buf );
@@ -1136,12 +1136,12 @@ void NeogeoBootlegSXDecrypt(int value)
 	if (value == 1)
 	{
 		UINT8 *buf = (UINT8*)malloc( sx_size );
-		gp2x_memcpy( buf, rom, sx_size );
+		memcpy( buf, rom, sx_size );
 
 		for( i = 0; i < sx_size; i += 0x10 )
 		{
-			gp2x_memcpy( &rom[ i ], &buf[ i + 8 ], 8 );
-			gp2x_memcpy( &rom[ i + 8 ], &buf[ i ], 8 );
+			memcpy( &rom[ i ], &buf[ i + 8 ], 8 );
+			memcpy( &rom[ i + 8 ], &buf[ i ], 8 );
 		}
 		free( buf );
 	}
@@ -2204,7 +2204,7 @@ static int rotdInit()
 	if (nRet == 0) {
 		for (int i = 0; i < 0x1000000 / 2; i += 16 / 2) {
 			unsigned short buffer[16 / 2];
-			gp2x_memcpy(buffer, ((unsigned short*)YM2610ADPCMAROM) + i, 16);
+			memcpy(buffer, ((unsigned short*)YM2610ADPCMAROM) + i, 16);
 			for (int j = 0; j < 16 / 2; j++) {
 				((unsigned short*)YM2610ADPCMAROM)[i + j] = buffer[j ^ 4];
 			}
@@ -2830,12 +2830,12 @@ static void lans2004Callback()
 		static const int sec[] = { 0x3, 0x8, 0x7, 0xC, 0x1, 0xA, 0x6, 0xD };
 
 		for (i = 0; i < 8; i++)
-			gp2x_memcpy (dst + i * 0x20000, src + sec[i] * 0x20000, 0x20000);
+			memcpy (dst + i * 0x20000, src + sec[i] * 0x20000, 0x20000);
 
-		gp2x_memcpy (dst + 0x0BBB00, src + 0x045B00, 0x001710);
-		gp2x_memcpy (dst + 0x02FFF0, src + 0x1A92BE, 0x000010);
-		gp2x_memcpy (dst + 0x100000, src + 0x200000, 0x400000);
-		gp2x_memcpy (src, dst, 0x600000);
+		memcpy (dst + 0x0BBB00, src + 0x045B00, 0x001710);
+		memcpy (dst + 0x02FFF0, src + 0x1A92BE, 0x000010);
+		memcpy (dst + 0x100000, src + 0x200000, 0x400000);
+		memcpy (src, dst, 0x600000);
 		free (dst);
 	}
 
@@ -3874,7 +3874,7 @@ static void garouSMADecrypt()
 
 	for (int i = 0; i < 0x800000 / 2; i += 0x8000 / 2) {
 		unsigned short nBuffer[0x8000 / 2];
-		gp2x_memcpy(nBuffer, &((unsigned short*)(Neo68KROM + 0x100000))[i], 0x8000);
+		memcpy(nBuffer, &((unsigned short*)(Neo68KROM + 0x100000))[i], 0x8000);
 		for (int j = 0; j < 0x8000 / 2; j++) {
 			((unsigned short*)(Neo68KROM + 0x100000))[i + j] = nBuffer[BITSWAP24(j, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 9, 4, 8, 3, 13, 6, 2, 7, 0, 12, 1, 11, 10, 5)];
 		}
@@ -3975,7 +3975,7 @@ static void garouoSMADecrypt()
 
 	for (int i = 0; i < 0x800000 / 2; i += 0x8000 / 2) {
 		unsigned short nBuffer[0x8000 / 2];
-		gp2x_memcpy(nBuffer, &((unsigned short*)(Neo68KROM + 0x100000))[i], 0x8000);
+		memcpy(nBuffer, &((unsigned short*)(Neo68KROM + 0x100000))[i], 0x8000);
 		for (int j = 0; j < 0x8000 / 2; j++) {
 			((unsigned short*)(Neo68KROM + 0x100000))[i + j] = nBuffer[BITSWAP24(j, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 12, 8, 1, 7, 11, 3, 13, 10, 6, 9, 5, 4, 0, 2)];
 		}
@@ -4605,7 +4605,7 @@ static void mslug3SMADecrypt()
 
 	for (int i = 0; i < 0x800000 / 2; i += 0x010000 / 2) {
 		unsigned short nBuffer[0x010000 / 2];
-		gp2x_memcpy(nBuffer, &((unsigned short*)(Neo68KROM + 0x100000))[i], 0x010000);
+		memcpy(nBuffer, &((unsigned short*)(Neo68KROM + 0x100000))[i], 0x010000);
 		for (int j = 0; j < 0x010000 / 2; j++) {
 			((unsigned short*)(Neo68KROM + 0x100000))[i + j] = nBuffer[BITSWAP24(j, 23, 22, 21, 20, 19, 18, 17, 16, 15, 2, 11, 0, 14, 6, 4, 13, 8, 9, 3, 10, 7, 5, 12, 1)];
 		}
@@ -4741,7 +4741,7 @@ static void mslug3b6Callback()
 {
 	NeogeoBootlegSXDecrypt(2);
 	
-	gp2x_memcpy(Neo68KROM, Neo68KROM + 0x100000, 0x500000);
+	memcpy(Neo68KROM, Neo68KROM + 0x100000, 0x500000);
 }
 
 static int mslug3b6Init()
@@ -4801,7 +4801,7 @@ static int mslug4Init()
 	if (nRet == 0) {
 		for (int i = 0; i < 0x1000000 / 2; i += 8 / 2) {
 			unsigned short buffer[8 / 2];
-			gp2x_memcpy(buffer, ((unsigned short*)YM2610ADPCMAROM) + i, 8);
+			memcpy(buffer, ((unsigned short*)YM2610ADPCMAROM) + i, 8);
 			for (int j = 0; j < 8 / 2; j++) {
 				((unsigned short*)YM2610ADPCMAROM)[i + j] = buffer[j ^ 2];
 			}
@@ -4905,20 +4905,20 @@ static void mslug5Callback()
 		rom[BYTE_XOR_LE(i+1)] = rom16&0xff;
 		rom[BYTE_XOR_LE(i+2)] = rom16>>8;
 	}
-	gp2x_memcpy( buf, rom, rom_size );
+	memcpy( buf, rom, rom_size );
 	for( i = 0; i < 0x0100000 / 0x10000; i++ )
 	{
 		ofst = (i & 0xf0) + BITSWAP08( (i & 0x0f), 7, 6, 5, 4, 1, 0, 3, 2 );
-		gp2x_memcpy( &rom[ i * 0x10000 ], &buf[ ofst * 0x10000 ], 0x10000 );
+		memcpy( &rom[ i * 0x10000 ], &buf[ ofst * 0x10000 ], 0x10000 );
 	}
 	for( i = 0x100000; i < 0x800000; i += 0x100 )
 	{
 		ofst = (i & 0xf000ff) + ((i & 0x000f00) ^ 0x00700) + (BITSWAP08( ((i & 0x0ff000) >> 12), 5, 4, 7, 6, 1, 0, 3, 2 ) << 12);
-		gp2x_memcpy( &rom[ i ], &buf[ ofst ], 0x100 );
+		memcpy( &rom[ i ], &buf[ ofst ], 0x100 );
 	}
-	gp2x_memcpy( buf, rom, rom_size );
-	gp2x_memcpy( &rom[ 0x100000 ], &buf[ 0x700000 ], 0x100000 );
-	gp2x_memcpy( &rom[ 0x200000 ], &buf[ 0x100000 ], 0x600000 );
+	memcpy( buf, rom, rom_size );
+	memcpy( &rom[ 0x100000 ], &buf[ 0x700000 ], 0x100000 );
+	memcpy( &rom[ 0x200000 ], &buf[ 0x100000 ], 0x600000 );
 	free( buf );
 }
 
@@ -4996,20 +4996,20 @@ static void ms5pcbCallback()
 		rom[BYTE_XOR_LE(i+1)] = rom16&0xff;
 		rom[BYTE_XOR_LE(i+2)] = rom16>>8;
 	}
-	gp2x_memcpy( buf, rom, rom_size );
+	memcpy( buf, rom, rom_size );
 	for( i = 0; i < 0x0100000 / 0x10000; i++ )
 	{
 		ofst = (i & 0xf0) + BITSWAP08( (i & 0x0f), 7, 6, 5, 4, 1, 0, 3, 2 );
-		gp2x_memcpy( &rom[ i * 0x10000 ], &buf[ ofst * 0x10000 ], 0x10000 );
+		memcpy( &rom[ i * 0x10000 ], &buf[ ofst * 0x10000 ], 0x10000 );
 	}
 	for( i = 0x100000; i < 0x800000; i += 0x100 )
 	{
 		ofst = (i & 0xf000ff) + ((i & 0x000f00) ^ 0x00700) + (BITSWAP08( ((i & 0x0ff000) >> 12), 5, 4, 7, 6, 1, 0, 3, 2 ) << 12);
-		gp2x_memcpy( &rom[ i ], &buf[ ofst ], 0x100 );
+		memcpy( &rom[ i ], &buf[ ofst ], 0x100 );
 	}
-	gp2x_memcpy( buf, rom, rom_size );
-	gp2x_memcpy( &rom[ 0x100000 ], &buf[ 0x700000 ], 0x100000 );
-	gp2x_memcpy( &rom[ 0x200000 ], &buf[ 0x100000 ], 0x600000 );
+	memcpy( buf, rom, rom_size );
+	memcpy( &rom[ 0x100000 ], &buf[ 0x700000 ], 0x100000 );
+	memcpy( &rom[ 0x200000 ], &buf[ 0x100000 ], 0x600000 );
 	free( buf );
 	
 	// S ROM
@@ -6258,7 +6258,7 @@ static void kof2000SMADecrypt()
 
 	for (int i = 0; i < 0x63A000 / 2; i += 0x0800 / 2) {
 		unsigned short nBuffer[0x0800 / 2];
-		gp2x_memcpy(nBuffer, &((unsigned short*)(Neo68KROM + 0x100000))[i], 0x0800);
+		memcpy(nBuffer, &((unsigned short*)(Neo68KROM + 0x100000))[i], 0x0800);
 		for (int j = 0; j < 0x0800 / 2; j++) {
 			((unsigned short*)(Neo68KROM + 0x100000))[i + j] = nBuffer[BITSWAP24(j, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 4, 1, 3, 8, 6, 2, 7, 0, 9, 5)];
 		}
@@ -6533,9 +6533,9 @@ static void kf2k2mpCallback()
 			for (j = 0; j < 0x80 / 2; j++)
 			{
 				int ofst = BITSWAP08( j, 6, 7, 2, 3, 4, 5, 0, 1 );
-				gp2x_memcpy(dst + j * 2, src + i + ofst * 2, 2);
+				memcpy(dst + j * 2, src + i + ofst * 2, 2);
 			}
-			gp2x_memcpy(src + i, dst, 0x80);
+			memcpy(src + i, dst, 0x80);
 		}
 	}
 	free(dst);
@@ -6600,11 +6600,11 @@ static void kf2k2mp2Callback()
 	unsigned char *src = Neo68KROM;
 	unsigned char *dst = (unsigned char*)malloc(0x600000);
 
-	gp2x_memcpy (dst + 0x000000, src + 0x1C0000, 0x040000);
-	gp2x_memcpy (dst + 0x040000, src + 0x140000, 0x080000);
-	gp2x_memcpy (dst + 0x0C0000, src + 0x100000, 0x040000);
-	gp2x_memcpy (dst + 0x100000, src + 0x200000, 0x400000);
-	gp2x_memcpy (src + 0x000000, dst + 0x000000, 0x600000);
+	memcpy (dst + 0x000000, src + 0x1C0000, 0x040000);
+	memcpy (dst + 0x040000, src + 0x140000, 0x080000);
+	memcpy (dst + 0x0C0000, src + 0x100000, 0x040000);
+	memcpy (dst + 0x100000, src + 0x200000, 0x400000);
+	memcpy (src + 0x000000, dst + 0x000000, 0x600000);
 	free (dst);
 	
 	NeogeoBootlegSXDecrypt(1);
@@ -6727,8 +6727,8 @@ static void kof10thCallback()
 	UINT8 *src = Neo68KROM;
 
 	if (dst) {
-		gp2x_memcpy(dst + 0x000000, src + 0x700000, 0x100000); // Correct (Verified in Uni-bios)
-		gp2x_memcpy(dst + 0x100000, src + 0x000000, 0x800000);
+		memcpy(dst + 0x000000, src + 0x700000, 0x100000); // Correct (Verified in Uni-bios)
+		memcpy(dst + 0x100000, src + 0x000000, 0x800000);
 		
 		for (i = 0; i < 0x900000; i++) {
 			j = BITSWAP24(i,23,22,21,20,19,18,17,16,15,14,13,12,11,2,9,8,7,1,5,4,3,10,6,0);
@@ -6788,8 +6788,8 @@ static int kof10thInit()
 
 	kof10thExtraRAMA = Neo68KROM + 0x7E0000;
 	kof10thExtraRAMB = Neo68KROM + 0x1FE000;
-	gp2x_memset(kof10thExtraRAMA, 0, 0x20000);
-	gp2x_memset(kof10thExtraRAMB, 0, 0x2000);
+	memset(kof10thExtraRAMA, 0, 0x20000);
+	memset(kof10thExtraRAMB, 0, 0x2000);
 
 	SekOpen(0);
 
@@ -6864,10 +6864,10 @@ static void kf10thepCallback()
 	
 	unsigned char* pTemp = (unsigned char*)malloc(0x8000000);
 	unsigned char* pTemp1 = (unsigned char*)malloc(0x2000000);
-	gp2x_memset(pTemp + 0x000000, 0, 0x100000);
-	gp2x_memcpy(pTemp + 0x100000, Neo68KROM + 0x200000, 0x600000);
-	gp2x_memset(pTemp + 0x700000, 0, 0x100000);
-	gp2x_memcpy(pTemp1, Neo68KROM, 0x200000);
+	memset(pTemp + 0x000000, 0, 0x100000);
+	memcpy(pTemp + 0x100000, Neo68KROM + 0x200000, 0x600000);
+	memset(pTemp + 0x700000, 0, 0x100000);
+	memcpy(pTemp1, Neo68KROM, 0x200000);
 	
 	int i;
 	UINT16 *rom = (UINT16*)pTemp;
@@ -6878,17 +6878,17 @@ static void kf10thepCallback()
 
 	UINT8 *dst = (UINT8*)malloc(0x200000);
 
-	gp2x_memcpy(dst,buf,0x200000);
-	gp2x_memcpy(src+0x000000,dst+0x060000,0x20000);
-	gp2x_memcpy(src+0x020000,dst+0x100000,0x20000);
-	gp2x_memcpy(src+0x040000,dst+0x0e0000,0x20000);
-	gp2x_memcpy(src+0x060000,dst+0x180000,0x20000);
-	gp2x_memcpy(src+0x080000,dst+0x020000,0x20000);
-	gp2x_memcpy(src+0x0a0000,dst+0x140000,0x20000);
-	gp2x_memcpy(src+0x0c0000,dst+0x0c0000,0x20000);
-	gp2x_memcpy(src+0x0e0000,dst+0x1a0000,0x20000);
-	gp2x_memcpy(src+0x0002e0,dst+0x0402e0,0x6a); // copy banked code to a new memory region
-	gp2x_memcpy(src+0x0f92bc,dst+0x0492bc,0xb9e); // copy banked code to a new memory region
+	memcpy(dst,buf,0x200000);
+	memcpy(src+0x000000,dst+0x060000,0x20000);
+	memcpy(src+0x020000,dst+0x100000,0x20000);
+	memcpy(src+0x040000,dst+0x0e0000,0x20000);
+	memcpy(src+0x060000,dst+0x180000,0x20000);
+	memcpy(src+0x080000,dst+0x020000,0x20000);
+	memcpy(src+0x0a0000,dst+0x140000,0x20000);
+	memcpy(src+0x0c0000,dst+0x0c0000,0x20000);
+	memcpy(src+0x0e0000,dst+0x1a0000,0x20000);
+	memcpy(src+0x0002e0,dst+0x0402e0,0x6a); // copy banked code to a new memory region
+	memcpy(src+0x0f92bc,dst+0x0492bc,0xb9e); // copy banked code to a new memory region
 	for (i=0xf92bc/2;i < 0xf9e58/2 ;i++)
 	{
 		if (rom[i+0] == 0x4eb9 && rom[i+1] == 0x0000) rom[i+1] = 0x000F; // correct JSR in moved code
@@ -6897,12 +6897,12 @@ static void kf10thepCallback()
 	rom[0x00342/2] = 0x000f;
 	free(dst);
 	
-	gp2x_memcpy(Neo68KROM, pTemp, 0x800000);
+	memcpy(Neo68KROM, pTemp, 0x800000);
 
 	for (i=0;i<0x20000;i++)
 		sbuf[i]=srom[i^0x8];
 
-	gp2x_memcpy(srom,sbuf,0x20000);
+	memcpy(srom,sbuf,0x20000);
 	free(sbuf);	
 	
 	free(pTemp);
@@ -6975,13 +6975,13 @@ static void kf2k5uniCallback()
 		for (j = 0; j < 0x80; j+=2)
 		{
 			ofst = BITSWAP08(j, 0, 3, 4, 5, 6, 1, 2, 7);
-			gp2x_memcpy(dst + j, src + i + ofst, 2);
+			memcpy(dst + j, src + i + ofst, 2);
 		}
-		gp2x_memcpy(src + i, dst, 0x80);
+		memcpy(src + i, dst, 0x80);
 	}
 	free(dst);
 
-	gp2x_memcpy(src, src + 0x600000, 0x100000);
+	memcpy(src, src + 0x600000, 0x100000);
 	
 	// M ROM
 	extern unsigned char* NeoZ80ROM;
@@ -7140,11 +7140,11 @@ static void kof2k4seCallback()
 	static const unsigned int sec[] = {0x300000,0x200000,0x100000,0x000000};
 	if (dst)
 	{
-		gp2x_memcpy(dst,src,0x400000);
+		memcpy(dst,src,0x400000);
 
 		for(i = 0; i < 4; ++i)
 		{
-		gp2x_memcpy(src+i*0x100000,dst+sec[i],0x100000);
+		memcpy(src+i*0x100000,dst+sec[i],0x100000);
 		}
 			free(dst);
 	}
@@ -7230,16 +7230,16 @@ static void kof2003Callback()
 	for( i = 0; i < 0x0100000 / 0x10000; i++ )
 	{
 		ofst = (i & 0xf0) + BITSWAP08((i & 0x0f), 7, 6, 5, 4, 0, 1, 2, 3);
-		gp2x_memcpy( &buf[ i * 0x10000 ], &rom[ ofst * 0x10000 ], 0x10000 );
+		memcpy( &buf[ i * 0x10000 ], &rom[ ofst * 0x10000 ], 0x10000 );
 	}
 	for( i = 0x100000; i < 0x900000; i += 0x100)
 	{
 		ofst = (i & 0xf000ff) + ((i & 0x000f00) ^ 0x00800) + (BITSWAP08( ((i & 0x0ff000) >> 12), 4, 5, 6, 7, 1, 0, 3, 2 ) << 12);
-		gp2x_memcpy( &buf[ i ], &rom[ ofst ], 0x100 );
+		memcpy( &buf[ i ], &rom[ ofst ], 0x100 );
 	}
-	gp2x_memcpy (&rom[0x000000], &buf[0x000000], 0x100000);
-	gp2x_memcpy (&rom[0x100000], &buf[0x800000], 0x100000);
-	gp2x_memcpy (&rom[0x200000], &buf[0x100000], 0x700000);
+	memcpy (&rom[0x000000], &buf[0x000000], 0x100000);
+	memcpy (&rom[0x100000], &buf[0x800000], 0x100000);
+	memcpy (&rom[0x200000], &buf[0x100000], 0x700000);
 	free( buf );
 }
 
@@ -7324,16 +7324,16 @@ static void kf2k3pcbCallback()
 	for( i = 0; i < 0x0100000 / 0x10000; i++ )
 	{
 		ofst = (i & 0xf0) + BITSWAP08( (i & 0x0f), 7, 6, 5, 4, 1, 0, 3, 2 );
-		gp2x_memcpy( &buf[ i * 0x10000 ], &rom[ ofst * 0x10000 ], 0x10000 );
+		memcpy( &buf[ i * 0x10000 ], &rom[ ofst * 0x10000 ], 0x10000 );
 	}
 	for( i = 0x100000; i < 0x900000; i += 0x100 )
 	{
 		ofst = (i & 0xf000ff) + ((i & 0x000f00) ^ 0x00300) + (BITSWAP08( ((i & 0x0ff000) >> 12), 4, 5, 6, 7, 1, 0, 3, 2 ) << 12);
-		gp2x_memcpy( &buf[ i ], &rom[ ofst ], 0x100 );
+		memcpy( &buf[ i ], &rom[ ofst ], 0x100 );
 	}
-	gp2x_memcpy (&rom[0x000000], &buf[0x000000], 0x100000);
-	gp2x_memcpy (&rom[0x100000], &buf[0x800000], 0x100000);
-	gp2x_memcpy (&rom[0x200000], &buf[0x100000], 0x700000);
+	memcpy (&rom[0x000000], &buf[0x000000], 0x100000);
+	memcpy (&rom[0x100000], &buf[0x800000], 0x100000);
+	memcpy (&rom[0x200000], &buf[0x100000], 0x700000);
 	free( buf );
 	
 	// S ROM
@@ -7405,8 +7405,8 @@ STD_ROM_FN(kf2k3bl);
 
 static void kf2k3blCallback()
 {
-	gp2x_memcpy(Neo68KROM + 0x100000, Neo68KROM + 0x000000, 0x600000);
-	gp2x_memcpy(Neo68KROM + 0x000000, Neo68KROM + 0x700000, 0x100000);
+	memcpy(Neo68KROM + 0x100000, Neo68KROM + 0x000000, 0x600000);
+	memcpy(Neo68KROM + 0x000000, Neo68KROM + 0x700000, 0x100000);
 	
 	NeogeoBootlegSXDecrypt(1);
 }
@@ -7530,7 +7530,7 @@ static void kf2k3blaCallback()
 
 	for (i = 0;i < 0x700000/2;i+=0x100000/2)
 	{
-		gp2x_memcpy(tmp,&rom[i],0x100000);
+		memcpy(tmp,&rom[i],0x100000);
 		for (j = 0;j < 0x100000/2;j++)
 			rom[i+j] = tmp[BITSWAP24(j,23,22,21,20,19,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18)];
 	}
@@ -7694,7 +7694,7 @@ static void kf2k3uplCallback()
 
 	for( i = 0; i < 0x2000 / 2; i++ ){
 		ofst = (i & 0xff00) + BITSWAP08( (i & 0x00ff), 7, 6, 0, 4, 3, 2, 1, 5 );
-		gp2x_memcpy( &rom[ i * 2 ], &buf[ ofst * 2 ], 2 );
+		memcpy( &rom[ i * 2 ], &buf[ ofst * 2 ], 2 );
 	}
 	
 	NeogeoBootlegSXDecrypt(2);
@@ -8029,15 +8029,15 @@ static void kogCallback()
 	static const unsigned int sec[] = { 0x3, 0x8, 0x7, 0xC, 0x1, 0xA, 0x6, 0xD };
 
 	for (i = 0; i < 8; i++){
-		gp2x_memcpy (dst + i * 0x20000, src + sec[i] * 0x20000, 0x20000);
+		memcpy (dst + i * 0x20000, src + sec[i] * 0x20000, 0x20000);
 	}
 
-	gp2x_memcpy (dst + 0x0007A6, src + 0x0407A6, 0x000006);
-	gp2x_memcpy (dst + 0x0007C6, src + 0x0407C6, 0x000006);
-	gp2x_memcpy (dst + 0x0007E6, src + 0x0407E6, 0x000006);
-	gp2x_memcpy (dst + 0x090000, src + 0x040000, 0x004000);
-	gp2x_memcpy (dst + 0x100000, src + 0x200000, 0x400000);
-	gp2x_memcpy (src, dst, 0x600000);
+	memcpy (dst + 0x0007A6, src + 0x0407A6, 0x000006);
+	memcpy (dst + 0x0007C6, src + 0x0407C6, 0x000006);
+	memcpy (dst + 0x0007E6, src + 0x0407E6, 0x000006);
+	memcpy (dst + 0x090000, src + 0x040000, 0x004000);
+	memcpy (dst + 0x100000, src + 0x200000, 0x400000);
+	memcpy (src, dst, 0x600000);
 	free (dst);
 
 	for (i = 0x90000/2; i < 0x94000/2; i++){
@@ -8151,35 +8151,35 @@ static void kof98Decrypt()
 		return;
 	}
 
-	gp2x_memcpy(pTemp, Neo68KROM, 0x200000);
+	memcpy(pTemp, Neo68KROM, 0x200000);
 
 	for (int i = 0x0800; i < 0x100000; i += 0x0200) {
 		for (int j = 0; j < 0x0100; j += 0x10) {
 			for (int k = 0; k < 8; k++) {
-				gp2x_memcpy(&Neo68KROM[i + j + k * 2 +      0], &pTemp[i + j + sec[k] + 0x0100], 2);
-				gp2x_memcpy(&Neo68KROM[i + j + k * 2 + 0x0100], &pTemp[i + j + sec[k] +      0], 2);
+				memcpy(&Neo68KROM[i + j + k * 2 +      0], &pTemp[i + j + sec[k] + 0x0100], 2);
+				memcpy(&Neo68KROM[i + j + k * 2 + 0x0100], &pTemp[i + j + sec[k] +      0], 2);
 			}
 			if (i >= 0x080000 && i < 0x0c0000) {
 				for (int k = 0; k < 4; k++) {
-					gp2x_memcpy(&Neo68KROM[i + j + pos[k] +      0], &pTemp[i + j + pos[k] +      0], 2);
-					gp2x_memcpy(&Neo68KROM[i + j + pos[k] + 0x0100], &pTemp[i + j + pos[k] + 0x0100], 2);
+					memcpy(&Neo68KROM[i + j + pos[k] +      0], &pTemp[i + j + pos[k] +      0], 2);
+					memcpy(&Neo68KROM[i + j + pos[k] + 0x0100], &pTemp[i + j + pos[k] + 0x0100], 2);
 				}
 			}
 			if (i >= 0x0c0000) {
 				for (int k = 0; k < 4; k++) {
-					gp2x_memcpy(&Neo68KROM[i + j + pos[k] +      0], &pTemp[i + j + pos[k] + 0x0100], 2);
-					gp2x_memcpy(&Neo68KROM[i + j + pos[k] + 0x0100], &pTemp[i + j + pos[k] +      0], 2);
+					memcpy(&Neo68KROM[i + j + pos[k] +      0], &pTemp[i + j + pos[k] + 0x0100], 2);
+					memcpy(&Neo68KROM[i + j + pos[k] + 0x0100], &pTemp[i + j + pos[k] +      0], 2);
 				}
 			}
 		}
 
-		gp2x_memcpy(&Neo68KROM[i + 0x000000], &pTemp[i + 0x000000], 2);
-		gp2x_memcpy(&Neo68KROM[i + 0x000002], &pTemp[i + 0x100000], 2);
-		gp2x_memcpy(&Neo68KROM[i + 0x000100], &pTemp[i + 0x000100], 2);
-		gp2x_memcpy(&Neo68KROM[i + 0x000102], &pTemp[i + 0x100100], 2);
+		memcpy(&Neo68KROM[i + 0x000000], &pTemp[i + 0x000000], 2);
+		memcpy(&Neo68KROM[i + 0x000002], &pTemp[i + 0x100000], 2);
+		memcpy(&Neo68KROM[i + 0x000100], &pTemp[i + 0x000100], 2);
+		memcpy(&Neo68KROM[i + 0x000102], &pTemp[i + 0x100100], 2);
 	}
 
-	gp2x_memcpy(&Neo68KROM[0x100000], &Neo68KROM[0x200000], 0x400000);
+	memcpy(&Neo68KROM[0x100000], &Neo68KROM[0x200000], 0x400000);
 
 	free(pTemp);
 }
@@ -8411,7 +8411,7 @@ static void kof99SMADecrypt()
 
 	for (int i = 0; i < 0x600000 / 2; i += 0x0800 / 2) {
 		unsigned short nBuffer[0x0800 / 2];
-		gp2x_memcpy(nBuffer, &((unsigned short*)(Neo68KROM + 0x100000))[i], 0x0800);
+		memcpy(nBuffer, &((unsigned short*)(Neo68KROM + 0x100000))[i], 0x0800);
 		for (int j = 0; j < 0x0800 / 2; j++) {
 			((unsigned short*)(Neo68KROM + 0x100000))[i + j] = nBuffer[BITSWAP24(j, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 6, 2, 4, 9, 8, 3, 1, 7, 0, 5)];
 		}
@@ -10415,9 +10415,9 @@ static void cthd2003_neogeo_gfx_address_fix_do(int start, int bit3shift, int bit
 				         (((j & 4) >> 2) << bit2shift) +
 						 (((j & 8) >> 3) << bit3shift);
 
-			gp2x_memcpy(rom + j * tilesize, realrom + offset * tilesize, tilesize);
+			memcpy(rom + j * tilesize, realrom + offset * tilesize, tilesize);
 		}
-		gp2x_memcpy(realrom, rom, tilesize * 16);
+		memcpy(realrom, rom, tilesize * 16);
 		realrom += 16 * tilesize;
 	}
 	free(rom);
@@ -10449,17 +10449,17 @@ static void cthdCallback()
 
 		unsigned char* tmp = (unsigned char*)malloc(0x020000);
 
-		gp2x_memcpy(tmp + 0 * 0x8000, NeoZ80ROM + 0 * 0x8000, 0x8000);
-		gp2x_memcpy(tmp + 1 * 0x8000, NeoZ80ROM + 2 * 0x8000, 0x8000);
-		gp2x_memcpy(tmp + 2 * 0x8000, NeoZ80ROM + 1 * 0x8000, 0x8000);
-		gp2x_memcpy(tmp + 3 * 0x8000, NeoZ80ROM + 3 * 0x8000, 0x8000);
-		gp2x_memcpy(NeoZ80ROM, tmp, 0x20000);
+		memcpy(tmp + 0 * 0x8000, NeoZ80ROM + 0 * 0x8000, 0x8000);
+		memcpy(tmp + 1 * 0x8000, NeoZ80ROM + 2 * 0x8000, 0x8000);
+		memcpy(tmp + 2 * 0x8000, NeoZ80ROM + 1 * 0x8000, 0x8000);
+		memcpy(tmp + 3 * 0x8000, NeoZ80ROM + 3 * 0x8000, 0x8000);
+		memcpy(NeoZ80ROM, tmp, 0x20000);
 
-		gp2x_memcpy(tmp + 0 * 0x8000, NeoTextROM + 0x020000 + 0 * 0x8000, 0x8000);
-		gp2x_memcpy(tmp + 1 * 0x8000, NeoTextROM + 0x020000 + 2 * 0x8000, 0x8000);
-		gp2x_memcpy(tmp + 2 * 0x8000, NeoTextROM + 0x020000 + 1 * 0x8000, 0x8000);
-		gp2x_memcpy(tmp + 3 * 0x8000, NeoTextROM + 0x020000 + 3 * 0x8000, 0x8000);
-		gp2x_memcpy(NeoTextROM + 0x020000, tmp, 0x20000);
+		memcpy(tmp + 0 * 0x8000, NeoTextROM + 0x020000 + 0 * 0x8000, 0x8000);
+		memcpy(tmp + 1 * 0x8000, NeoTextROM + 0x020000 + 2 * 0x8000, 0x8000);
+		memcpy(tmp + 2 * 0x8000, NeoTextROM + 0x020000 + 1 * 0x8000, 0x8000);
+		memcpy(tmp + 3 * 0x8000, NeoTextROM + 0x020000 + 3 * 0x8000, 0x8000);
+		memcpy(NeoTextROM + 0x020000, tmp, 0x20000);
 
 		free(tmp);
 
@@ -10562,11 +10562,11 @@ static void ct2k3spCallback()
 
 		unsigned char* tmp = (unsigned char*)malloc(0x020000);
 
-		gp2x_memcpy(tmp + 0 * 0x8000, NeoZ80ROM + 0 * 0x8000, 0x8000);
-		gp2x_memcpy(tmp + 1 * 0x8000, NeoZ80ROM + 2 * 0x8000, 0x8000);
-		gp2x_memcpy(tmp + 2 * 0x8000, NeoZ80ROM + 1 * 0x8000, 0x8000);
-		gp2x_memcpy(tmp + 3 * 0x8000, NeoZ80ROM + 3 * 0x8000, 0x8000);
-		gp2x_memcpy(NeoZ80ROM, tmp, 0x20000);
+		memcpy(tmp + 0 * 0x8000, NeoZ80ROM + 0 * 0x8000, 0x8000);
+		memcpy(tmp + 1 * 0x8000, NeoZ80ROM + 2 * 0x8000, 0x8000);
+		memcpy(tmp + 2 * 0x8000, NeoZ80ROM + 1 * 0x8000, 0x8000);
+		memcpy(tmp + 3 * 0x8000, NeoZ80ROM + 3 * 0x8000, 0x8000);
+		memcpy(NeoZ80ROM, tmp, 0x20000);
 		
 		free(tmp);
 		
@@ -10576,8 +10576,8 @@ static void ct2k3spCallback()
 		int i;
 		int ofst;
 
-		gp2x_memset(buf, 0, rom_size);
-		gp2x_memcpy( buf, rom, rom_size );
+		memset(buf, 0, rom_size);
+		memcpy( buf, rom, rom_size );
 		
 		for( i = 0; i < rom_size; i++ ){
 			ofst = BITSWAP24( (i & 0x1ffff), 23, 22, 21, 20, 19, 18, 17,  3,
@@ -10589,12 +10589,12 @@ static void ct2k3spCallback()
 			rom[ i ] = buf[ ofst ];
 		}
 
-		gp2x_memcpy( buf, rom, rom_size );
+		memcpy( buf, rom, rom_size );
 
-		gp2x_memcpy( &rom[ 0x08000 ], &buf[ 0x10000 ], 0x8000 );
-		gp2x_memcpy( &rom[ 0x10000 ], &buf[ 0x08000 ], 0x8000 );
-		gp2x_memcpy( &rom[ 0x28000 ], &buf[ 0x30000 ], 0x8000 );
-		gp2x_memcpy( &rom[ 0x30000 ], &buf[ 0x28000 ], 0x8000 );
+		memcpy( &rom[ 0x08000 ], &buf[ 0x10000 ], 0x8000 );
+		memcpy( &rom[ 0x10000 ], &buf[ 0x08000 ], 0x8000 );
+		memcpy( &rom[ 0x28000 ], &buf[ 0x30000 ], 0x8000 );
+		memcpy( &rom[ 0x30000 ], &buf[ 0x28000 ], 0x8000 );
 
 		free( buf );
 		
@@ -10751,20 +10751,20 @@ static void svcCallback()
 		rom[BYTE_XOR_LE(i+1)] = rom16&0xff;
 		rom[BYTE_XOR_LE(i+2)] = rom16>>8;
 	}
-	gp2x_memcpy( buf, rom, rom_size );
+	memcpy( buf, rom, rom_size );
 	for( i = 0; i < 0x0100000 / 0x10000; i++ )
 	{
 		ofst = (i & 0xf0) + BITSWAP08( (i & 0x0f), 7, 6, 5, 4, 2, 3, 0, 1 );
-		gp2x_memcpy( &rom[ i * 0x10000 ], &buf[ ofst * 0x10000 ], 0x10000 );
+		memcpy( &rom[ i * 0x10000 ], &buf[ ofst * 0x10000 ], 0x10000 );
 	}
 	for( i = 0x100000; i < 0x800000; i += 0x100 )
 	{
 		ofst = (i & 0xf000ff) + ((i & 0x000f00) ^ 0x00a00) + (BITSWAP08( ((i & 0x0ff000) >> 12), 4, 5, 6, 7, 1, 0, 3, 2 ) << 12);
-		gp2x_memcpy( &rom[ i ], &buf[ ofst ], 0x100 );
+		memcpy( &rom[ i ], &buf[ ofst ], 0x100 );
 	}
-	gp2x_memcpy( buf, rom, rom_size );
-	gp2x_memcpy( &rom[ 0x100000 ], &buf[ 0x700000 ], 0x100000 );
-	gp2x_memcpy( &rom[ 0x200000 ], &buf[ 0x100000 ], 0x600000 );
+	memcpy( buf, rom, rom_size );
+	memcpy( &rom[ 0x100000 ], &buf[ 0x700000 ], 0x100000 );
+	memcpy( &rom[ 0x200000 ], &buf[ 0x100000 ], 0x600000 );
 	free( buf );
 }
 
@@ -10835,12 +10835,12 @@ static void svcbootCallback()
 	UINT8 *dst = (UINT8*)malloc( size );
 	int ofst;
 	for( i = 0; i < size / 0x100000; i++ ){
-		gp2x_memcpy( &dst[ i * 0x100000 ], &src[ sec[ i ] * 0x100000 ], 0x100000 );
+		memcpy( &dst[ i * 0x100000 ], &src[ sec[ i ] * 0x100000 ], 0x100000 );
 	}
 	for( i = 0; i < size / 2; i++ ){
 		ofst = BITSWAP08( (i & 0x0000ff), 7, 6, 1, 0, 3, 2, 5, 4 );
 		ofst += (i & 0xffff00);
-		gp2x_memcpy( &src[ i * 2 ], &dst[ ofst * 2 ], 0x02 );
+		memcpy( &src[ i * 2 ], &dst[ ofst * 2 ], 0x02 );
 	}
 	free( dst );
 	
@@ -10859,7 +10859,7 @@ static void svcbootCallback()
 	size = 0x800000 * 8;
 	UINT8 *Csrc = NeoSpriteROM;
 	UINT8 *Cdst = (UINT8*)malloc( size );
-	gp2x_memcpy( Cdst, Csrc, size );
+	memcpy( Cdst, Csrc, size );
 	for( i = 0; i < size / 0x80; i++ ){
 		int idx = idx_tbl[ (i & 0xf00) >> 8 ];
 		int bit0 = bitswap4_tbl[ idx ][ 0 ];
@@ -10868,25 +10868,25 @@ static void svcbootCallback()
 		int bit3 = bitswap4_tbl[ idx ][ 3 ];
 		ofst = BITSWAP08( (i & 0x0000ff), 7, 6, 5, 4, bit3, bit2, bit1, bit0 );
 		ofst += (i & 0xfffff00);
-		gp2x_memcpy( &Csrc[ i * 0x80 ], &Cdst[ ofst * 0x80 ], 0x80 );
+		memcpy( &Csrc[ i * 0x80 ], &Cdst[ ofst * 0x80 ], 0x80 );
 	}
 	free( Cdst );
 	
 	// S ROM
 	unsigned char *pTemp = (unsigned char*)malloc(0x20000);
-	gp2x_memcpy(pTemp, NeoTextROM + 0x20000, 0x20000);
-	gp2x_memcpy(NeoTextROM + 0x20000, pTemp + 0x10000, 0x10000);
-	gp2x_memcpy(NeoTextROM + 0x30000, pTemp + 0x00000, 0x10000);
+	memcpy(pTemp, NeoTextROM + 0x20000, 0x20000);
+	memcpy(NeoTextROM + 0x20000, pTemp + 0x10000, 0x10000);
+	memcpy(NeoTextROM + 0x30000, pTemp + 0x00000, 0x10000);
 	free(pTemp);
 	
 	// M ROM
 	extern unsigned char* NeoZ80ROM;
 	
 	pTemp = (unsigned char*)malloc(0x20000);
-	gp2x_memset(pTemp, 0, 0x20000);
-	gp2x_memcpy(pTemp, NeoZ80ROM, 0x20000);
-	gp2x_memcpy(NeoZ80ROM + 0x00000, pTemp + 0x10000, 0x10000);
-	gp2x_memcpy(NeoZ80ROM + 0x10000, pTemp + 0x00000, 0x10000);
+	memset(pTemp, 0, 0x20000);
+	memcpy(pTemp, NeoZ80ROM, 0x20000);
+	memcpy(NeoZ80ROM + 0x00000, pTemp + 0x10000, 0x10000);
+	memcpy(NeoZ80ROM + 0x10000, pTemp + 0x00000, 0x10000);
 	free(pTemp);
 	
 	// V ROM
@@ -10950,18 +10950,18 @@ static void svcplusCallback()
 	UINT8 *dst = (UINT8*)malloc( size );
 	int i;
 	int ofst;
-	gp2x_memcpy( dst, src, size );
+	memcpy( dst, src, size );
 	for( i = 0; i < size / 2; i++ ){
 		ofst = BITSWAP24( (i & 0xfffff), 0x17, 0x16, 0x15, 0x14, 0x13, 0x00, 0x01, 0x02,
 										 0x0f, 0x0e, 0x0d, 0x0c, 0x0b, 0x0a, 0x09, 0x08,
 										 0x07, 0x06, 0x05, 0x04, 0x03, 0x10, 0x11, 0x12 );
 		ofst ^= 0x0f0007;
 		ofst += (i & 0xff00000);
-		gp2x_memcpy( &src[ i * 0x02 ], &dst[ ofst * 0x02 ], 0x02 );
+		memcpy( &src[ i * 0x02 ], &dst[ ofst * 0x02 ], 0x02 );
 	}
-	gp2x_memcpy( dst, src, size );
+	memcpy( dst, src, size );
 	for( i = 0; i < 6; i++ ){
-		gp2x_memcpy( &src[ i * 0x100000 ], &dst[ sec[ i ] * 0x100000 ], 0x100000 );
+		memcpy( &src[ i * 0x100000 ], &dst[ sec[ i ] * 0x100000 ], 0x100000 );
 	}
 	free( dst );
 	
@@ -10990,7 +10990,7 @@ static void svcplusCallback()
 	int Csize = 0x800000 * 8;
 	UINT8 *Csrc = NeoSpriteROM;
 	UINT8 *Cdst = (UINT8*)malloc( Csize );
-	gp2x_memcpy( Cdst, Csrc, Csize );
+	memcpy( Cdst, Csrc, Csize );
 	for( i = 0; i < Csize / 0x80; i++ ){
 		int idx = idx_tbl[ (i & 0xf00) >> 8 ];
 		int bit0 = bitswap4_tbl[ idx ][ 0 ];
@@ -10999,7 +10999,7 @@ static void svcplusCallback()
 		int bit3 = bitswap4_tbl[ idx ][ 3 ];
 		ofst = BITSWAP08( (i & 0x0000ff), 7, 6, 5, 4, bit3, bit2, bit1, bit0 );
 		ofst += (i & 0xfffff00);
-		gp2x_memcpy( &Csrc[ i * 0x80 ], &Cdst[ ofst * 0x80 ], 0x80 );
+		memcpy( &Csrc[ i * 0x80 ], &Cdst[ ofst * 0x80 ], 0x80 );
 	}
 	free( Cdst );
 	
@@ -11010,10 +11010,10 @@ static void svcplusCallback()
 	extern unsigned char* NeoZ80ROM;
 	
 	unsigned char *pTemp = (unsigned char*)malloc(0x20000);
-	gp2x_memset(pTemp, 0, 0x20000);
-	gp2x_memcpy(pTemp, NeoZ80ROM, 0x20000);
-	gp2x_memcpy(NeoZ80ROM + 0x00000, pTemp + 0x10000, 0x10000);
-	gp2x_memcpy(NeoZ80ROM + 0x10000, pTemp + 0x00000, 0x10000);
+	memset(pTemp, 0, 0x20000);
+	memcpy(pTemp, NeoZ80ROM, 0x20000);
+	memcpy(NeoZ80ROM + 0x00000, pTemp + 0x10000, 0x10000);
+	memcpy(NeoZ80ROM + 0x10000, pTemp + 0x00000, 0x10000);
 	free(pTemp);
 	
 	// V ROM
@@ -11075,9 +11075,9 @@ static void svcplusaCallback()
 	int size = 0x600000;
 	UINT8 *src = Neo68KROM;
 	UINT8 *dst = (UINT8*)malloc( size );
-	gp2x_memcpy( dst, src, size );
+	memcpy( dst, src, size );
 	for( i = 0; i < 6; i++ ){
-		gp2x_memcpy( &src[ i * 0x100000 ], &dst[ sec[ i ] * 0x100000 ], 0x100000 );
+		memcpy( &src[ i * 0x100000 ], &dst[ sec[ i ] * 0x100000 ], 0x100000 );
 	}
 	free( dst );
 	
@@ -11107,7 +11107,7 @@ static void svcplusaCallback()
 	UINT8 *Csrc = NeoSpriteROM;
 	UINT8 *Cdst = (UINT8*)malloc( Csize );
 	int ofst;
-	gp2x_memcpy( Cdst, Csrc, Csize );
+	memcpy( Cdst, Csrc, Csize );
 	for( i = 0; i < Csize / 0x80; i++ ){
 		int idx = idx_tbl[ (i & 0xf00) >> 8 ];
 		int bit0 = bitswap4_tbl[ idx ][ 0 ];
@@ -11116,25 +11116,25 @@ static void svcplusaCallback()
 		int bit3 = bitswap4_tbl[ idx ][ 3 ];
 		ofst = BITSWAP08( (i & 0x0000ff), 7, 6, 5, 4, bit3, bit2, bit1, bit0 );
 		ofst += (i & 0xfffff00);
-		gp2x_memcpy( &Csrc[ i * 0x80 ], &Cdst[ ofst * 0x80 ], 0x80 );
+		memcpy( &Csrc[ i * 0x80 ], &Cdst[ ofst * 0x80 ], 0x80 );
 	}
 	free( Cdst );
 	
 	// S ROM
 	unsigned char *pTemp = (unsigned char*)malloc(0x20000);
-	gp2x_memcpy(pTemp, NeoTextROM + 0x20000, 0x20000);
-	gp2x_memcpy(NeoTextROM + 0x20000, pTemp + 0x10000, 0x10000);
-	gp2x_memcpy(NeoTextROM + 0x30000, pTemp + 0x00000, 0x10000);
+	memcpy(pTemp, NeoTextROM + 0x20000, 0x20000);
+	memcpy(NeoTextROM + 0x20000, pTemp + 0x10000, 0x10000);
+	memcpy(NeoTextROM + 0x30000, pTemp + 0x00000, 0x10000);
 	free(pTemp);
 	
 	// M ROM
 	extern unsigned char* NeoZ80ROM;
 	
 	pTemp = (unsigned char*)malloc(0x20000);
-	gp2x_memset(pTemp, 0, 0x20000);
-	gp2x_memcpy(pTemp, NeoZ80ROM, 0x20000);
-	gp2x_memcpy(NeoZ80ROM + 0x00000, pTemp + 0x10000, 0x10000);
-	gp2x_memcpy(NeoZ80ROM + 0x10000, pTemp + 0x00000, 0x10000);
+	memset(pTemp, 0, 0x20000);
+	memcpy(pTemp, NeoZ80ROM, 0x20000);
+	memcpy(NeoZ80ROM + 0x00000, pTemp + 0x10000, 0x10000);
+	memcpy(NeoZ80ROM + 0x10000, pTemp + 0x00000, 0x10000);
 	free(pTemp);
 	
 	// V ROM
@@ -11197,14 +11197,14 @@ static void svcsplusCallback()
 	UINT8 *dst = (UINT8*)malloc( size );
 	int i;
 	int ofst;
-	gp2x_memcpy( dst, src, size );
+	memcpy( dst, src, size );
 	for( i = 0; i < size / 2; i++ ){
 		ofst = BITSWAP16( (i & 0x007fff), 0x0f, 0x00, 0x08, 0x09, 0x0b, 0x0a, 0x0c, 0x0d,
 										  0x04, 0x03, 0x01, 0x07, 0x06, 0x02, 0x05, 0x0e );
 
 		ofst += (i & 0x078000);
 		ofst += sec[ (i & 0xf80000) >> 19 ] << 19;
-		gp2x_memcpy( &src[ i * 2 ], &dst[ ofst * 2 ], 0x02 );
+		memcpy( &src[ i * 2 ], &dst[ ofst * 2 ], 0x02 );
 	}
 	free( dst );
 	
@@ -11231,7 +11231,7 @@ static void svcsplusCallback()
 	int Csize = 0x800000 * 8;
 	UINT8 *Csrc = NeoSpriteROM;
 	UINT8 *Cdst = (UINT8*)malloc( Csize );
-	gp2x_memcpy( Cdst, Csrc, Csize );
+	memcpy( Cdst, Csrc, Csize );
 	for( i = 0; i < Csize / 0x80; i++ ){
 		int idx = idx_tbl[ (i & 0xf00) >> 8 ];
 		int bit0 = bitswap4_tbl[ idx ][ 0 ];
@@ -11240,7 +11240,7 @@ static void svcsplusCallback()
 		int bit3 = bitswap4_tbl[ idx ][ 3 ];
 		ofst = BITSWAP08( (i & 0x0000ff), 7, 6, 5, 4, bit3, bit2, bit1, bit0 );
 		ofst += (i & 0xfffff00);
-		gp2x_memcpy( &Csrc[ i * 0x80 ], &Cdst[ ofst * 0x80 ], 0x80 );
+		memcpy( &Csrc[ i * 0x80 ], &Cdst[ ofst * 0x80 ], 0x80 );
 	}
 	free( Cdst );
 	
@@ -11251,10 +11251,10 @@ static void svcsplusCallback()
 	extern unsigned char* NeoZ80ROM;
 	
 	unsigned char *pTemp = (unsigned char*)malloc(0x20000);
-	gp2x_memset(pTemp, 0, 0x20000);
-	gp2x_memcpy(pTemp, NeoZ80ROM, 0x20000);
-	gp2x_memcpy(NeoZ80ROM + 0x00000, pTemp + 0x10000, 0x10000);
-	gp2x_memcpy(NeoZ80ROM + 0x10000, pTemp + 0x00000, 0x10000);
+	memset(pTemp, 0, 0x20000);
+	memcpy(pTemp, NeoZ80ROM, 0x20000);
+	memcpy(NeoZ80ROM + 0x00000, pTemp + 0x10000, 0x10000);
+	memcpy(NeoZ80ROM + 0x10000, pTemp + 0x00000, 0x10000);
 	free(pTemp);
 	
 	// V ROM
@@ -11323,20 +11323,20 @@ static void svcpcbCallback()
 		rom[BYTE_XOR_LE(i+1)] = rom16&0xff;
 		rom[BYTE_XOR_LE(i+2)] = rom16>>8;
 	}
-	gp2x_memcpy( buf, rom, rom_size );
+	memcpy( buf, rom, rom_size );
 	for( i = 0; i < 0x0100000 / 0x10000; i++ )
 	{
 		ofst = (i & 0xf0) + BITSWAP08( (i & 0x0f), 7, 6, 5, 4, 2, 3, 0, 1 );
-		gp2x_memcpy( &rom[ i * 0x10000 ], &buf[ ofst * 0x10000 ], 0x10000 );
+		memcpy( &rom[ i * 0x10000 ], &buf[ ofst * 0x10000 ], 0x10000 );
 	}
 	for( i = 0x100000; i < 0x800000; i += 0x100 )
 	{
 		ofst = (i & 0xf000ff) + ((i & 0x000f00) ^ 0x00a00) + (BITSWAP08( ((i & 0x0ff000) >> 12), 4, 5, 6, 7, 1, 0, 3, 2 ) << 12);
-		gp2x_memcpy( &rom[ i ], &buf[ ofst ], 0x100 );
+		memcpy( &rom[ i ], &buf[ ofst ], 0x100 );
 	}
-	gp2x_memcpy( buf, rom, rom_size );
-	gp2x_memcpy( &rom[ 0x100000 ], &buf[ 0x700000 ], 0x100000 );
-	gp2x_memcpy( &rom[ 0x200000 ], &buf[ 0x100000 ], 0x600000 );
+	memcpy( buf, rom, rom_size );
+	memcpy( &rom[ 0x100000 ], &buf[ 0x700000 ], 0x100000 );
+	memcpy( &rom[ 0x200000 ], &buf[ 0x100000 ], 0x600000 );
 	free( buf );
 	
 	// S ROM
@@ -11432,7 +11432,7 @@ static int pnyaaInit()
 	if (nRet == 0) {
 		for (int i = 0; i < 0x400000 / 2; i += 4 / 2) {
 			unsigned short buffer[4 / 2];
-			gp2x_memcpy(buffer, ((unsigned short*)YM2610ADPCMAROM) + i, 4);
+			memcpy(buffer, ((unsigned short*)YM2610ADPCMAROM) + i, 4);
 			for (int j = 0; j < 4 / 2; j++) {
 				((unsigned short*)YM2610ADPCMAROM)[i + j] = buffer[j ^ 1];
 			}
@@ -11486,10 +11486,10 @@ static void samsho5Callback()
 
 	if (dst) // Descramble P
 	{
-		gp2x_memcpy( dst, src, 0x800000 );
+		memcpy( dst, src, 0x800000 );
 		for( i=0; i<16; ++i )
 		{
-			gp2x_memcpy( src+i*0x80000, dst+sec[i], 0x80000 );
+			memcpy( src+i*0x80000, dst+sec[i], 0x80000 );
 		}
 	free(dst);
 	}
@@ -11503,20 +11503,20 @@ static void samsho5bCallback()
 	int ofst;
 	int i;
 
-	gp2x_memcpy( buf, rom, px_size );
+	memcpy( buf, rom, px_size );
 
 	for( i = 0; i < px_size / 2; i++ ){
 		ofst = BITSWAP08( (i & 0x000ff), 7, 6, 5, 4, 3, 0, 1, 2 );
 		ofst += (i & 0xfffff00);
 		ofst ^= 0x060005;
 
-		gp2x_memcpy( &rom[ i * 2 ], &buf[ ofst * 2 ], 0x02 );
+		memcpy( &rom[ i * 2 ], &buf[ ofst * 2 ], 0x02 );
 	}
 
-	gp2x_memcpy( buf, rom, px_size );
+	memcpy( buf, rom, px_size );
 
-	gp2x_memcpy( &rom[ 0x000000 ], &buf[ 0x700000 ], 0x100000 );
-	gp2x_memcpy( &rom[ 0x100000 ], &buf[ 0x000000 ], 0x700000 );
+	memcpy( &rom[ 0x000000 ], &buf[ 0x700000 ], 0x100000 );
+	memcpy( &rom[ 0x100000 ], &buf[ 0x000000 ], 0x700000 );
 
 	free( buf );
 }
@@ -11656,10 +11656,10 @@ static void samsh5spCallback()
 
 	if (dst) // Descramble P
 	{
-		gp2x_memcpy( dst, src, 0x800000 );
+		memcpy( dst, src, 0x800000 );
 		for( i=0; i<16; ++i )
 		{
-			gp2x_memcpy( src+i*0x80000, dst+sec[i], 0x80000 );
+			memcpy( src+i*0x80000, dst+sec[i], 0x80000 );
 		}
 	free(dst);
 	}

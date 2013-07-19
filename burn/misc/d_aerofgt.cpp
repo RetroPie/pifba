@@ -313,7 +313,7 @@ static int LoadRoms()
 	
 	// Load Z80 ROM
 	if (BurnLoadRom(RomZ80+0x10000, 5, 1)) return 1;
-	gp2x_memcpy(RomZ80, RomZ80+0x10000, 0x10000);
+	memcpy(RomZ80, RomZ80+0x10000, 0x10000);
 
 	BurnLoadRom(RomSnd1,  6, 1);
 	BurnLoadRom(RomSnd2,  7, 1);
@@ -559,7 +559,7 @@ static int DrvDoReset()
 	CZetReset();
 	BurnYM2610Reset();
 
-	gp2x_memset(RamGfxBank, 0 , sizeof(RamGfxBank));
+	memset(RamGfxBank, 0 , sizeof(RamGfxBank));
 
 	return 0;
 }
@@ -572,7 +572,7 @@ static int aerofgtInit()
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) {
 		return 1;
 	}
-	gp2x_memset(Mem, 0, nLen);										// blank all memory
+	memset(Mem, 0, nLen);										// blank all memory
 	MemIndex();	
 	
 	// Load the roms into memory
@@ -1175,7 +1175,7 @@ static int DrvScan(int nAction,int *pnMin)
 	}
 
 	if (nAction & ACB_MEMORY_RAM) {								// Scan all memory, devices & variables
-		gp2x_memset(&ba, 0, sizeof(ba));
+		memset(&ba, 0, sizeof(ba));
     	ba.Data	  = RamStart;
 		ba.nLen	  = RamEnd-RamStart;
 		ba.szName = "All Ram";
@@ -1577,7 +1577,7 @@ static int turbofrcInit()
 	turbofrcMemIndex();
 	int nLen = MemEnd - (unsigned char *)0;
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) return 1;
-	gp2x_memset(Mem, 0, nLen);
+	memset(Mem, 0, nLen);
 	turbofrcMemIndex();	
 	
 	// Load 68000 ROM
@@ -1602,7 +1602,7 @@ static int turbofrcInit()
 	
 	// Load Z80 ROM
 	if (BurnLoadRom(RomZ80+0x10000, 13, 1)) return 1;
-	gp2x_memcpy(RomZ80, RomZ80+0x10000, 0x10000);
+	memcpy(RomZ80, RomZ80+0x10000, 0x10000);
 
 	BurnLoadRom(RomSnd1, 14, 1);
 	BurnLoadRom(RomSnd2, 15, 1);
@@ -2499,7 +2499,7 @@ static int karatblzInit()
 	karatblzMemIndex();
 	int nLen = MemEnd - (unsigned char *)0;
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) return 1;
-	gp2x_memset(Mem, 0, nLen);
+	memset(Mem, 0, nLen);
 	karatblzMemIndex();	
 	
 	// Load 68000 ROM
@@ -2521,7 +2521,7 @@ static int karatblzInit()
 	
 	// Load Z80 ROM
 	if (BurnLoadRom(RomZ80+0x10000, 10, 1)) return 1;
-	gp2x_memcpy(RomZ80, RomZ80+0x10000, 0x10000);
+	memcpy(RomZ80, RomZ80+0x10000, 0x10000);
 
 	BurnLoadRom(RomSnd1, 11, 1);
 	BurnLoadRom(RomSnd2, 12, 1);
@@ -2912,7 +2912,7 @@ static int aerofgtbInit()
 	
 	// Load Z80 ROM
 	if (BurnLoadRom(RomZ80+0x10000, 5, 1)) return 1;
-	gp2x_memcpy(RomZ80, RomZ80+0x10000, 0x10000);
+	memcpy(RomZ80, RomZ80+0x10000, 0x10000);
 
 	BurnLoadRom(RomSnd1,  6, 1);
 	BurnLoadRom(RomSnd2,  7, 1);
@@ -3379,7 +3379,7 @@ static int spinlbrkInit()
 	spinlbrkMemIndex();
 	int nLen = MemEnd - (unsigned char *)0;
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) return 1;
-	gp2x_memset(Mem, 0, nLen);
+	memset(Mem, 0, nLen);
 	spinlbrkMemIndex();	
 	
 	// Load 68000 ROM

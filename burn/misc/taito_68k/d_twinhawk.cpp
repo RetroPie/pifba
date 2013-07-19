@@ -299,7 +299,7 @@ static int LoadRoms()
 	nRet=BurnLoadRom(Rom+0x00000,1,2); if (nRet!=0) return 1;
 	nRet=BurnLoadRom(z80_rom,2,1); // load z80 code rom
 	ttiles=(unsigned char *)malloc(0x400000);
-	gp2x_memset(ttiles,0,16384*256);
+	memset(ttiles,0,16384*256);
 
 	SysxTempGfx=(unsigned char *)malloc(0x200000);
 
@@ -527,7 +527,7 @@ int twinhawkInit()
 	Mem=(unsigned char *)malloc(nLen);
 	if (Mem==NULL)
 		return 1;
-	gp2x_memset(Mem,0,nLen); // blank all memory
+	memset(Mem,0,nLen); // blank all memory
 	MemIndex(); // Index the allocated memory
 
 	//--------------- Load Roms -------------------
@@ -684,7 +684,7 @@ static int twinhawkScan(int nAction,int *pnMin)
 
 	if (nAction & ACB_VOLATILE) {		// Scan volatile ram
 
-		gp2x_memset(&ba, 0, sizeof(ba));
+		memset(&ba, 0, sizeof(ba));
     ba.Data	  = RamStart;
 		ba.nLen	  = RamEnd-RamStart;
 		ba.szName = "All Ram";

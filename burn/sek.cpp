@@ -406,7 +406,7 @@ int SekInit(int nCount, int nCPUType)
 
 	// Allocate cpu extenal data (memory map etc)
 	//SekExt[nCount] = (struct SekExt*)malloc(sizeof(struct SekExt));
-	gp2x_memset(&tSekExt, 0, sizeof(struct SekExt));
+	memset(&tSekExt, 0, sizeof(struct SekExt));
 
 	// Put in default memory handlers
 	ps = &tSekExt;
@@ -495,7 +495,7 @@ int SekInit(int nCount, int nCPUType)
 		CycloneInit();
 		bCycloneInited = true;
 	}
-	gp2x_memset(&PicoCpu, 0, sizeof(PicoCpu));
+	memset(&PicoCpu, 0, sizeof(PicoCpu));
 	
 	PicoCpu.read8	= ReadByte;
 	PicoCpu.read16	= ReadWord;
@@ -531,8 +531,8 @@ int SekInit(int nCount, int nCPUType)
 #ifdef EMU_C68K
 static void PicoReset()
 {
-	//gp2x_memset(&PicoCpu,0,PicoCpu.pad1-PicoCpu.d); // clear all regs
-	gp2x_memset(&PicoCpu, 0, 22 * 4); // clear all regs
+	//memset(&PicoCpu,0,PicoCpu.pad1-PicoCpu.d); // clear all regs
+	memset(&PicoCpu, 0, 22 * 4); // clear all regs
 	
 	PicoCpu.stopped	= 0;
 	PicoCpu.srh		= 0x27; // Supervisor mode
@@ -850,7 +850,7 @@ int SekScan(int nAction)
 		return 1;
 	}
 
-	gp2x_memset(&ba, 0, sizeof(ba));
+	memset(&ba, 0, sizeof(ba));
 
 	nSekActive = -1;
 

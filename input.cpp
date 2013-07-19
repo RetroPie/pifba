@@ -39,7 +39,7 @@ int DoInputBlank(int /*bDipSwitch*/)
   for (i=0; i<nGameInpCount; i++)
   {
     struct BurnInputInfo bii;
-    gp2x_memset(&bii,0,sizeof(bii));
+    memset(&bii,0,sizeof(bii));
     BurnDrvGetInputInfo(&bii,i);
     
     //if (bDipSwitch==0 && bii.nType==2) continue; // Don't blank the dip switches
@@ -51,7 +51,7 @@ int DoInputBlank(int /*bDipSwitch*/)
 			DIPInfo.nFirstDIP = i;
 			DIPInfo.nDIP = nGameInpCount - i;
 			DIPInfo.DIPData = (struct GameInp *)malloc(DIPInfo.nDIP * sizeof(struct GameInp));
-			gp2x_memset(DIPInfo.DIPData,0,DIPInfo.nDIP * sizeof(struct GameInp));
+			memset(DIPInfo.DIPData,0,DIPInfo.nDIP * sizeof(struct GameInp));
 		}
 		DIPInfo.DIPData[i-DIPInfo.nFirstDIP].pVal = bii.pVal;
 		DIPInfo.DIPData[i-DIPInfo.nFirstDIP].nType = bii.nType;
@@ -200,7 +200,7 @@ int InpInit()
     }
   }
   
-  gp2x_memset(GameInp,0,12*4*sizeof(struct GameInp));
+  memset(GameInp,0,12*4*sizeof(struct GameInp));
   DoInputBlank(1);
 
   bInputOk = true;

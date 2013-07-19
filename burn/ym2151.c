@@ -1496,7 +1496,7 @@ int YM2151Init(int num, int clock, int rate, unsigned char stereo)
 	if (YMPSG == NULL)
 		return 1;
 
-	gp2x_memset(YMPSG, 0, sizeof(YM2151) * YMNumChips);
+	memset(YMPSG, 0, sizeof(YM2151) * YMNumChips);
 
 	ym2151_state_save_register( YMNumChips );
 
@@ -1584,7 +1584,7 @@ void YM2151ResetChip(int num)
 	/* initialize hardware registers */
 	for (i=0; i<32; i++)
 	{
-		gp2x_memset(&chip->oper[i],'\0',sizeof(YM2151Operator));
+		memset(&chip->oper[i],'\0',sizeof(YM2151Operator));
 		chip->oper[i].volume = MAX_ATT_INDEX;
 	        chip->oper[i].kc_i = 768; /* min kc_i value */
 	}

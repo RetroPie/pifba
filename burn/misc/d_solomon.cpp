@@ -407,7 +407,7 @@ int SolomonInit()
 	SolomonMemIndex();
 	nLen = MemEnd - (unsigned char *)0;
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) return 1;
-	gp2x_memset(Mem, 0, nLen);
+	memset(Mem, 0, nLen);
 	SolomonMemIndex();
 
 	SolomonTempRom = (unsigned char *)malloc(0x10000);
@@ -415,30 +415,30 @@ int SolomonInit()
 	// Load Z80 #1 Program Roms
 	nRet = BurnLoadRom(SolomonZ80Rom1, 0, 1); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(SolomonTempRom, 1, 1); if (nRet != 0) return 1;
-	gp2x_memcpy(SolomonZ80Rom1 + 0x4000, SolomonTempRom + 0x4000, 0x4000);
-	gp2x_memcpy(SolomonZ80Rom1 + 0x8000, SolomonTempRom + 0x0000, 0x4000);
-	gp2x_memset(SolomonTempRom, 0, 0x10000);
+	memcpy(SolomonZ80Rom1 + 0x4000, SolomonTempRom + 0x4000, 0x4000);
+	memcpy(SolomonZ80Rom1 + 0x8000, SolomonTempRom + 0x0000, 0x4000);
+	memset(SolomonTempRom, 0, 0x10000);
 	nRet = BurnLoadRom(SolomonTempRom, 2, 1); if (nRet != 0) return 1;
-	gp2x_memcpy(SolomonZ80Rom1 + 0xf000, SolomonTempRom, 0x1000);
+	memcpy(SolomonZ80Rom1 + 0xf000, SolomonTempRom, 0x1000);
 	//nRet = BurnLoadRom(SolomonZ80Rom1 + 0x0f000, 2, 1); if (nRet != 0) return 1;
 
 	// Load Z80 #2 Program Rom
 	nRet = BurnLoadRom(SolomonZ80Rom2, 3, 1); if (nRet != 0) return 1;
 
 	// Load and decode Bg Tiles
-	gp2x_memset(SolomonTempRom, 0, 0x10000);
+	memset(SolomonTempRom, 0, 0x10000);
 	nRet = BurnLoadRom(SolomonTempRom + 0x0000, 6, 1); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(SolomonTempRom + 0x8000, 7, 1); if (nRet != 0) return 1;
 	SolomonDecode8x8Tiles(SolomonBgTiles, 2048);
 
 	// Load and decode Fg Tiles
-	gp2x_memset(SolomonTempRom, 0, 0x10000);
+	memset(SolomonTempRom, 0, 0x10000);
 	nRet = BurnLoadRom(SolomonTempRom + 0x0000, 4, 1); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(SolomonTempRom + 0x8000, 5, 1); if (nRet != 0) return 1;
 	SolomonDecode8x8Tiles(SolomonFgTiles, 2048);
 
 	// Load and decode Sprite Tiles
-	gp2x_memset(SolomonTempRom, 0, 0x10000);
+	memset(SolomonTempRom, 0, 0x10000);
 	nRet = BurnLoadRom(SolomonTempRom + 0x0000,  8, 1); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(SolomonTempRom + 0x4000,  9, 1); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(SolomonTempRom + 0x8000, 10, 1); if (nRet != 0) return 1;
@@ -850,7 +850,7 @@ static int SolomonScan(int nAction,int *pnMin)
 	}
 
 	if (nAction & ACB_MEMORY_RAM) {
-		gp2x_memset(&ba, 0, sizeof(ba));
+		memset(&ba, 0, sizeof(ba));
 		ba.Data	  = RamStart;
 		ba.nLen	  = RamEnd-RamStart;
 		ba.szName = "All Ram";

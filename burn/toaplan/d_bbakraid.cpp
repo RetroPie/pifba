@@ -309,7 +309,7 @@ static int DrvScan(int nAction, int *pnMin)
 	EEPROMScan(nAction, pnMin);			// Scan EEPROM
 
 	if (nAction & ACB_VOLATILE) {		// Scan volatile ram
-		gp2x_memset(&ba, 0, sizeof(ba));
+		memset(&ba, 0, sizeof(ba));
     ba.Data		= RamStart;
 		ba.nLen		= RamEnd - RamStart;
 		ba.szName	= "RAM";
@@ -686,7 +686,7 @@ static int DrvDoReset()
 
 	Z80BusRQ = 0;
 
-	gp2x_memset(nSoundData, 0, sizeof(nSoundData));
+	memset(nSoundData, 0, sizeof(nSoundData));
 	nSoundlatchAck = 0;
 
 	YMZ280BReset();
@@ -716,7 +716,7 @@ static int bbakraidInit()
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) {
 		return 1;
 	}
-	gp2x_memset(Mem, 0, nLen);										// blank all memory
+	memset(Mem, 0, nLen);										// blank all memory
 	MemIndex();													// Index the allocated memory
 
 	EEPROMInit(4096, 8);										// EEPROM has 4096 bits, uses 8-bit words

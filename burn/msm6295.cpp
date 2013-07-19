@@ -61,7 +61,7 @@ void MSM6295Reset(int nChip)
 		MSM6295SampleInfo[nChip][nChannel] = MSM6295ROM + (nChip * 0x0100000) + (nChannel << 8);
 		MSM6295SampleData[nChip][nChannel] = MSM6295ROM + (nChip * 0x0100000) + (nChannel << 16);
 
-		gp2x_memset(MSM6295ChannelData[nChip][nChannel], 0, 0x1000 * sizeof(int));
+		memset(MSM6295ChannelData[nChip][nChannel], 0, 0x1000 * sizeof(int));
 		MSM6295[nChip].ChannelInfo[nChannel].nBufPos = 4;
 	}
 }
@@ -295,7 +295,7 @@ int MSM6295Render(int nChip, short* pSoundBuf, int nSegmentLength)
 	{
 		if (nChip == 0)
 		{
-			gp2x_memset(pBuffer, 0, nSegmentLength * sizeof(int));
+			memset(pBuffer, 0, nSegmentLength * sizeof(int));
 		}
 	
 		if (nInterpolation >= 3)

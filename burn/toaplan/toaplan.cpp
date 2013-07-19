@@ -137,7 +137,7 @@ void ToaClearScreen()
 			}
 		}
 	} else {
-		gp2x_memset(pBurnDraw, 0, 320 * 240 * nBurnBpp);
+		memset(pBurnDraw, 0, 320 * 240 * nBurnBpp);
 	}
 }
 

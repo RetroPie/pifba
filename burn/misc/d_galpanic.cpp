@@ -685,7 +685,7 @@ void __fastcall GalpanicWriteByte(unsigned int sekAddress, unsigned char byteVal
 	switch (sekAddress) {
 		case 0x900000:
 			SndBank = (byteValue & 0x0f);
-			gp2x_memcpy(&RomSnd[0x30000], &RomSnd[0x40000 + SndBank * 0x10000], 0x10000);
+			memcpy(&RomSnd[0x30000], &RomSnd[0x40000 + SndBank * 0x10000], 0x10000);
 			break;
 		case 0x400001:
 			MSM6295Command(0, byteValue);
@@ -741,7 +741,7 @@ void __fastcall ComadWriteByte(unsigned int sekAddress, unsigned char byteValue)
 		case 0x900000:
 		case 0x900001:
 			SndBank = (byteValue & 0x0f);
-			gp2x_memcpy(&RomSnd[0x30000], &RomSnd[0x40000 + SndBank * 0x10000], 0x10000);
+			memcpy(&RomSnd[0x30000], &RomSnd[0x40000 + SndBank * 0x10000], 0x10000);
 			break;
 		case 0xC00000:
 		case 0xC80000:
@@ -891,7 +891,7 @@ static int GalpanicInit()
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) {
 		return 1;
 	}
-	gp2x_memset(Mem, 0, nLen);										// blank all memory
+	memset(Mem, 0, nLen);										// blank all memory
 	MemIndex();	
 
 	// Load and byte-swap 68000 Program roms
@@ -912,7 +912,7 @@ static int GalpanicInit()
 
 	BurnLoadRom(RomSnd + 0x040000, 11, 1);
 	BurnLoadRom(RomSnd + 0x0C0000, 12, 1);
-	gp2x_memcpy(RomSnd, RomSnd + 0x040000, 0x040000);
+	memcpy(RomSnd, RomSnd + 0x040000, 0x040000);
 
 	{
 		SekInit(0, 0x68000);										// Allocate 68000
@@ -956,7 +956,7 @@ static int FantasiaInit()
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) {
 		return 1;
 	}
-	gp2x_memset(Mem, 0, nLen);										// blank all memory
+	memset(Mem, 0, nLen);										// blank all memory
 	MemIndex2();	
 
 	// Load and byte-swap 68000 Program roms
@@ -976,7 +976,7 @@ static int FantasiaInit()
 
 	BurnLoadRom(RomSnd + 0x040000, 11, 1);
 	BurnLoadRom(RomSnd + 0x0C0000, 12, 1);
-	gp2x_memcpy(RomSnd, RomSnd + 0x040000, 0x040000);
+	memcpy(RomSnd, RomSnd + 0x040000, 0x040000);
 
 	{
 		SekInit(0, 0x68000);										// Allocate 68000
@@ -1029,7 +1029,7 @@ static int Missw96Init()
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) {
 		return 1;
 	}
-	gp2x_memset(Mem, 0, nLen);										// blank all memory
+	memset(Mem, 0, nLen);										// blank all memory
 	MemIndex2();	
 
 	// Load and byte-swap 68000 Program roms
@@ -1047,7 +1047,7 @@ static int Missw96Init()
 
 	BurnLoadRom(RomSnd + 0x040000,  9, 1);
 	BurnLoadRom(RomSnd + 0x0C0000, 10, 1);
-	gp2x_memcpy(RomSnd, RomSnd + 0x040000, 0x040000);
+	memcpy(RomSnd, RomSnd + 0x040000, 0x040000);
 
 	{
 		SekInit(0, 0x68000);										// Allocate 68000
@@ -1099,7 +1099,7 @@ static int Fantsia2Init()
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) {
 		return 1;
 	}
-	gp2x_memset(Mem, 0, nLen);										// blank all memory
+	memset(Mem, 0, nLen);										// blank all memory
 	MemIndex2();	
 
 	// Load and byte-swap 68000 Program roms
@@ -1120,7 +1120,7 @@ static int Fantsia2Init()
 
 	BurnLoadRom(RomSnd + 0x040000, 12, 1);
 	BurnLoadRom(RomSnd + 0x0C0000, 13, 1);
-	gp2x_memcpy(RomSnd, RomSnd + 0x040000, 0x040000);
+	memcpy(RomSnd, RomSnd + 0x040000, 0x040000);
 
 	{
 		SekInit(0, 0x68000);										// Allocate 68000
@@ -1172,7 +1172,7 @@ static int GalhustlInit()
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) {
 		return 1;
 	}
-	gp2x_memset(Mem, 0, nLen);										// blank all memory
+	memset(Mem, 0, nLen);										// blank all memory
 	MemIndex2();	
 
 	// Load and byte-swap 68000 Program roms
@@ -1184,7 +1184,7 @@ static int GalhustlInit()
 
 	BurnLoadRom(RomSnd + 0x040000, 3, 1);
 	BurnLoadRom(RomSnd + 0x0C0000, 4, 1);
-	gp2x_memcpy(RomSnd, RomSnd + 0x040000, 0x040000);
+	memcpy(RomSnd, RomSnd + 0x040000, 0x040000);
 
 	{
 		SekInit(0, 0x68000);										// Allocate 68000
@@ -1237,7 +1237,7 @@ static int ZipzapInit()
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) {
 		return 1;
 	}
-	gp2x_memset(Mem, 0, nLen);										// blank all memory
+	memset(Mem, 0, nLen);										// blank all memory
 	MemIndex2();	
 
 	// Load and byte-swap 68000 Program roms
@@ -1260,7 +1260,7 @@ static int ZipzapInit()
 
 //	BurnLoadRom(RomSnd + 0x040000, 11, 1);
 //	BurnLoadRom(RomSnd + 0x0C0000, 11, 1);
-//	gp2x_memcpy(RomSnd, RomSnd + 0x040000, 0x040000);
+//	memcpy(RomSnd, RomSnd + 0x040000, 0x040000);
 
 	{
 		SekInit(0, 0x68000);										// Allocate 68000
@@ -1830,7 +1830,7 @@ struct BurnArea ba;
 	}
 
 	if (nAction & ACB_VOLATILE) {		// Scan volatile ram
-		gp2x_memset(&ba, 0, sizeof(ba));
+		memset(&ba, 0, sizeof(ba));
 		ba.Data	  = RamStart;
 		ba.nLen	  = RamEnd-RamStart;
 		ba.szName = "All Ram";
@@ -1847,7 +1847,7 @@ struct BurnArea ba;
 		SCAN_VAR(RamCTB64k);
 
 		if (nAction & ACB_WRITE) {
-			gp2x_memcpy(&RomSnd[0x30000], &RomSnd[0x40000 + SndBank * 0x10000], 0x10000);
+			memcpy(&RomSnd[0x30000], &RomSnd[0x40000 + SndBank * 0x10000], 0x10000);
 		}
 	}
 

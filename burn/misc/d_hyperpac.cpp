@@ -1059,8 +1059,8 @@ int HyperpacDoReset()
 {
 	HyperpacSoundLatch = 0;
 	
-	if(HyperpacProtData && !Finalttr) gp2x_memcpy(HyperpacRam + 0xf000, HyperpacProtData, 0x200);
-	if(HyperpacProtData && Finalttr) gp2x_memcpy(HyperpacRam + 0x2000, HyperpacProtData, 0x200);
+	if(HyperpacProtData && !Finalttr) memcpy(HyperpacRam + 0xf000, HyperpacProtData, 0x200);
+	if(HyperpacProtData && Finalttr) memcpy(HyperpacRam + 0x2000, HyperpacProtData, 0x200);
 
 	SekOpen(0);
 	SekReset();
@@ -1164,25 +1164,25 @@ static void Snowbro3PlayMusic(int data)
 	
 	switch (data) {
 		case 0x23: {
-			gp2x_memcpy(MSM6295ROM + 0x20000, MSM6295ROM + 0x80000, 0x20000);
+			memcpy(MSM6295ROM + 0x20000, MSM6295ROM + 0x80000, 0x20000);
 			Snowbro3MusicPlaying = 1;
 			break;
 		}
 		
 		case 0x24: {
-			gp2x_memcpy(MSM6295ROM + 0x20000, MSM6295ROM + 0xa0000, 0x20000);
+			memcpy(MSM6295ROM + 0x20000, MSM6295ROM + 0xa0000, 0x20000);
 			Snowbro3MusicPlaying = 1;
 			break;
 		}
 		
 		case 0x25: {
-			gp2x_memcpy(MSM6295ROM + 0x20000, MSM6295ROM + 0xc0000, 0x20000);
+			memcpy(MSM6295ROM + 0x20000, MSM6295ROM + 0xc0000, 0x20000);
 			Snowbro3MusicPlaying = 1;
 			break;
 		}
 		
 		case 0x26: {
-			gp2x_memcpy(MSM6295ROM + 0x20000, MSM6295ROM + 0x80000, 0x20000);
+			memcpy(MSM6295ROM + 0x20000, MSM6295ROM + 0x80000, 0x20000);
 			Snowbro3MusicPlaying = 1;
 			break;
 		}
@@ -1194,7 +1194,7 @@ static void Snowbro3PlayMusic(int data)
 		case 0x2b:
 		case 0x2c:
 		case 0x2d: {
-			gp2x_memcpy(MSM6295ROM + 0x20000, MSM6295ROM + 0xc0000, 0x20000);
+			memcpy(MSM6295ROM + 0x20000, MSM6295ROM + 0xc0000, 0x20000);
 			Snowbro3MusicPlaying = 1;
 			break;
 		}
@@ -1584,7 +1584,7 @@ void __fastcall TwinadvZ80PortWrite(unsigned short a, unsigned char d)
 		
 		case 0x04: {
 			int bank = (d &0x02) >> 1;
-			gp2x_memcpy(MSM6295ROM + 0x00000, MSM6295ROM + (0x40000 * bank), 0x40000);
+			memcpy(MSM6295ROM + 0x00000, MSM6295ROM + (0x40000 * bank), 0x40000);
 			return;
 		}
 		
@@ -2023,7 +2023,7 @@ static void decodechar(int num)
 	int plane, x, y;
 	
 	UINT8 *dp = HyperpacSprites8bpp + (num * 256);
-	gp2x_memset(dp, 0, 256);
+	memset(dp, 0, 256);
 	
 	int planeoffsets[8] = { 0, 1, 2, 3, 0x800000, 0x800001, 0x800002, 0x800003 };
 	int yoffsets[16] = { 0, 32, 64, 96, 128, 160, 192, 224, 512, 544, 576, 608, 640, 672, 704, 736 };
@@ -2058,7 +2058,7 @@ static void WintbobDecodeChar(int num)
 	int plane, x, y;
 	
 	UINT8 *dp = HyperpacSprites + (num * 256);
-	gp2x_memset(dp, 0, 256);
+	memset(dp, 0, 256);
 	
 	int planeoffsets[4] = { 0, 1, 2, 3 };
 	int yoffsets[16] = { 0, 64, 128, 192, 256, 320, 384, 448, 512, 576, 640, 704, 768, 832, 896, 960 };
@@ -2093,7 +2093,7 @@ static void Snowbro3DecodeChar(int num)
 	int plane, x, y;
 	
 	UINT8 *dp = HyperpacSprites8bpp + (num * 256);
-	gp2x_memset(dp, 0, 256);
+	memset(dp, 0, 256);
 	
 	int planeoffsets[8] = { 8, 9, 10, 11, 0, 1, 2, 3 };
 	int yoffsets[16] = { 0, 64, 128, 192, 256, 320, 384, 448, 1024, 1088, 1152, 1216, 1280, 1344, 1408, 1472 };
@@ -2187,7 +2187,7 @@ int HyperpacInit()
 	MemIndex();
 	nLen = MemEnd - (unsigned char *)0;
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) return 1;
-	gp2x_memset(Mem, 0, nLen);
+	memset(Mem, 0, nLen);
 	MemIndex();
 
 	HyperpacTempGfx = (unsigned char*)malloc(0x0c0000);
@@ -2243,7 +2243,7 @@ int Cookbib2Init()
 	MemIndex();
 	nLen = MemEnd - (unsigned char *)0;
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) return 1;
-	gp2x_memset(Mem, 0, nLen);
+	memset(Mem, 0, nLen);
 	MemIndex();
 
 	HyperpacTempGfx = (unsigned char*)malloc(0x140000);
@@ -2269,7 +2269,7 @@ int Cookbib2Init()
 	nRet = BurnLoadRom(HyperpacProtData, 8, 1); if (nRet) return 1;
 		
 	unsigned char *pTemp = (unsigned char*)malloc(0x200);
-	gp2x_memcpy(pTemp, HyperpacProtData, 0x200);
+	memcpy(pTemp, HyperpacProtData, 0x200);
 	
 	for (int i = 0; i < 0x200; i+=2) {
 		HyperpacProtData[i + 0] = pTemp[i + 1];
@@ -2297,7 +2297,7 @@ int Cookbib3Init()
 	MemIndex();
 	nLen = MemEnd - (unsigned char *)0;
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) return 1;
-	gp2x_memset(Mem, 0, nLen);
+	memset(Mem, 0, nLen);
 	MemIndex();
 
 	HyperpacTempGfx = (unsigned char*)malloc(0x200000);
@@ -2309,11 +2309,11 @@ int Cookbib3Init()
 	// Load and descramble Z80 Program Rom
 	nRet = BurnLoadRom(HyperpacZ80Rom, 5, 1); if (nRet != 0) return 1;
 	unsigned char *pTemp = (unsigned char*)malloc(0x10000);
-	gp2x_memcpy(pTemp, HyperpacZ80Rom, 0x10000);
-	gp2x_memcpy(HyperpacZ80Rom + 0xc000, pTemp + 0x0000, 0x4000);
-	gp2x_memcpy(HyperpacZ80Rom + 0x8000, pTemp + 0x4000, 0x4000);
-	gp2x_memcpy(HyperpacZ80Rom + 0x4000, pTemp + 0x8000, 0x4000);
-	gp2x_memcpy(HyperpacZ80Rom + 0x0000, pTemp + 0xc000, 0x4000);
+	memcpy(pTemp, HyperpacZ80Rom, 0x10000);
+	memcpy(HyperpacZ80Rom + 0xc000, pTemp + 0x0000, 0x4000);
+	memcpy(HyperpacZ80Rom + 0x8000, pTemp + 0x4000, 0x4000);
+	memcpy(HyperpacZ80Rom + 0x4000, pTemp + 0x8000, 0x4000);
+	memcpy(HyperpacZ80Rom + 0x0000, pTemp + 0xc000, 0x4000);
 	free(pTemp);
 
 	// Load and Decode Sprite Roms
@@ -2330,7 +2330,7 @@ int Cookbib3Init()
 	nRet = BurnLoadRom(HyperpacProtData, 8, 1); if (nRet) return 1;
 		
 	pTemp = (unsigned char*)malloc(0x200);
-	gp2x_memcpy(pTemp, HyperpacProtData, 0x200);
+	memcpy(pTemp, HyperpacProtData, 0x200);
 	
 	for (int i = 0; i < 0x200; i+=2) {
 		HyperpacProtData[i + 0] = pTemp[i + 1];
@@ -2358,7 +2358,7 @@ int MoremoreInit()
 	MemIndex();
 	nLen = MemEnd - (unsigned char *)0;
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) return 1;
-	gp2x_memset(Mem, 0, nLen);
+	memset(Mem, 0, nLen);
 	MemIndex();
 
 	HyperpacTempGfx = (unsigned char*)malloc(0x200000);
@@ -2385,7 +2385,7 @@ int MoremoreInit()
 	nRet = BurnLoadRom(HyperpacProtData, 9, 1); if (nRet) return 1;
 		
 	unsigned char *pTemp = (unsigned char*)malloc(0x200);
-	gp2x_memcpy(pTemp, HyperpacProtData, 0x200);
+	memcpy(pTemp, HyperpacProtData, 0x200);
 	
 	for (int i = 0; i < 0x200; i+=2) {
 		HyperpacProtData[i + 0] = pTemp[i + 1];
@@ -2410,7 +2410,7 @@ int TwinkleInit()
 	MemIndex();
 	nLen = MemEnd - (unsigned char *)0;
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) return 1;
-	gp2x_memset(Mem, 0, nLen);
+	memset(Mem, 0, nLen);
 	MemIndex();
 
 	HyperpacTempGfx = (unsigned char*)malloc(0x080000);
@@ -2434,7 +2434,7 @@ int TwinkleInit()
 	nRet = BurnLoadRom(HyperpacProtData, 6, 1); if (nRet) return 1;
 		
 	unsigned char *pTemp = (unsigned char*)malloc(0x200);
-	gp2x_memcpy(pTemp, HyperpacProtData, 0x200);
+	memcpy(pTemp, HyperpacProtData, 0x200);
 	
 	for (int i = 0; i < 0x200; i+=2) {
 		HyperpacProtData[i + 0] = pTemp[i + 1];
@@ -2462,7 +2462,7 @@ void Fourin1bootDescrambleRom()
 			if (i&1) buffer[i] = BITSWAP08(src[i],6,7,5,4,3,2,1,0);
 			else buffer[i] = src[i];
 
-		gp2x_memcpy(src,buffer,len);
+		memcpy(src,buffer,len);
 		free(buffer);
 	}
 
@@ -2476,7 +2476,7 @@ void Fourin1bootDescrambleRom()
 		for (i = 0;i < len; i++) {
 			buffer[i] = src[i ^ 0x4000];
 		}
-		gp2x_memcpy(src,buffer,len);
+		memcpy(src,buffer,len);
 		free(buffer);
 	}
 }
@@ -2494,7 +2494,7 @@ int Fourin1bootInit()
 	MemIndex();
 	nLen = MemEnd - (unsigned char *)0;
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) return 1;
-	gp2x_memset(Mem, 0, nLen);
+	memset(Mem, 0, nLen);
 	MemIndex();
 
 	HyperpacTempGfx = (unsigned char*)malloc(0x200000);
@@ -2534,7 +2534,7 @@ int FinalttrInit()
 	MemIndex();
 	nLen = MemEnd - (unsigned char *)0;
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) return 1;
-	gp2x_memset(Mem, 0, nLen);
+	memset(Mem, 0, nLen);
 	MemIndex();
 
 	HyperpacTempGfx = (unsigned char*)malloc(0x100000);
@@ -2561,7 +2561,7 @@ int FinalttrInit()
 	nRet = BurnLoadRom(HyperpacProtData, 9, 1); if (nRet) return 1;
 		
 	unsigned char *pTemp = (unsigned char*)malloc(0x200);
-	gp2x_memcpy(pTemp, HyperpacProtData, 0x200);
+	memcpy(pTemp, HyperpacProtData, 0x200);
 	
 	for (int i = 0; i < 0x200; i+=2) {
 		HyperpacProtData[i + 0] = pTemp[i + 1];
@@ -2588,7 +2588,7 @@ int TwinadvInit()
 	MemIndex();
 	nLen = MemEnd - (unsigned char *)0;
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) return 1;
-	gp2x_memset(Mem, 0, nLen);
+	memset(Mem, 0, nLen);
 	MemIndex();
 
 	HyperpacTempGfx = (unsigned char*)malloc(0x180000);
@@ -2663,7 +2663,7 @@ int HoneydolInit()
 	MemIndex();
 	nLen = MemEnd - (unsigned char *)0;
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) return 1;
-	gp2x_memset(Mem, 0, nLen);
+	memset(Mem, 0, nLen);
 	MemIndex();
 
 	HyperpacTempGfx = (unsigned char*)malloc(0x200000);
@@ -2680,7 +2680,7 @@ int HoneydolInit()
 	SnowbrosDecodeSprites();
 		
 	// Load and Decode 8bpp Sprite Roms
-	gp2x_memset(HyperpacTempGfx, 0, 0x200000);
+	memset(HyperpacTempGfx, 0, 0x200000);
 	nRet = BurnLoadRom(HyperpacTempGfx + 0x000000, 3, 1); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(HyperpacTempGfx + 0x080000, 4, 1); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(HyperpacTempGfx + 0x100000, 5, 1); if (nRet != 0) return 1;
@@ -2749,7 +2749,7 @@ int SnowbrosInit()
 	SnowbrosMemIndex();
 	nLen = MemEnd - (unsigned char *)0;
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) return 1;
-	gp2x_memset(Mem, 0, nLen);
+	memset(Mem, 0, nLen);
 	SnowbrosMemIndex();
 
 	HyperpacTempGfx = (unsigned char*)malloc(0x80000);
@@ -2838,7 +2838,7 @@ int Snowbro3Init()
 	Snowbro3MemIndex();
 	nLen = MemEnd - (unsigned char *)0;
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) return 1;
-	gp2x_memset(Mem, 0, nLen);
+	memset(Mem, 0, nLen);
 	Snowbro3MemIndex();
 
 	HyperpacTempGfx = (unsigned char*)malloc(0x400000);
@@ -2853,7 +2853,7 @@ int Snowbro3Init()
 	for (int i = 0; i < 0x40000; i++) {
 		buffer[i] = HyperpacRom[BITSWAP24(i,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,3,4,1,2,0)];
 	}
-	gp2x_memcpy(HyperpacRom, buffer, 0x40000);
+	memcpy(HyperpacRom, buffer, 0x40000);
 	free(buffer);
 
 	// Load and Decode Sprite Roms
@@ -2861,16 +2861,16 @@ int Snowbro3Init()
 	SnowbrosDecodeSprites();
 	
 	// Load and Decode 8bpp Sprite Roms
-	gp2x_memset(HyperpacTempGfx, 0, 0x400000);
+	memset(HyperpacTempGfx, 0, 0x400000);
 	nRet = BurnLoadRom(HyperpacTempGfx + 0x000000, 3, 1); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(HyperpacTempGfx + 0x200000, 4, 1); if (nRet != 0) return 1;
 	Snowbro3Decode8bppSprites();
 	
 	// Load Sample Roms
-	gp2x_memset(HyperpacTempGfx, 0, 0x400000);
+	memset(HyperpacTempGfx, 0, 0x400000);
 	nRet = BurnLoadRom(HyperpacTempGfx, 5, 1); if (nRet != 0) return 1;
-	gp2x_memcpy(MSM6295ROM + 0x00000, HyperpacTempGfx + 0x00000, 0x20000);
-	gp2x_memcpy(MSM6295ROM + 0x80000, HyperpacTempGfx + 0x20000, 0x60000);
+	memcpy(MSM6295ROM + 0x00000, HyperpacTempGfx + 0x00000, 0x20000);
+	memcpy(MSM6295ROM + 0x80000, HyperpacTempGfx + 0x20000, 0x60000);
 	free(HyperpacTempGfx);
 
 	// Setup the 68000 emulation
@@ -3852,7 +3852,7 @@ static int HyperpacScan(int nAction,int *pnMin)
 	}
 
 	if (nAction & ACB_MEMORY_RAM) {								// Scan all memory, devices & variables
-		gp2x_memset(&ba, 0, sizeof(ba));
+		memset(&ba, 0, sizeof(ba));
 		ba.Data	  = RamStart;
 		ba.nLen	  = RamEnd-RamStart;
 		ba.szName = "All Ram";
@@ -3884,7 +3884,7 @@ static int SnowbrosScan(int nAction,int *pnMin)
 	}
 
 	if (nAction & ACB_MEMORY_RAM) {
-		gp2x_memset(&ba, 0, sizeof(ba));
+		memset(&ba, 0, sizeof(ba));
     		ba.Data	  = RamStart;
 		ba.nLen	  = RamEnd-RamStart;
 		ba.szName = "All Ram";
@@ -3917,7 +3917,7 @@ static int Snowbro3Scan(int nAction,int *pnMin)
 	}
 
 	if (nAction & ACB_MEMORY_RAM) {								// Scan all memory, devices & variables
-		gp2x_memset(&ba, 0, sizeof(ba));
+		memset(&ba, 0, sizeof(ba));
 		ba.Data	  = RamStart;
 		ba.nLen	  = RamEnd-RamStart;
 		ba.szName = "All Ram";

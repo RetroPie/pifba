@@ -165,7 +165,7 @@ int BurnYMF278BInit(int /* nClockFrequency */, unsigned char* YMF278BROM, void (
 	BurnTimerInit(ymf278b_timer_over, NULL);
 
 	pBuffer = (short*)malloc(4096 * 2 * sizeof(short));
-	gp2x_memset(pBuffer, 0, 4096 * 2 * sizeof(short));
+	memset(pBuffer, 0, 4096 * 2 * sizeof(short));
 
 	nYMF278BPosition = 0;
 

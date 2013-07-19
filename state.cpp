@@ -63,7 +63,7 @@ int BurnStateLoadEmbed(FILE* fp, int nOffset, int bAll, int (*pLoadGame)())
 		}
 	}
 
-	gp2x_memset(ReadHeader, 0, 4);
+	memset(ReadHeader, 0, 4);
 	fread(ReadHeader, 1, 4, fp);						// Read identifier
 	if (memcmp(ReadHeader, szHeader, 4)) {				// Not the right file type
 		return -2;
@@ -89,7 +89,7 @@ int BurnStateLoadEmbed(FILE* fp, int nOffset, int bAll, int (*pLoadGame)())
 
 	fread(&nDefLen, 1, 4, fp);							// Get the size of the compressed data block
 
-	gp2x_memset(szForName, 0, sizeof(szForName));
+	memset(szForName, 0, sizeof(szForName));
 	fread(szForName, 1, 32, fp);
 
 	if (nBurnVer < nFileMin) {							// Error - emulator is too old to load this state
@@ -149,7 +149,7 @@ int BurnStateLoadEmbed(FILE* fp, int nOffset, int bAll, int (*pLoadGame)())
 	if (Def == NULL) {
 		return -1;
 	}
-	gp2x_memset(Def, 0, nDefLen);
+	memset(Def, 0, nDefLen);
 	fread(Def, 1, nDefLen, fp);							// Read in deflated block
 
 	nRet = BurnStateDecompress(Def, nDefLen, bAll);		// Decompress block into driver
@@ -239,7 +239,7 @@ int BurnStateSaveEmbed(FILE* fp, int nOffset, int bAll)
 
 	fwrite(&nZero, 1, 4, fp);							// Reserve space to write the compressed data size
 
-	gp2x_memset(szGame, 0, sizeof(szGame));					// Game name
+	memset(szGame, 0, sizeof(szGame));					// Game name
 	sprintf(szGame, "%.32s", BurnDrvGetTextA(DRV_NAME));			//
 	fwrite(szGame, 1, 32, fp);							//
 

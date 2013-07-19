@@ -567,7 +567,7 @@ void __fastcall Burglarx68KWriteByte(unsigned int a, unsigned char d)
 		
 		case 0x80018e: {
 			DrvOkiBank = d & 1;
-			gp2x_memcpy(MSM6295ROM + 0x00000, DrvMSM6295ROMSrc + (0x40000 * DrvOkiBank), 0x40000);
+			memcpy(MSM6295ROM + 0x00000, DrvMSM6295ROMSrc + (0x40000 * DrvOkiBank), 0x40000);
 			return;
 		}
 		
@@ -735,7 +735,7 @@ void __fastcall Zeropnt68KWriteByte(unsigned int a, unsigned char d)
 		
 		case 0x80018e: {
 			DrvOkiBank = d & 1;
-			gp2x_memcpy(MSM6295ROM + 0x20000, DrvMSM6295ROMSrc + 0x20000 + (0x20000 * DrvOkiBank), 0x20000);
+			memcpy(MSM6295ROM + 0x20000, DrvMSM6295ROMSrc + 0x20000 + (0x20000 * DrvOkiBank), 0x20000);
 			return;
 		}
 		
@@ -911,7 +911,7 @@ void __fastcall Zeropnt268KWriteByte(unsigned int a, unsigned char d)
 		
 		case 0x800034: {
 			DrvOkiBank = (d & 3) % 4;
-			gp2x_memcpy(MSM6295ROM + 0x20000, DrvMSM6295ROMSrc + 0x20000 + (0x20000 * DrvOkiBank), 0x20000);
+			memcpy(MSM6295ROM + 0x20000, DrvMSM6295ROMSrc + 0x20000 + (0x20000 * DrvOkiBank), 0x20000);
 			return;
 		}
 		
@@ -1035,7 +1035,7 @@ static int BurglarxInit()
 	MemIndex();
 	nLen = MemEnd - (unsigned char *)0;
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) return 1;
-	gp2x_memset(Mem, 0, nLen);
+	memset(Mem, 0, nLen);
 	MemIndex();
 
 	DrvTempRom = (unsigned char *)malloc(0x400000);
@@ -1059,7 +1059,7 @@ static int BurglarxInit()
 	GfxDecode(0x4000, 8, 16, 16, BurglarxTilePlaneOffsets, TileXOffsets, TileYOffsets, 0x200, DrvTempRom, DrvTiles);
 	
 	// Load and decode the sprites
-	gp2x_memset(DrvTempRom, 0, 0x400000);
+	memset(DrvTempRom, 0, 0x400000);
 	nRet = BurnLoadRom(DrvTempRom + 0x000000,  2, 2); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(DrvTempRom + 0x000001,  3, 2); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(DrvTempRom + 0x100000,  4, 2); if (nRet != 0) return 1;
@@ -1075,7 +1075,7 @@ static int BurglarxInit()
 	
 	// Load Sample Roms
 	nRet = BurnLoadRom(DrvMSM6295ROMSrc + 0x00000, 18, 1); if (nRet != 0) return 1;
-	gp2x_memcpy(MSM6295ROM, DrvMSM6295ROMSrc, 0x40000);
+	memcpy(MSM6295ROM, DrvMSM6295ROMSrc, 0x40000);
 	
 	free(DrvTempRom);
 	
@@ -1124,7 +1124,7 @@ static int ZeropntInit()
 	MemIndex();
 	nLen = MemEnd - (unsigned char *)0;
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) return 1;
-	gp2x_memset(Mem, 0, nLen);
+	memset(Mem, 0, nLen);
 	MemIndex();
 
 	DrvTempRom = (unsigned char *)malloc(0x800000);
@@ -1144,7 +1144,7 @@ static int ZeropntInit()
 	GfxDecode(0x8000, 8, 16, 16, ZeropntTilePlaneOffsets, TileXOffsets, TileYOffsets, 0x200, DrvTempRom, DrvTiles);
 	
 	// Load and decode the sprites
-	gp2x_memset(DrvTempRom, 0, 0x800000);
+	memset(DrvTempRom, 0, 0x800000);
 	nRet = BurnLoadRom(DrvTempRom + 0x000000,  2, 1); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(DrvTempRom + 0x200000,  3, 1); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(DrvTempRom + 0x400000,  4, 1); if (nRet != 0) return 1;
@@ -1156,7 +1156,7 @@ static int ZeropntInit()
 	
 	// Load Sample Roms
 	nRet = BurnLoadRom(DrvMSM6295ROMSrc + 0x00000, 10, 1); if (nRet != 0) return 1;
-	gp2x_memcpy(MSM6295ROM, DrvMSM6295ROMSrc, 0x40000);
+	memcpy(MSM6295ROM, DrvMSM6295ROMSrc, 0x40000);
 	
 	free(DrvTempRom);
 	
@@ -1207,7 +1207,7 @@ static int Zeropnt2Init()
 	Zeropnt2MemIndex();
 	nLen = MemEnd - (unsigned char *)0;
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) return 1;
-	gp2x_memset(Mem, 0, nLen);
+	memset(Mem, 0, nLen);
 	Zeropnt2MemIndex();
 
 	DrvTempRom = (unsigned char *)malloc(0x1000000);
@@ -1233,7 +1233,7 @@ static int Zeropnt2Init()
 	GfxDecode(0x10000, 8, 16, 16, Zeropnt2TilePlaneOffsets, TileXOffsets, TileYOffsets, 0x200, DrvTempRom, DrvTiles);
 	
 	// Load and decode the sprites
-	gp2x_memset(DrvTempRom, 0, 0x1000000);
+	memset(DrvTempRom, 0, 0x1000000);
 	nRet = BurnLoadRom(DrvTempRom + 0x000000,  2, 1); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(DrvTempRom + 0x400000,  3, 1); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(DrvTempRom + 0x800000,  4, 1); if (nRet != 0) return 1;
@@ -1246,7 +1246,7 @@ static int Zeropnt2Init()
 	// Load Sample Roms
 	nRet = BurnLoadRom(DrvMSM6295ROMSrc + 0x00000, 10, 1); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(MSM6295ROM + 0x100000, 11, 1); if (nRet != 0) return 1;
-	gp2x_memcpy(MSM6295ROM + 0x000000, DrvMSM6295ROMSrc, 0x40000);
+	memcpy(MSM6295ROM + 0x000000, DrvMSM6295ROMSrc, 0x40000);
 	
 	free(DrvTempRom);
 	
@@ -1785,7 +1785,7 @@ static int DrvScan(int nAction, int *pnMin)
 	}
 
 	if (nAction & ACB_MEMORY_RAM) {
-		gp2x_memset(&ba, 0, sizeof(ba));
+		memset(&ba, 0, sizeof(ba));
 		ba.Data	  = RamStart;
 		ba.nLen	  = RamEnd-RamStart;
 		ba.szName = "All Ram";
@@ -1816,7 +1816,7 @@ static int BurglarxScan(int nAction, int *pnMin)
 	}
 	
 	if (nAction & ACB_WRITE) {
-		gp2x_memcpy(MSM6295ROM + 0x00000, DrvMSM6295ROMSrc + (0x40000 * DrvOkiBank), 0x40000);
+		memcpy(MSM6295ROM + 0x00000, DrvMSM6295ROMSrc + (0x40000 * DrvOkiBank), 0x40000);
 	}
 	
 	return 0;
@@ -1831,7 +1831,7 @@ static int ZeropntScan(int nAction, int *pnMin)
 	}
 	
 	if (nAction & ACB_WRITE) {
-		gp2x_memcpy(MSM6295ROM + 0x20000, DrvMSM6295ROMSrc + 0x20000 + (0x20000 * DrvOkiBank), 0x20000);
+		memcpy(MSM6295ROM + 0x20000, DrvMSM6295ROMSrc + 0x20000 + (0x20000 * DrvOkiBank), 0x20000);
 	}
 	
 	return 0;
@@ -1849,7 +1849,7 @@ static int Zeropnt2Scan(int nAction, int *pnMin)
 	}
 	
 	if (nAction & ACB_WRITE) {
-		gp2x_memcpy(MSM6295ROM + 0x20000, DrvMSM6295ROMSrc + 0x20000 + (0x20000 * DrvOkiBank), 0x20000);
+		memcpy(MSM6295ROM + 0x20000, DrvMSM6295ROMSrc + 0x20000 + (0x20000 * DrvOkiBank), 0x20000);
 	}
 	
 	return 0;

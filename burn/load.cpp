@@ -29,7 +29,7 @@ static int LoadRom(unsigned char *Dest,int i,int nGap,int bXor)
     // Allocate space for the file
     Load=(unsigned char *)malloc(nLen);
     if (Load==NULL) return 1;
-    gp2x_memset(Load,0,nLen);
+    memset(Load,0,nLen);
 
     // Load in the file
     nRet=BurnExtLoadRom(Load,&nLoadLen,i);

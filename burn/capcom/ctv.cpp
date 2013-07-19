@@ -21,19 +21,19 @@ int CtvReady()
   if (nBurnBpp!=nLastBpp)
   {
 	  if (nBurnBpp==2) {
-		gp2x_memcpy(CtvDoX,CtvDo2,sizeof(CtvDoX));
-		gp2x_memcpy(CtvDoXM,CtvDo2m,sizeof(CtvDoXM));
-		gp2x_memcpy(CtvDoXB,CtvDo2b,sizeof(CtvDoXB));
+		memcpy(CtvDoX,CtvDo2,sizeof(CtvDoX));
+		memcpy(CtvDoXM,CtvDo2m,sizeof(CtvDoXM));
+		memcpy(CtvDoXB,CtvDo2b,sizeof(CtvDoXB));
 	  }
 	  else if (nBurnBpp==3) {
-		gp2x_memcpy(CtvDoX,CtvDo3,sizeof(CtvDoX));
-		gp2x_memcpy(CtvDoXM,CtvDo3m,sizeof(CtvDoXM));
-		gp2x_memcpy(CtvDoXB,CtvDo3b,sizeof(CtvDoXB));
+		memcpy(CtvDoX,CtvDo3,sizeof(CtvDoX));
+		memcpy(CtvDoXM,CtvDo3m,sizeof(CtvDoXM));
+		memcpy(CtvDoXB,CtvDo3b,sizeof(CtvDoXB));
 	  }
 	  else if (nBurnBpp==4) {
-		gp2x_memcpy(CtvDoX,CtvDo4,sizeof(CtvDoX));
-		gp2x_memcpy(CtvDoXM,CtvDo4m,sizeof(CtvDoXM));
-		gp2x_memcpy(CtvDoXB,CtvDo4b,sizeof(CtvDoXB));
+		memcpy(CtvDoX,CtvDo4,sizeof(CtvDoX));
+		memcpy(CtvDoXM,CtvDo4m,sizeof(CtvDoXM));
+		memcpy(CtvDoXB,CtvDo4b,sizeof(CtvDoXB));
 	  }
   }
   nLastBpp=nBurnBpp;

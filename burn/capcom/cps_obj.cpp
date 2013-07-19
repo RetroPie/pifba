@@ -51,7 +51,7 @@ int CpsObjInit()
 	nGetNext=0;
 
 	if (Cps == 2) {
-		gp2x_memset(ZBuf, 0, 384 * 224 * 2);
+		memset(ZBuf, 0, 384 * 224 * 2);
 		nMaxZMask = nZOffset = 0;
 		nMaxZValue = 1;
 	}
@@ -132,7 +132,7 @@ int CpsObjGet()
 		}
 
 		// Okay - this sprite is active:
-		gp2x_memcpy(po, pg, 8); // copy it over
+		memcpy(po, pg, 8); // copy it over
 
 		pof->nCount++;
 		po += 8;
@@ -152,7 +152,7 @@ void CpsObjDrawInit()
 
 	if (nZOffset >= 0xFC00) {
 		// The Z buffer might moverflow the next fram, so initialise it
-		gp2x_memset(ZBuf, 0, 384 * 224 * 2);
+		memset(ZBuf, 0, 384 * 224 * 2);
 		nZOffset = 0;
 	}
 

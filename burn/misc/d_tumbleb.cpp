@@ -1516,8 +1516,8 @@ static int JumppopMemIndex()
 
 static int DrvDoReset()
 {
-	if (DrvHasProt == 1) gp2x_memcpy(Drv68KRam + 0x000, DrvProtData, 0x200);
-	if (DrvHasProt == 2) gp2x_memcpy(Drv68KRam + 0x200, DrvProtData, 0x200);
+	if (DrvHasProt == 1) memcpy(Drv68KRam + 0x000, DrvProtData, 0x200);
+	if (DrvHasProt == 2) memcpy(Drv68KRam + 0x200, DrvProtData, 0x200);
 	
 	SekOpen(0);
 	SekReset();
@@ -1541,7 +1541,7 @@ static int DrvDoReset()
 	Tumbleb2MusicCommand = 0;
 	Tumbleb2MusicBank = 0;
 	Tumbleb2MusicIsPlaying = 0;
-	gp2x_memset(DrvControl, 0, 8);
+	memset(DrvControl, 0, 8);
 	
 	return 0;
 }
@@ -1581,7 +1581,7 @@ static void Tumbleb2PlayMusic()
 
 static void Tumbleb2SetMusicBank(int Bank)
 {
-	gp2x_memcpy(MSM6295ROM + 0x38000, DrvMSM6295ROMSrc + 0x38000 + (Bank * 0x8000), 0x8000);
+	memcpy(MSM6295ROM + 0x38000, DrvMSM6295ROMSrc + 0x38000 + (Bank * 0x8000), 0x8000);
 }
 
 static void Tumbleb2PlaySound(UINT16 data)
@@ -2154,7 +2154,7 @@ void __fastcall JumpkidsZ80Write(unsigned short a, unsigned char d)
 	switch (a) {
 		case 0x9000: {
 			DrvOkiBank = d & 3;
-			gp2x_memcpy(MSM6295ROM + 0x20000, DrvMSM6295ROMSrc + (DrvOkiBank * 0x20000), 0x20000);
+			memcpy(MSM6295ROM + 0x20000, DrvMSM6295ROMSrc + (DrvOkiBank * 0x20000), 0x20000);
 			return;
 		}
 		
@@ -2216,7 +2216,7 @@ void __fastcall SemicomZ80Write(unsigned short a, unsigned char d)
 		
 		case 0xf00e: {
 			DrvOkiBank = d;
-			gp2x_memcpy(MSM6295ROM + 0x30000, DrvMSM6295ROMSrc + 0x30000 + (DrvOkiBank * 0x10000), 0x10000);
+			memcpy(MSM6295ROM + 0x30000, DrvMSM6295ROMSrc + 0x30000 + (DrvOkiBank * 0x10000), 0x10000);
 			return;
 		}
 		
@@ -2350,7 +2350,7 @@ static int TumblebLoadRoms()
 	GfxDecode(DrvNumTiles, 4, 16, 16, CharPlaneOffsets, SpriteXOffsets, SpriteYOffsets, 0x200, DrvTempRom, DrvTiles);
 		
 	// Load and decode the sprites
-	gp2x_memset(DrvTempRom, 0, 0x100000);
+	memset(DrvTempRom, 0, 0x100000);
 	nRet = BurnLoadRom(DrvTempRom + 0x000000,  4, 1); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(DrvTempRom + 0x080000,  5, 1); if (nRet != 0) return 1;
 	GfxDecode(DrvNumSprites, 4, 16, 16, SpritePlaneOffsets, SpriteXOffsets, SpriteYOffsets, 0x200, DrvTempRom, DrvSprites);
@@ -2358,7 +2358,7 @@ static int TumblebLoadRoms()
 	// Load Sample Roms
 	nRet = BurnLoadRom(DrvMSM6295ROMSrc + 0x00000, 6, 1); if (nRet != 0) return 1;
 	if (Tumbleb2) nRet = BurnLoadRom(DrvMSM6295ROMSrc + 0x80000, 6, 1); if (nRet != 0) return 1;
-	gp2x_memcpy(MSM6295ROM, DrvMSM6295ROMSrc, 0x40000);
+	memcpy(MSM6295ROM, DrvMSM6295ROMSrc, 0x40000);
 	
 	free(DrvTempRom);
 	
@@ -2386,7 +2386,7 @@ static int JumpkidsLoadRoms()
 	GfxDecode(DrvNumTiles, 4, 16, 16, CharPlaneOffsets, SpriteXOffsets, SpriteYOffsets, 0x200, DrvTempRom, DrvTiles);
 		
 	// Load and decode the sprites
-	gp2x_memset(DrvTempRom, 0, 0x100000);
+	memset(DrvTempRom, 0, 0x100000);
 	nRet = BurnLoadRom(DrvTempRom + 0x000000,  5, 2); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(DrvTempRom + 0x000001,  6, 2); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(DrvTempRom + 0x080000,  7, 2); if (nRet != 0) return 1;
@@ -2418,7 +2418,7 @@ static int MetlsavrLoadRoms()
 	// Load Shared RAM data
 	nRet = BurnLoadRom(DrvProtData, 3, 1); if (nRet) return 1;
 	unsigned char *pTemp = (unsigned char*)malloc(0x200);
-	gp2x_memcpy(pTemp, DrvProtData, 0x200);
+	memcpy(pTemp, DrvProtData, 0x200);
 	for (int i = 0; i < 0x200; i+=2) {
 		DrvProtData[i + 0] = pTemp[i + 1];
 		DrvProtData[i + 1] = pTemp[i + 0];
@@ -2433,7 +2433,7 @@ static int MetlsavrLoadRoms()
 	GfxDecode(DrvNumTiles, 4, 16, 16, CharPlaneOffsets, SpriteXOffsets, SpriteYOffsets, 0x200, DrvTempRom, DrvTiles);
 		
 	// Load and decode the sprites
-	gp2x_memset(DrvTempRom, 0, 0x200000);
+	memset(DrvTempRom, 0, 0x200000);
 	nRet = BurnLoadRom(DrvTempRom + 0x000000,  6, 2); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(DrvTempRom + 0x000001,  7, 2); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(DrvTempRom + 0x100000,  8, 2); if (nRet != 0) return 1;
@@ -2464,19 +2464,19 @@ static int PangpangLoadRoms()
 	nRet = BurnLoadRom(DrvTempRom + 0x080000, 4, 2); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(DrvTempRom + 0x080001, 5, 2); if (nRet != 0) return 1;
 	unsigned char *pTemp = (unsigned char*)malloc(0x100000);
-	gp2x_memcpy(pTemp, DrvTempRom, 0x100000);
-	gp2x_memset(DrvTempRom, 0, 0x100000);
-	gp2x_memcpy(DrvTempRom + 0x000000, pTemp + 0x000000, 0x40000);
-	gp2x_memcpy(DrvTempRom + 0x080000, pTemp + 0x040000, 0x40000);
-	gp2x_memcpy(DrvTempRom + 0x040000, pTemp + 0x080000, 0x40000);
-	gp2x_memcpy(DrvTempRom + 0x0c0000, pTemp + 0x0c0000, 0x40000);
+	memcpy(pTemp, DrvTempRom, 0x100000);
+	memset(DrvTempRom, 0, 0x100000);
+	memcpy(DrvTempRom + 0x000000, pTemp + 0x000000, 0x40000);
+	memcpy(DrvTempRom + 0x080000, pTemp + 0x040000, 0x40000);
+	memcpy(DrvTempRom + 0x040000, pTemp + 0x080000, 0x40000);
+	memcpy(DrvTempRom + 0x0c0000, pTemp + 0x0c0000, 0x40000);
 	free(pTemp);
 	TumblebTilesRearrange();
 	GfxDecode(DrvNumChars, 4, 8, 8, SpritePlaneOffsets, CharXOffsets, CharYOffsets, 0x80, DrvTempRom, DrvChars);
 	GfxDecode(DrvNumTiles, 4, 16, 16, SpritePlaneOffsets, SpriteXOffsets, SpriteYOffsets, 0x200, DrvTempRom, DrvTiles);
 	
 	// Load and decode the sprites
-	gp2x_memset(DrvTempRom, 0, 0x100000);
+	memset(DrvTempRom, 0, 0x100000);
 	nRet = BurnLoadRom(DrvTempRom + 0x000000,  6, 2); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(DrvTempRom + 0x000001,  7, 2); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(DrvTempRom + 0x080000,  8, 2); if (nRet != 0) return 1;
@@ -2485,7 +2485,7 @@ static int PangpangLoadRoms()
 	
 	// Load Sample Roms
 	nRet = BurnLoadRom(DrvMSM6295ROMSrc + 0x00000, 10, 1); if (nRet != 0) return 1;
-	gp2x_memcpy(MSM6295ROM, DrvMSM6295ROMSrc, 0x40000);
+	memcpy(MSM6295ROM, DrvMSM6295ROMSrc, 0x40000);
 	
 	free(DrvTempRom);
 	
@@ -2498,7 +2498,7 @@ static void SuprtrioDecrypt68KRom()
 	UINT16 *pTemp = (UINT16*)malloc(0x80000);
 	int i;
 	
-	gp2x_memcpy(pTemp, Rom, 0x80000);
+	memcpy(pTemp, Rom, 0x80000);
 	for (i = 0; i < 0x40000; i++) {
 		int j = i ^ 0x06;
 		if ((i & 1) == 0) j ^= 0x02;
@@ -2514,7 +2514,7 @@ static void SuprtrioDecryptTiles()
 	UINT16 *pTemp = (UINT16*)malloc(0x100000);
 	int i;
 	
-	gp2x_memcpy(pTemp, Rom, 0x100000);
+	memcpy(pTemp, Rom, 0x100000);
 	for (i = 0; i < 0x80000; i++) {
 		int j = i ^ 0x02;
 		if (i & 1) j ^= 0x04;
@@ -2541,22 +2541,22 @@ static int SuprtrioLoadRoms()
 	nRet = BurnLoadRom(DrvTempRom + 0x000000, 3, 1); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(DrvTempRom + 0x080000, 4, 1); if (nRet != 0) return 1;
 	unsigned char *pTemp = (unsigned char*)malloc(0x100000);
-	gp2x_memcpy(pTemp, DrvTempRom, 0x100000);
-	gp2x_memset(DrvTempRom, 0, 0x100000);
-	gp2x_memcpy(DrvTempRom + 0x000000, pTemp + 0x000000, 0x20000);
-	gp2x_memcpy(DrvTempRom + 0x040000, pTemp + 0x020000, 0x20000);
-	gp2x_memcpy(DrvTempRom + 0x020000, pTemp + 0x040000, 0x20000);
-	gp2x_memcpy(DrvTempRom + 0x060000, pTemp + 0x060000, 0x20000);
-	gp2x_memcpy(DrvTempRom + 0x080000, pTemp + 0x080000, 0x20000);
-	gp2x_memcpy(DrvTempRom + 0x0c0000, pTemp + 0x0a0000, 0x20000);
-	gp2x_memcpy(DrvTempRom + 0x0a0000, pTemp + 0x0c0000, 0x20000);
-	gp2x_memcpy(DrvTempRom + 0x0e0000, pTemp + 0x0e0000, 0x20000);
+	memcpy(pTemp, DrvTempRom, 0x100000);
+	memset(DrvTempRom, 0, 0x100000);
+	memcpy(DrvTempRom + 0x000000, pTemp + 0x000000, 0x20000);
+	memcpy(DrvTempRom + 0x040000, pTemp + 0x020000, 0x20000);
+	memcpy(DrvTempRom + 0x020000, pTemp + 0x040000, 0x20000);
+	memcpy(DrvTempRom + 0x060000, pTemp + 0x060000, 0x20000);
+	memcpy(DrvTempRom + 0x080000, pTemp + 0x080000, 0x20000);
+	memcpy(DrvTempRom + 0x0c0000, pTemp + 0x0a0000, 0x20000);
+	memcpy(DrvTempRom + 0x0a0000, pTemp + 0x0c0000, 0x20000);
+	memcpy(DrvTempRom + 0x0e0000, pTemp + 0x0e0000, 0x20000);
 	free(pTemp);
 	SuprtrioDecryptTiles();
 	GfxDecode(DrvNumTiles, 4, 16, 16, SuprtrioPlaneOffsets, SuprtrioXOffsets, SuprtrioYOffsets, 0x100, DrvTempRom, DrvTiles);
 	
 	// Load and decode the sprites
-	gp2x_memset(DrvTempRom, 0, 0x100000);
+	memset(DrvTempRom, 0, 0x100000);
 	nRet = BurnLoadRom(DrvTempRom + 0x000000,  5, 2); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(DrvTempRom + 0x000001,  6, 2); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(DrvTempRom + 0x080000,  7, 2); if (nRet != 0) return 1;
@@ -2566,7 +2566,7 @@ static int SuprtrioLoadRoms()
 	// Load Sample Roms
 	nRet = BurnLoadRom(DrvMSM6295ROMSrc + 0x00000, 9, 1); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(DrvMSM6295ROMSrc + 0x80000, 10, 1); if (nRet != 0) return 1;
-	gp2x_memcpy(MSM6295ROM, DrvMSM6295ROMSrc, 0x40000);
+	memcpy(MSM6295ROM, DrvMSM6295ROMSrc, 0x40000);
 	
 	free(DrvTempRom);
 	
@@ -2589,7 +2589,7 @@ static int HtchctchLoadRoms()
 	// Load Shared RAM data
 	nRet = BurnLoadRom(DrvProtData, 3, 1); if (nRet) return 1;
 	unsigned char *pTemp = (unsigned char*)malloc(0x200);
-	gp2x_memcpy(pTemp, DrvProtData, 0x200);
+	memcpy(pTemp, DrvProtData, 0x200);
 	for (int i = 0; i < 0x200; i+=2) {
 		DrvProtData[i + 0] = pTemp[i + 1];
 		DrvProtData[i + 1] = pTemp[i + 0];
@@ -2604,7 +2604,7 @@ static int HtchctchLoadRoms()
 	GfxDecode(DrvNumTiles, 4, 16, 16, CharPlaneOffsets, SpriteXOffsets, SpriteYOffsets, 0x200, DrvTempRom, DrvTiles);
 		
 	// Load and decode the sprites
-	gp2x_memset(DrvTempRom, 0, 0x100000);
+	memset(DrvTempRom, 0, 0x100000);
 	nRet = BurnLoadRom(DrvTempRom + 0x000000,  6, 2); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(DrvTempRom + 0x000001,  7, 2); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(DrvTempRom + 0x040000,  8, 2); if (nRet != 0) return 1;
@@ -2635,7 +2635,7 @@ static int ChokchokLoadRoms()
 	// Load Shared RAM data
 	nRet = BurnLoadRom(DrvProtData, 3, 1); if (nRet) return 1;
 	unsigned char *pTemp = (unsigned char*)malloc(0x200);
-	gp2x_memcpy(pTemp, DrvProtData, 0x200);
+	memcpy(pTemp, DrvProtData, 0x200);
 	for (int i = 0; i < 0x200; i+=2) {
 		DrvProtData[i + 0] = pTemp[i + 1];
 		DrvProtData[i + 1] = pTemp[i + 0];
@@ -2646,19 +2646,19 @@ static int ChokchokLoadRoms()
 	nRet = BurnLoadRom(DrvTempRom + 0x000001, 4, 2); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(DrvTempRom + 0x000000, 5, 2); if (nRet != 0) return 1;
 	pTemp = (unsigned char*)malloc(0x100000);
-	gp2x_memcpy(pTemp, DrvTempRom, 0x100000);
-	gp2x_memset(DrvTempRom, 0, 0x200000);
-	gp2x_memcpy(DrvTempRom + 0x000000, pTemp + 0x000000, 0x40000);
-	gp2x_memcpy(DrvTempRom + 0x100000, pTemp + 0x040000, 0x40000);
-	gp2x_memcpy(DrvTempRom + 0x040000, pTemp + 0x080000, 0x40000);
-	gp2x_memcpy(DrvTempRom + 0x140000, pTemp + 0x0c0000, 0x40000);
+	memcpy(pTemp, DrvTempRom, 0x100000);
+	memset(DrvTempRom, 0, 0x200000);
+	memcpy(DrvTempRom + 0x000000, pTemp + 0x000000, 0x40000);
+	memcpy(DrvTempRom + 0x100000, pTemp + 0x040000, 0x40000);
+	memcpy(DrvTempRom + 0x040000, pTemp + 0x080000, 0x40000);
+	memcpy(DrvTempRom + 0x140000, pTemp + 0x0c0000, 0x40000);
 	free(pTemp);
 	TumblebTilesRearrange();
 	GfxDecode(DrvNumChars, 4, 8, 8, Sprite2PlaneOffsets, CharXOffsets, CharYOffsets, 0x80, DrvTempRom, DrvChars);
 	GfxDecode(DrvNumTiles, 4, 16, 16, Sprite2PlaneOffsets, SpriteXOffsets, SpriteYOffsets, 0x200, DrvTempRom, DrvTiles);
 		
 	// Load and decode the sprites
-	gp2x_memset(DrvTempRom, 0, 0x200000);
+	memset(DrvTempRom, 0, 0x200000);
 	nRet = BurnLoadRom(DrvTempRom + 0x000000,  6, 2); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(DrvTempRom + 0x000001,  7, 2); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(DrvTempRom + 0x100000,  8, 2); if (nRet != 0) return 1;
@@ -2693,7 +2693,7 @@ static int FncywldLoadRoms()
 	GfxDecode(DrvNumTiles, 4, 16, 16, SpritePlaneOffsets, SpriteXOffsets, SpriteYOffsets, 0x200, DrvTempRom, DrvTiles);
 		
 	// Load and decode the sprites
-	gp2x_memset(DrvTempRom, 0, 0x100000);
+	memset(DrvTempRom, 0, 0x100000);
 	nRet = BurnLoadRom(DrvTempRom + 0x000000,  6, 2); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(DrvTempRom + 0x000001,  7, 2); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(DrvTempRom + 0x080000,  8, 2); if (nRet != 0) return 1;
@@ -2717,16 +2717,16 @@ static int SdfightLoadRoms()
 	// Load 68000 Program Roms
 	nRet = BurnLoadRom(DrvTempRom + 0x00001, 0, 2); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(DrvTempRom + 0x00000, 1, 2); if (nRet != 0) return 1;
-	gp2x_memcpy(Drv68KRom + 0xc0000, DrvTempRom + 0x00000, 0x40000);
-	gp2x_memcpy(Drv68KRom + 0x80000, DrvTempRom + 0x40000, 0x40000);
-	gp2x_memcpy(Drv68KRom + 0x40000, DrvTempRom + 0x80000, 0x40000);
-	gp2x_memcpy(Drv68KRom + 0x00000, DrvTempRom + 0xc0000, 0x40000);
+	memcpy(Drv68KRom + 0xc0000, DrvTempRom + 0x00000, 0x40000);
+	memcpy(Drv68KRom + 0x80000, DrvTempRom + 0x40000, 0x40000);
+	memcpy(Drv68KRom + 0x40000, DrvTempRom + 0x80000, 0x40000);
+	memcpy(Drv68KRom + 0x00000, DrvTempRom + 0xc0000, 0x40000);
 	
 	// Load Z80 Program Roms
 	nRet = BurnLoadRom(DrvZ80Rom, 2, 1); if (nRet != 0) return 1;
 	
 	// Load Shared RAM data
-	gp2x_memset(DrvTempRom, 0, 0x400000);
+	memset(DrvTempRom, 0, 0x400000);
 	nRet = BurnLoadRom(DrvTempRom, 3, 1); if (nRet) return 1;
 	for (int i = 0; i < 0x200; i+=2) {
 		DrvProtData[i + 0] = DrvTempRom[i + 1];
@@ -2734,25 +2734,25 @@ static int SdfightLoadRoms()
 	}
 	
 	// Load and decode the tiles
-	gp2x_memset(DrvTempRom, 0, 0x400000);
+	memset(DrvTempRom, 0, 0x400000);
 	nRet = BurnLoadRom(DrvTempRom + 0x200001, 4, 2); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(DrvTempRom + 0x200000, 5, 2); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(DrvTempRom + 0x300001, 6, 2); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(DrvTempRom + 0x300000, 7, 2); if (nRet != 0) return 1;
-	gp2x_memcpy(DrvTempRom + 0x000000, DrvTempRom + 0x200000, 0x40000);
-	gp2x_memcpy(DrvTempRom + 0x100000, DrvTempRom + 0x240000, 0x40000);
-	gp2x_memcpy(DrvTempRom + 0x040000, DrvTempRom + 0x280000, 0x40000);
-	gp2x_memcpy(DrvTempRom + 0x140000, DrvTempRom + 0x2c0000, 0x40000);
-	gp2x_memcpy(DrvTempRom + 0x080000, DrvTempRom + 0x300000, 0x40000);
-	gp2x_memcpy(DrvTempRom + 0x180000, DrvTempRom + 0x340000, 0x40000);
-	gp2x_memcpy(DrvTempRom + 0x0c0000, DrvTempRom + 0x380000, 0x40000);
-	gp2x_memcpy(DrvTempRom + 0x1c0000, DrvTempRom + 0x3c0000, 0x40000);
+	memcpy(DrvTempRom + 0x000000, DrvTempRom + 0x200000, 0x40000);
+	memcpy(DrvTempRom + 0x100000, DrvTempRom + 0x240000, 0x40000);
+	memcpy(DrvTempRom + 0x040000, DrvTempRom + 0x280000, 0x40000);
+	memcpy(DrvTempRom + 0x140000, DrvTempRom + 0x2c0000, 0x40000);
+	memcpy(DrvTempRom + 0x080000, DrvTempRom + 0x300000, 0x40000);
+	memcpy(DrvTempRom + 0x180000, DrvTempRom + 0x340000, 0x40000);
+	memcpy(DrvTempRom + 0x0c0000, DrvTempRom + 0x380000, 0x40000);
+	memcpy(DrvTempRom + 0x1c0000, DrvTempRom + 0x3c0000, 0x40000);
 	TumblebTilesRearrange();
 	GfxDecode(DrvNumChars, 4, 8, 8, Sprite2PlaneOffsets, CharXOffsets, CharYOffsets, 0x80, DrvTempRom, DrvChars);
 	GfxDecode(DrvNumTiles, 4, 16, 16, Sprite2PlaneOffsets, SpriteXOffsets, SpriteYOffsets, 0x200, DrvTempRom, DrvTiles);
 		
 	// Load and decode the sprites
-	gp2x_memset(DrvTempRom, 0, 0x200000);
+	memset(DrvTempRom, 0, 0x200000);
 	nRet = BurnLoadRom(DrvTempRom + 0x000000,  8, 2); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(DrvTempRom + 0x000001,  9, 2); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(DrvTempRom + 0x100000, 10, 2); if (nRet != 0) return 1;
@@ -2780,19 +2780,19 @@ static int BcstryLoadRoms()
 	// Load 68000 Program Roms
 	nRet = BurnLoadRom(DrvTempRom + 0x00001, 0, 2); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(DrvTempRom + 0x00000, 1, 2); if (nRet != 0) return 1;
-	gp2x_memcpy(Drv68KRom + 0x40000, DrvTempRom + 0x00000, 0x40000);
-	gp2x_memcpy(Drv68KRom + 0x00000, DrvTempRom + 0x40000, 0x40000);
+	memcpy(Drv68KRom + 0x40000, DrvTempRom + 0x00000, 0x40000);
+	memcpy(Drv68KRom + 0x00000, DrvTempRom + 0x40000, 0x40000);
 	
 	// Load Z80 Program Roms
-	gp2x_memset(DrvTempRom, 0, 0x400000);
+	memset(DrvTempRom, 0, 0x400000);
 	nRet = BurnLoadRom(DrvTempRom, 2, 1); if (nRet != 0) return 1;
-	gp2x_memcpy(DrvZ80Rom + 0x04000, DrvTempRom + 0x00000, 0x04000);
-	gp2x_memcpy(DrvZ80Rom + 0x00000, DrvTempRom + 0x04000, 0x04000);
-	gp2x_memcpy(DrvZ80Rom + 0x0c000, DrvTempRom + 0x08000, 0x04000);
-	gp2x_memcpy(DrvZ80Rom + 0x08000, DrvTempRom + 0x0c000, 0x04000);
+	memcpy(DrvZ80Rom + 0x04000, DrvTempRom + 0x00000, 0x04000);
+	memcpy(DrvZ80Rom + 0x00000, DrvTempRom + 0x04000, 0x04000);
+	memcpy(DrvZ80Rom + 0x0c000, DrvTempRom + 0x08000, 0x04000);
+	memcpy(DrvZ80Rom + 0x08000, DrvTempRom + 0x0c000, 0x04000);
 	
 	// Load Shared RAM data
-	gp2x_memset(DrvTempRom, 0, 0x400000);
+	memset(DrvTempRom, 0, 0x400000);
 	nRet = BurnLoadRom(DrvTempRom, 3, 1); if (nRet) return 1;
 	for (int i = 0; i < 0x200; i+=2) {
 		DrvProtData[i + 0] = DrvTempRom[i + 1];
@@ -2800,25 +2800,25 @@ static int BcstryLoadRoms()
 	}
 	
 	// Load and decode the tiles
-	gp2x_memset(DrvTempRom, 0, 0x400000);
+	memset(DrvTempRom, 0, 0x400000);
 	nRet = BurnLoadRom(DrvTempRom + 0x200000, 4, 2); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(DrvTempRom + 0x200001, 5, 2); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(DrvTempRom + 0x300000, 6, 2); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(DrvTempRom + 0x300001, 7, 2); if (nRet != 0) return 1;
-	gp2x_memcpy(DrvTempRom + 0x000000, DrvTempRom + 0x200000, 0x40000);
-	gp2x_memcpy(DrvTempRom + 0x100000, DrvTempRom + 0x240000, 0x40000);
-	gp2x_memcpy(DrvTempRom + 0x040000, DrvTempRom + 0x280000, 0x40000);
-	gp2x_memcpy(DrvTempRom + 0x140000, DrvTempRom + 0x2c0000, 0x40000);
-	gp2x_memcpy(DrvTempRom + 0x080000, DrvTempRom + 0x300000, 0x40000);
-	gp2x_memcpy(DrvTempRom + 0x180000, DrvTempRom + 0x340000, 0x40000);
-	gp2x_memcpy(DrvTempRom + 0x0c0000, DrvTempRom + 0x380000, 0x40000);
-	gp2x_memcpy(DrvTempRom + 0x1c0000, DrvTempRom + 0x3c0000, 0x40000);
+	memcpy(DrvTempRom + 0x000000, DrvTempRom + 0x200000, 0x40000);
+	memcpy(DrvTempRom + 0x100000, DrvTempRom + 0x240000, 0x40000);
+	memcpy(DrvTempRom + 0x040000, DrvTempRom + 0x280000, 0x40000);
+	memcpy(DrvTempRom + 0x140000, DrvTempRom + 0x2c0000, 0x40000);
+	memcpy(DrvTempRom + 0x080000, DrvTempRom + 0x300000, 0x40000);
+	memcpy(DrvTempRom + 0x180000, DrvTempRom + 0x340000, 0x40000);
+	memcpy(DrvTempRom + 0x0c0000, DrvTempRom + 0x380000, 0x40000);
+	memcpy(DrvTempRom + 0x1c0000, DrvTempRom + 0x3c0000, 0x40000);
 	TumblebTilesRearrange();
 	GfxDecode(DrvNumChars, 4, 8, 8, Sprite2PlaneOffsets, CharXOffsets, CharYOffsets, 0x80, DrvTempRom, DrvChars);
 	GfxDecode(DrvNumTiles, 4, 16, 16, Sprite2PlaneOffsets, SpriteXOffsets, SpriteYOffsets, 0x200, DrvTempRom, DrvTiles);
 		
 	// Load and decode the sprites
-	gp2x_memset(DrvTempRom, 0, 0x200000);
+	memset(DrvTempRom, 0, 0x200000);
 	nRet = BurnLoadRom(DrvTempRom + 0x000000,  8, 2); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(DrvTempRom + 0x000001,  9, 2); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(DrvTempRom + 0x100000, 10, 2); if (nRet != 0) return 1;
@@ -2984,7 +2984,7 @@ static int DrvInit(bool bReset, int SpriteRamSize, int SpriteMask, int SpriteXOf
 	MemIndex();
 	nLen = MemEnd - (unsigned char *)0;
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) return 1;
-	gp2x_memset(Mem, 0, nLen);
+	memset(Mem, 0, nLen);
 	MemIndex();
 
 	nRet = DrvLoadRoms();
@@ -3380,7 +3380,7 @@ static int JumppopInit()
 	JumppopMemIndex();
 	nLen = MemEnd - (unsigned char *)0;
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) return 1;
-	gp2x_memset(Mem, 0, nLen);
+	memset(Mem, 0, nLen);
 	JumppopMemIndex();
 
 	DrvTempRom = (unsigned char *)malloc(0x200000);
@@ -3389,18 +3389,18 @@ static int JumppopInit()
 	nRet = BurnLoadRom(Drv68KRom + 0x00000, 0, 1); if (nRet != 0) return 1;
 	
 	// Load Z80 Program Roms
-	gp2x_memset(DrvTempRom, 0, 0x200000);
+	memset(DrvTempRom, 0, 0x200000);
 	nRet = BurnLoadRom(DrvZ80Rom, 1, 1); if (nRet != 0) return 1;
 	
 	// Load and decode the tiles
-	gp2x_memset(DrvTempRom, 0, 0x200000);
+	memset(DrvTempRom, 0, 0x200000);
 	nRet = BurnLoadRom(DrvTempRom + 0x000000, 2, 1); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(DrvTempRom + 0x100000, 3, 1); if (nRet != 0) return 1;
 	GfxDecode(DrvNumChars, 8, 8, 8, JpCharPlaneOffsets, JpCharXOffsets, JpCharYOffsets, 0x100, DrvTempRom, DrvChars);
 	GfxDecode(DrvNumTiles, 8, 16, 16, JpTilePlaneOffsets, JpTileXOffsets, JpTileYOffsets, 0x400, DrvTempRom, DrvTiles);
 		
 	// Load and decode the sprites
-	gp2x_memset(DrvTempRom, 0, 0x200000);
+	memset(DrvTempRom, 0, 0x200000);
 	nRet = BurnLoadRom(DrvTempRom + 0x000000, 4, 1); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(DrvTempRom + 0x100000, 5, 1); if (nRet != 0) return 1;
 	GfxDecode(DrvNumSprites, 4, 16, 16, Sprite2PlaneOffsets, SpriteXOffsets, SpriteYOffsets, 0x200, DrvTempRom, DrvSprites);
@@ -4436,7 +4436,7 @@ static int DrvScan(int nAction, int *pnMin)
 	}
 
 	if (nAction & ACB_MEMORY_RAM) {
-		gp2x_memset(&ba, 0, sizeof(ba));
+		memset(&ba, 0, sizeof(ba));
 		ba.Data	  = RamStart;
 		ba.nLen	  = RamEnd-RamStart;
 		ba.szName = "All Ram";
@@ -4467,9 +4467,9 @@ static int DrvScan(int nAction, int *pnMin)
 	if (nAction & ACB_WRITE) {
 		if (DrvOkiBank) {
 			if (Jumpkids) {
-				gp2x_memcpy(MSM6295ROM + 0x20000, DrvMSM6295ROMSrc + (DrvOkiBank * 0x20000), 0x20000);
+				memcpy(MSM6295ROM + 0x20000, DrvMSM6295ROMSrc + (DrvOkiBank * 0x20000), 0x20000);
 			} else {
-				gp2x_memcpy(MSM6295ROM + 0x30000, DrvMSM6295ROMSrc + 0x30000 + (DrvOkiBank * 0x10000), 0x10000);
+				memcpy(MSM6295ROM + 0x30000, DrvMSM6295ROMSrc + 0x30000 + (DrvOkiBank * 0x10000), 0x10000);
 			}
 		}
 		

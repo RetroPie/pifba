@@ -138,7 +138,7 @@ void SysXClearScreen()
 			}
 		}
 	} else {
-		gp2x_memset(pBurnDraw, 0, 384 * XSysYMax * nBurnBpp);
+		memset(pBurnDraw, 0, 384 * XSysYMax * nBurnBpp);
 	}
 }
 

@@ -1174,7 +1174,7 @@ int Wc90Init()
 	MemIndex();
 	nLen = MemEnd - (unsigned char *)0;
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) return 1;
-	gp2x_memset(Mem, 0, nLen);
+	memset(Mem, 0, nLen);
 	MemIndex();
 
 	Wc90TempGfx = (unsigned char*)malloc(0x80000);
@@ -1192,24 +1192,24 @@ int Wc90Init()
 	nRet = BurnLoadRom(Wc90Z80Rom3 + 0x00000,  4, 1); if (nRet != 0) return 1;
 
 	// Load and Decode Char Tile Rom
-	gp2x_memset(Wc90TempGfx, 0, 0x80000);
+	memset(Wc90TempGfx, 0, 0x80000);
 	nRet = BurnLoadRom(Wc90TempGfx + 0x00000,  5, 1); if (nRet != 0) return 1;
 	Wc90Decode8x8Tiles(Wc90CharTiles, 2048);
 
 	// Load and Decode Fg Tile Roms
-	gp2x_memset(Wc90TempGfx, 0, 0x80000);
+	memset(Wc90TempGfx, 0, 0x80000);
 	nRet = BurnLoadRom(Wc90TempGfx + 0x00000,  6, 1); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(Wc90TempGfx + 0x20000,  7, 1); if (nRet != 0) return 1;
 	Wc90Decode16x16Tiles(Wc90FgTiles, 2048);
 
 	// Load and Decode Bg Tile Roms
-	gp2x_memset(Wc90TempGfx, 0, 0x80000);
+	memset(Wc90TempGfx, 0, 0x80000);
 	nRet = BurnLoadRom(Wc90TempGfx + 0x00000,  8, 1); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(Wc90TempGfx + 0x20000,  9, 1); if (nRet != 0) return 1;
 	Wc90Decode16x16Tiles(Wc90BgTiles, 2048);
 
 	// Load and Decode Sprite Roms
-	gp2x_memset(Wc90TempGfx, 0, 0x80000);
+	memset(Wc90TempGfx, 0, 0x80000);
 	nRet = BurnLoadRom(Wc90TempGfx + 0x00000, 10, 1); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(Wc90TempGfx + 0x20000, 11, 1); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(Wc90TempGfx + 0x40000, 12, 1); if (nRet != 0) return 1;
@@ -1330,7 +1330,7 @@ static int Wc90Scan(int nAction,int *pnMin)
 	}
 
 	if (nAction & ACB_MEMORY_RAM) {
-		gp2x_memset(&ba, 0, sizeof(ba));
+		memset(&ba, 0, sizeof(ba));
 		ba.Data	  = RamStart;
 		ba.nLen	  = RamEnd-RamStart;
 		ba.szName = "All Ram";

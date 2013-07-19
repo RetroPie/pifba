@@ -240,9 +240,9 @@ static int LoadRoms()
 	nRet = BurnLoadRom(TempGfx + 0x00000, 5, 1); if (nRet) return 1;
 
 	ttiles=(unsigned char *)malloc(16384*64);
-	gp2x_memset(ttiles,0,16384*64);
+	memset(ttiles,0,16384*64);
 	tsprites=(unsigned char *)malloc(5120*256);
-	gp2x_memset(tsprites,0,5120*256);
+	memset(tsprites,0,5120*256);
 
 	for (c=0;c<16384;c++)
 	{
@@ -259,7 +259,7 @@ static int LoadRoms()
 		}
 	}
 	
-	gp2x_memset(TempGfx,0,0xa0000);
+	memset(TempGfx,0,0xa0000);
 	nRet = BurnLoadRom(TempGfx + 0x00000, 6, 1); if (nRet) return 1;
 
 	for (c = 0; c < 5120; c ++) {
@@ -326,9 +326,9 @@ static int opwolfbLoadRoms()
 	nRet = BurnLoadRom(TempGfx + 0x70000, 13, 1); if (nRet) return 1;
 
 	ttiles=(unsigned char *)malloc(16384*64);
-	gp2x_memset(ttiles,0,16384*64);
+	memset(ttiles,0,16384*64);
 	tsprites=(unsigned char *)malloc(5120*256);
-	gp2x_memset(tsprites,0,5120*256);
+	memset(tsprites,0,5120*256);
 
 	for(c = 0; c < 0x40000; c++, y+=4){
 		ttiles[y+0]=TempGfx[c+0x00000] >> 4;
@@ -337,7 +337,7 @@ static int opwolfbLoadRoms()
 		ttiles[y+3]=TempGfx[c+0x40000] & 0xf;
 	}
 	
-	gp2x_memset(TempGfx,0,0xa0000);
+	memset(TempGfx,0,0xa0000);
 	nRet = BurnLoadRom(TempGfx + 0x00000, 14, 1); if (nRet) return 1;
 	nRet = BurnLoadRom(TempGfx + 0x10000, 15, 1); if (nRet) return 1;
 	nRet = BurnLoadRom(TempGfx + 0x20000, 16, 1); if (nRet) return 1;
@@ -630,7 +630,7 @@ int opwolfInit()
 	Mem=(unsigned char *)malloc(nLen);
 	if (Mem==NULL)
 		return 1;
-	gp2x_memset(Mem,0,nLen); // blank all memory
+	memset(Mem,0,nLen); // blank all memory
 	MemIndex(); // Index the allocated memory
 
 	//--------------- Load Roms -------------------
@@ -845,7 +845,7 @@ static int opwolfScan(int nAction,int *pnMin)
 	}
 
 	if (nAction & ACB_VOLATILE) {		// Scan volatile ram
-		gp2x_memset(&ba, 0, sizeof(ba));
+		memset(&ba, 0, sizeof(ba));
     ba.Data		= RamStart;
 		ba.nLen		= RamEnd-RamStart;
 		ba.szName	= "All Ram";

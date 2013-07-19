@@ -2204,7 +2204,7 @@ int YM2203Init(int num, int clock, int rate,
 	if( (FM2203 = (YM2203 *)malloc(sizeof(YM2203) * YM2203NumChips))==NULL)
 		return (-1);
 	/* clear */
-	gp2x_memset(FM2203,0,sizeof(YM2203) * YM2203NumChips);
+	memset(FM2203,0,sizeof(YM2203) * YM2203NumChips);
 
 	if( !init_tables() )
 	{
@@ -3458,7 +3458,7 @@ int YM2608Init(int num, int clock, int rate,
 	if( (FM2608 = (YM2608 *)malloc(sizeof(YM2608) * YM2608NumChips))==NULL)
 		return (-1);
 	/* clear */
-	gp2x_memset(FM2608,0,sizeof(YM2608) * YM2608NumChips);
+	memset(FM2608,0,sizeof(YM2608) * YM2608NumChips);
 	/* allocate total level table (128kb space) */
 	if( !init_tables() )
 	{
@@ -4172,7 +4172,7 @@ int YM2610Init(int num, int clock, int rate,
 	if( (FM2610 = (YM2610 *)malloc(sizeof(YM2610) * YM2610NumChips))==NULL)
 		return (-1);
 	/* clear */
-	gp2x_memset(FM2610,0,sizeof(YM2610) * YM2610NumChips);
+	memset(FM2610,0,sizeof(YM2610) * YM2610NumChips);
 	/* allocate total level table (128kb space) */
 	if( !init_tables() )
 	{
@@ -4664,7 +4664,7 @@ int YM2612Init(int num, int clock, int rate,
 	if( (FM2612 = (YM2612 *)malloc(sizeof(YM2612) * YM2612NumChips))==NULL)
 		return (-1);
 	/* clear */
-	gp2x_memset(FM2612,0,sizeof(YM2612) * YM2612NumChips);
+	memset(FM2612,0,sizeof(YM2612) * YM2612NumChips);
 	/* allocate total level table (128kb space) */
 	if( !init_tables() )
 	{
@@ -5342,7 +5342,7 @@ int OPMInit(int num, int clock, int rate,
 		return (-1);
 
 	/* clear */
-	gp2x_memset(FMOPM,0,sizeof(YM2151) * YM2151NumChips);
+	memset(FMOPM,0,sizeof(YM2151) * YM2151NumChips);
 
 	/* allocate total level table (128kb space) */
 	if( !OPMInitTable() )

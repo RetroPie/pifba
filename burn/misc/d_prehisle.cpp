@@ -507,7 +507,7 @@ int PrehisleInit()
 	MemIndex();
 	nLen = MemEnd - (unsigned char *)0;
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) return 1;
-	gp2x_memset(Mem, 0, nLen);
+	memset(Mem, 0, nLen);
 	MemIndex();
 
 	PrehisleTempGfx = (unsigned char*)malloc(0xa0000);
@@ -517,22 +517,22 @@ int PrehisleInit()
 	nRet = BurnLoadRom(PrehisleRom + 0x00000, 1, 2); if (nRet != 0) return 1;
 
 	// Load and decode Text Tiles rom
-	gp2x_memset(PrehisleTempGfx, 0, 0xa0000);
+	memset(PrehisleTempGfx, 0, 0xa0000);
 	nRet = BurnLoadRom(PrehisleTempGfx, 2, 1); if (nRet != 0) return 1;
 	PrehisleDecode8x8Tiles(PrehisleTextTiles, 1024);
 
 	// Load and decode Background2 Tile rom
-	gp2x_memset(PrehisleTempGfx, 0, 0xa0000);
+	memset(PrehisleTempGfx, 0, 0xa0000);
 	nRet = BurnLoadRom(PrehisleTempGfx, 3, 1); if (nRet != 0) return 1;
 	PrehisleDecode16x16Tiles(PrehisleBack2Tiles, 2048);
 
 	// Load and decode Background1 Tile rom
-	gp2x_memset(PrehisleTempGfx, 0, 0xa0000);
+	memset(PrehisleTempGfx, 0, 0xa0000);
 	nRet = BurnLoadRom(PrehisleTempGfx, 4, 1); if (nRet != 0) return 1;
 	PrehisleDecode16x16Tiles(PrehisleBack1Tiles, 2048);
 
 	// Load and decode Sprite roms
-	gp2x_memset(PrehisleTempGfx, 0, 0xa0000);
+	memset(PrehisleTempGfx, 0, 0xa0000);
 	nRet = BurnLoadRom(PrehisleTempGfx + 0x00000, 5, 1); if (nRet != 0) return 1;
 	nRet = BurnLoadRom(PrehisleTempGfx + 0x80000, 6, 1); if (nRet != 0) return 1;
 	PrehisleDecode16x16Tiles(PrehisleSprites, 5120);
@@ -844,7 +844,7 @@ static int PrehisleScan(int nAction,int *pnMin)
 	}
 
 	if (nAction & ACB_MEMORY_RAM) {								// Scan all memory, devices & variables
-		gp2x_memset(&ba, 0, sizeof(ba));
+		memset(&ba, 0, sizeof(ba));
 		ba.Data	  = RamStart;
 		ba.nLen	  = RamEnd-RamStart;
 		ba.szName = "All Ram";

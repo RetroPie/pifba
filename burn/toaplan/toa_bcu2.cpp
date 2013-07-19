@@ -221,7 +221,7 @@ static void BCU2RenderTileQueue(int nPriority)
 
 void ToaBufferFCU2Sprites()
 {
-	gp2x_memcpy(pFCU2SpriteBuffer, FCU2RAM, 0x0800);
+	memcpy(pFCU2SpriteBuffer, FCU2RAM, 0x0800);
 }
 
 int ToaRenderBCU2()
@@ -261,10 +261,10 @@ int ToaInitBCU2()
 
 	nSize = 1280 * 4 * 0x10 * sizeof(ToaTile);
 	pBCU2TileQueueData = (ToaTile*)malloc(nSize);
-	gp2x_memset(pBCU2TileQueueData, 0, nSize);
+	memset(pBCU2TileQueueData, 0, nSize);
 
 	BCU2TileAttrib = (unsigned char*)malloc(32768);
-	gp2x_memset(BCU2TileAttrib, 0, 32768);
+	memset(BCU2TileAttrib, 0, 32768);
 	for (unsigned int j = 0; j < (nBCU2ROMSize >> 5); j++) {
 		bool bTransparent = true, bSolid = true;
 		int nTwoPixels;
@@ -291,12 +291,12 @@ int ToaInitBCU2()
 
 	nSize = 0x10 * 0x101 * sizeof(int);
 	pFCU2SpriteQueueData = (unsigned short**)malloc(nSize);
-	gp2x_memset(pFCU2SpriteQueueData, 0, nSize);
+	memset(pFCU2SpriteQueueData, 0, nSize);
 
 	pFCU2SpriteBuffer = (unsigned char*)malloc(0x0800);
 
 	FCU2TileAttrib = (unsigned char*)malloc(32768);
-	gp2x_memset(FCU2TileAttrib, 0, 32768);
+	memset(FCU2TileAttrib, 0, 32768);
 	for (unsigned int j = 0; j < (nFCU2ROMSize >> 5); j++) {
 		bool bTransparent = true, bSolid = true;
 		int nTwoPixels;

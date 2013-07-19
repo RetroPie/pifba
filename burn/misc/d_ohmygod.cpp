@@ -276,7 +276,7 @@ int OhmygodDoReset()
 	OhmygodSpriteBank = 0;
 
 	SndBank = 0;
-	gp2x_memcpy(MSM6295ROM + 0x20000, MSM6295ROM + 0x40000 + 0x20000 * SndBank, 0x20000);
+	memcpy(MSM6295ROM + 0x20000, MSM6295ROM + 0x40000 + 0x20000 * SndBank, 0x20000);
 
 	MSM6295Reset(0);
 
@@ -398,7 +398,7 @@ void __fastcall OhmygodWriteByte(unsigned int a, unsigned char d)
 		case 0x900001: {
 			if (SndBank != ((d >> AdpcmBankShift) & 0x0f)) {
 				SndBank = (d >> AdpcmBankShift) & 0x0f;
-				gp2x_memcpy(MSM6295ROM + 0x20000,MSM6295ROM + 0x40000 + 0x20000 * SndBank,0x20000);
+				memcpy(MSM6295ROM + 0x20000,MSM6295ROM + 0x40000 + 0x20000 * SndBank,0x20000);
 			}
 			return;
 		}
@@ -449,7 +449,7 @@ int OhmygodInit()
 	MemIndex();
 	nLen = MemEnd - (unsigned char *)0;
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) return 1;
-	gp2x_memset(Mem, 0, nLen);
+	memset(Mem, 0, nLen);
 	MemIndex();
 
 	// Load and byte-swap 68000 Program Rom
@@ -475,7 +475,7 @@ int OhmygodInit()
 	}
 
 	// Load and decode Sprite Rom
-	gp2x_memset(TempGfx, 0, 0x80000);
+	memset(TempGfx, 0, 0x80000);
 	nRet = BurnLoadRom(TempGfx, 2, 1); if (nRet != 0) return 1;
 	for (c = 0; c < 4095; c++) {
 		for (y = 0; y < 16; y++) {
@@ -668,7 +668,7 @@ static int OhmygodScan(int nAction,int *pnMin)
 	}
 
 	if (nAction & ACB_MEMORY_RAM) {
-		gp2x_memset(&ba, 0, sizeof(ba));
+		memset(&ba, 0, sizeof(ba));
     		ba.Data	  = RamStart;
 		ba.nLen	  = RamEnd-RamStart;
 		ba.szName = "All Ram";
@@ -692,7 +692,7 @@ static int OhmygodScan(int nAction,int *pnMin)
 	}
 	
 	if (nAction & ACB_WRITE) {
-		gp2x_memcpy(MSM6295ROM + 0x20000,MSM6295ROM + 0x40000 + 0x20000 * SndBank,0x20000);
+		memcpy(MSM6295ROM + 0x20000,MSM6295ROM + 0x40000 + 0x20000 * SndBank,0x20000);
 	}
 
 	return 0;

@@ -79,7 +79,7 @@ int VezInit(int nCount, unsigned int * typelist)
 	VezCPUContext = (struct VezContext *)malloc(nCount * sizeof(struct VezContext));
 	if (VezCPUContext == NULL) return 1;
 
-	gp2x_memset(VezCPUContext, 0, nCount * sizeof(struct VezContext));
+	memset(VezCPUContext, 0, nCount * sizeof(struct VezContext));
 	
 	for(int i=0;i<nCount;i++) {
 		VezCPUContext[i].reg.cpu_type = typelist[i];

@@ -181,7 +181,7 @@ void init_spritelist()
 	for (int i=0; i<5;i++ )
 	{
 		pSpriteList[i]=(g_sprite*)malloc(spritelistentries*sizeof(g_sprite));
-		gp2x_memset(pSpriteList[i],0,sizeof(pSpriteList[i]));
+		memset(pSpriteList[i],0,sizeof(pSpriteList[i]));
 	}
 }
 
@@ -657,7 +657,7 @@ void __fastcall BiomtoyWriteByte(unsigned int a,unsigned char d)
 {
 	switch (a){
 case 0x70000d:
-	gp2x_memcpy(MSM6295ROM + 0x30000, MSM6295ROM+ 0x40000 + ((d & 0x0f)*0x10000), 0x10000);
+	memcpy(MSM6295ROM + 0x30000, MSM6295ROM+ 0x40000 + ((d & 0x0f)*0x10000), 0x10000);
 	return;
 case 0x70000f:
 	MSM6295Command(0, d);
@@ -684,7 +684,7 @@ int BiomtoyInit()
 	Mem=(unsigned char *)malloc(nLen);
 	if (Mem==NULL)
 		return 1;
-	gp2x_memset(Mem,0,nLen); // blank all memory
+	memset(Mem,0,nLen); // blank all memory
 	MemIndex(); // Index the allocated memory
 
 	//--------------- Load Roms -------------------

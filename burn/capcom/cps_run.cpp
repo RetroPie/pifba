@@ -134,7 +134,7 @@ inline static void GetPalette(int nStart, int nCount)
 
 	unsigned char* Find = CpsFindGfxRam(nPal, 0x1000);
 	if (Find) {
-		gp2x_memcpy(CpsSavePal + (nStart << 10), Find + (nStart << 10), nCount << 10);
+		memcpy(CpsSavePal + (nStart << 10), Find + (nStart << 10), nCount << 10);
 	}
 }
 
@@ -144,19 +144,19 @@ static void GetStarPalette()
 
 	unsigned char* Find = CpsFindGfxRam(nPal, 256);
 	if (Find) {
-		gp2x_memcpy(CpsSavePal + 4096, Find + 4096, 256);
-		gp2x_memcpy(CpsSavePal + 5120, Find + 5120, 256);
+		memcpy(CpsSavePal + 4096, Find + 4096, 256);
+		memcpy(CpsSavePal + 5120, Find + 5120, 256);
 	}
 }
 
 inline static void CopyCpsReg(int i)
 {
-	gp2x_memcpy(CpsSaveReg[i], CpsReg, 0x0100);
+	memcpy(CpsSaveReg[i], CpsReg, 0x0100);
 }
 
 inline static void CopyCpsFrg(int i)
 {
-	gp2x_memcpy(CpsSaveFrg[i], CpsFrg, 0x0010);
+	memcpy(CpsSaveFrg[i], CpsFrg, 0x0010);
 }
 
 // Schedule a beam-synchronized interrupt
@@ -265,7 +265,7 @@ int Cps1Frame()
 
 			SekRun(nNext - nDisplayEnd);						// run 68K
 
-			gp2x_memcpy(CpsSaveReg[0], CpsReg, 0x100);				// Registers correct now
+			memcpy(CpsSaveReg[0], CpsReg, 0x100);				// Registers correct now
 
 			GetPalette(0, 4);									// Get palette
 			if (CpsStar) {

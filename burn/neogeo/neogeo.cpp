@@ -297,7 +297,7 @@ void NeoClearScreen()
 			}
 		}
 	} else {
-		gp2x_memset(pBurnDraw, 0, nNeoScreenWidth * 224 * nBurnBpp);
+		memset(pBurnDraw, 0, nNeoScreenWidth * 224 * nBurnBpp);
 	}
 }
 

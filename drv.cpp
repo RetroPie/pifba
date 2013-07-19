@@ -60,7 +60,7 @@ int DrvExit()
 
 //	if (bAudOkay) {
 		// Write silence into the sound buffer on exit, and for drivers which don't use pBurnSoundOut
-//		gp2x_memset(nAudNextSound, 0, nAudSegLen << 2);
+//		memset(nAudNextSound, 0, nAudSegLen << 2);
 //	}
 
 	nBurnDrvSelect = ~0U;			// no driver selected

@@ -23,7 +23,7 @@ static int CompEnlarge(int nAdd)
 	}
 
 	Comp = (unsigned char*)NewMem;
-	gp2x_memset(Comp + nCompLen, 0, nAdd);
+	memset(Comp + nCompLen, 0, nAdd);
 	nCompLen += nAdd;
 
 	return 0;
@@ -97,7 +97,7 @@ int BurnStateCompress(unsigned char** pDef, int* pnDefLen, int bAll)
 {
 	void* NewMem = NULL;
 
-	gp2x_memset(&Zstr, 0, sizeof(Zstr));
+	memset(&Zstr, 0, sizeof(Zstr));
 
 	Comp = NULL; nCompLen = 0; nCompFill = 0;					// Begin with a zero-length buffer
 	if (CompEnlarge(8 * 1024)) {
@@ -152,7 +152,7 @@ static int __cdecl StateDecompressAcb(struct BurnArea* pba)
 
 int BurnStateDecompress(unsigned char* Def, int nDefLen, int bAll)
 {
-	gp2x_memset(&Zstr, 0, sizeof(Zstr));
+	memset(&Zstr, 0, sizeof(Zstr));
 	inflateInit(&Zstr);
 
 	// Set all of the buffer as available input
@@ -165,7 +165,7 @@ int BurnStateDecompress(unsigned char* Def, int nDefLen, int bAll)
 	else      BurnAreaScan(ACB_NVRAM    | ACB_WRITE, NULL);		// scan nvram,   write (to driver <- decompress)
 
 	inflateEnd(&Zstr);
-	gp2x_memset(&Zstr, 0, sizeof(Zstr));
+	memset(&Zstr, 0, sizeof(Zstr));
 
 	return 0;
 }

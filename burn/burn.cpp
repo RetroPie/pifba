@@ -669,7 +669,7 @@ inline static int BurnClearSize(int w, int h)
 
 	// clear the screen to zero
 	for (pl = pBurnDraw, y = 0; y < h; pl += nBurnPitch, y++) {
-		gp2x_memset(pl, 0x00, w);
+		memset(pl, 0x00, w);
 	}
 
 	return 0;
@@ -717,7 +717,7 @@ static int nTransWidth, nTransHeight;
 
 void BurnTransferClear()
 {
-	gp2x_memset((void*)pTransDraw, 0, nTransWidth * nTransHeight * sizeof(short));
+	memset((void*)pTransDraw, 0, nTransWidth * nTransHeight * sizeof(short));
 }
 
 int BurnTransferCopy(UINT32* pPalette)
@@ -863,7 +863,7 @@ static void BurnStateRegister(const char* module, int instance, const char* name
 		return;
 	}
 
-	gp2x_memset(pNewEntry, 0, sizeof(BurnStateEntry));
+	memset(pNewEntry, 0, sizeof(BurnStateEntry));
 
 	// Link the new node
 	pNewEntry->pNext = pStateEntryAnchor;

@@ -276,7 +276,7 @@ static int drvScan(int nAction, int* pnMin)
 	}
 	if (nAction & ACB_VOLATILE) {		// Scan volatile ram
 
-		gp2x_memset(&ba, 0, sizeof(ba));
+		memset(&ba, 0, sizeof(ba));
     ba.Data		= RamStart;
 		ba.nLen		= RamEnd - RamStart;
 		ba.szName	= "RAM";
@@ -689,7 +689,7 @@ static int drvInit()
 	if ((Mem = (unsigned char*)malloc(nLen)) == NULL) {
 		return 1;
 	}
-	gp2x_memset(Mem, 0, nLen);										// Zero memory
+	memset(Mem, 0, nLen);										// Zero memory
 	MemIndex();													// Index the allocated memory
 
 	if (LoadRoms()) {

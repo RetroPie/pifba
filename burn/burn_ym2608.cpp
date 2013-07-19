@@ -318,10 +318,10 @@ int BurnYM2608Init(int nClockFrequency, unsigned char* YM2608ADPCMROM, int* nYM2
 	YM2608Init(1, nClockFrequency, nBurnYM2608SoundRate, (void**)(&YM2608ADPCMROM), nYM2608ADPCMSize, &BurnOPNTimerCallback, IRQCallback);
 
 	pBuffer = (short*)malloc(4096 * 6 * sizeof(short));
-	gp2x_memset(pBuffer, 0, 4096 * 6 * sizeof(short));
+	memset(pBuffer, 0, 4096 * 6 * sizeof(short));
 
 	pAYBuffer = (int*)malloc(4096 * sizeof(int));
-	gp2x_memset(pAYBuffer, 0, 4096 * sizeof(int));
+	memset(pAYBuffer, 0, 4096 * sizeof(int));
 
 	nYM2608Position = 0;
 	nAY8910Position = 0;

@@ -9,10 +9,10 @@ static unsigned short* CavePalCopy = NULL;
 int CavePalInit(int nPalSize)
 {
 	CavePalette = (unsigned int*)malloc(nPalSize * sizeof(int));
-	gp2x_memset(CavePalette, 0, nPalSize * sizeof(int));
+	memset(CavePalette, 0, nPalSize * sizeof(int));
 
 	CavePalCopy = (unsigned short*)malloc(nPalSize * sizeof(short));
-	gp2x_memset(CavePalCopy, 0, nPalSize * sizeof(short));
+	memset(CavePalCopy, 0, nPalSize * sizeof(short));
 
 	return 0;
 }

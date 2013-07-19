@@ -36,7 +36,7 @@ extern int (__cdecl *BurnAcb) (struct BurnArea* pba);
 inline static void ScanVar(void* pv, int nSize, char* szName)
 {
 	struct BurnArea ba;
-	gp2x_memset(&ba, 0, sizeof(ba));
+	memset(&ba, 0, sizeof(ba));
 	ba.Data   = pv;
 	ba.nLen   = nSize;
 	ba.szName = szName;

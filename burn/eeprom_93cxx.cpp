@@ -120,7 +120,7 @@ int EEPROMRead()
 
 void EEPROMFill(unsigned char* pData, int nOffset, int nSize)
 {
-	gp2x_memcpy(Memory + nOffset, pData, nSize);
+	memcpy(Memory + nOffset, pData, nSize);
 }
 
 void EEPROMReset()
@@ -154,7 +154,7 @@ void EEPROMScan(int nAction, int* pnMin)
 			*pnMin = 0x020902;
 		}
 
-		gp2x_memset(&ba, 0, sizeof(ba));
+		memset(&ba, 0, sizeof(ba));
     	ba.Data		= Memory;
 		ba.nLen		= nMemorySize;
 		ba.szName	= "EEPROM memory";
@@ -183,7 +183,7 @@ int EEPROMInit(int nSize, int nWidth)
 {
 	free(Memory);
 
-	gp2x_memset(&EEPROM, 0, sizeof(EEPROM));
+	memset(&EEPROM, 0, sizeof(EEPROM));
 
 	for (nAddressWidth = 4; (1 << nAddressWidth) < nSize / nWidth; nAddressWidth++) { }
 	nAddressMask = (nSize / nWidth) - 1;
@@ -197,7 +197,7 @@ int EEPROMInit(int nSize, int nWidth)
 		return 1;
 	}
 
-	gp2x_memset(Memory, 0, nMemorySize);
+	memset(Memory, 0, nMemorySize);
 
 	EEPROMReset();
 

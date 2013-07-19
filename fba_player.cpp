@@ -154,7 +154,7 @@ void show_rom_loading_text(char * szText, int nSize, int nTotalSize)
 		DrawRect((uint16 *) titlefb, 21, 141, size * 278 / nTotalSize, 10, 0x00FFFF00, 320);
 	}
 
-	gp2x_memcpy (VideoBuffer, titlefb, 320*240*2); 
+	memcpy (VideoBuffer, titlefb, 320*240*2); 
 	pi_video_flip();
 }
 
@@ -180,17 +180,18 @@ void run_fba_emulator(const char *fn)
 		// unsupport rom ...
 		nBurnDrvSelect = ~0U;
 		logoutput ("rom not supported!\n");
+		printf ("rom not supported!\n");
 		goto finish;
 	}
 	
 	logoutput("Attempt to initialise '%s'\n", BurnDrvGetTextA(DRV_FULLNAME));
 	
-	gp2x_memset (titlefb, 0, 320*240*2);
-	DrawString ("Finalburn Alpha Plus for Pi (Ver.090308/7.3)", (uint16*)&titlefb, 10, 20, 320);
+	memset (titlefb, 0, 320*240*2);
+	DrawString ("Finalburn Alpha Plus for Pi (__DATE__)", (uint16*)&titlefb, 10, 20, 320);
 	DrawString ("Based on FinalBurnAlpha", (uint16*)&titlefb, 10, 35, 320);
 	DrawString ("Now loading ... ", (uint16 *)&titlefb, 10, 105, 320);	
 	show_rom_loading_text("Open Zip", 0, 0);
-	gp2x_memcpy (VideoBuffer, titlefb, 320*240*2); 
+	memcpy (VideoBuffer, titlefb, 320*240*2); 
 	pi_video_flip();
 	 	
 	InpInit();
@@ -200,6 +201,7 @@ void run_fba_emulator(const char *fn)
 
 	if (DrvInit(nBurnDrvSelect, false) != 0) {
 		logoutput ("Driver initialisation failed! Likely causes are:\n- Corrupt/Missing ROM(s)\n- I/O Error\n- Memory error\n\n");
+		printf ("Driver initialisation failed! Likely causes are:\n- Corrupt/Missing ROM(s)\n- I/O Error\n- Memory error\n\n");
 		goto finish;
 	}
 

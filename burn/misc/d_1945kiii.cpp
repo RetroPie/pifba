@@ -286,7 +286,7 @@ static int DrvInit()
 	MemIndex();
 	int nLen = MemEnd - (unsigned char *)0;
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) return 1;
-	gp2x_memset(Mem, 0, nLen);										// blank all memory
+	memset(Mem, 0, nLen);										// blank all memory
 	MemIndex();	
 	
 	nRet = BurnLoadRom(Rom68K + 0x000000, 0, 2); if (nRet != 0) return 1;
@@ -574,7 +574,7 @@ static int DrvFrame()
 	if (pBurnDraw) DrvDraw();
 	
 	if (pBurnSoundOut) {
-		gp2x_memset(pBurnSoundOut, 0, nBurnSoundLen * 4);
+		memset(pBurnSoundOut, 0, nBurnSoundLen * 4);
 		MSM6295Render(0, pBurnSoundOut, nBurnSoundLen);
 		MSM6295Render(1, pBurnSoundOut, nBurnSoundLen);
 	}
@@ -588,7 +588,7 @@ static int DrvScan(int nAction,int *pnMin)
 	struct BurnArea ba;
 	
 	if (nAction & ACB_MEMORY_RAM) {								// Scan all memory, devices & variables
-		gp2x_memset(&ba, 0, sizeof(ba));
+		memset(&ba, 0, sizeof(ba));
     	ba.Data	  = RamStart;
 		ba.nLen	  = RamEnd-RamStart;
 		ba.szName = "All Ram";

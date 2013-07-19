@@ -325,7 +325,7 @@ int CaveSpriteRender(int nLowPriority, int nHighPriority)
 		if (nZPos >= 0) {
 			nZOffset += nTopSprite;
 			if (nZOffset > 0xFC00) {
-				gp2x_memset(pZBuffer, 0, nCaveXSize * nCaveYSize * sizeof(short));
+				memset(pZBuffer, 0, nCaveXSize * nCaveYSize * sizeof(short));
 				nZOffset = 0;
 			}
 		}
@@ -696,7 +696,7 @@ int CaveSpriteInit(int nType, int nROMSize)
 		return 1;
 	}
 
-	gp2x_memset(pZBuffer, 0, nCaveXSize * nCaveYSize * sizeof(short));
+	memset(pZBuffer, 0, nCaveXSize * nCaveYSize * sizeof(short));
 	nZOffset = 0;
 
 	for (nSpriteAddressMask = 1; nSpriteAddressMask < nROMSize; nSpriteAddressMask <<= 1) {}

@@ -72,7 +72,7 @@ static int AllocateMemory()
 		return 1;
 	}
 
-	gp2x_memset(CpsMem, 0, nLen);										// blank all memory
+	memset(CpsMem, 0, nLen);										// blank all memory
 	CpsMemIndex();													// Index the allocated memory
 
 	return 0;
@@ -339,7 +339,7 @@ static int ScanRam()
 {
 	// scan ram:
 	struct BurnArea ba;
-	gp2x_memset(&ba, 0, sizeof(ba));
+	memset(&ba, 0, sizeof(ba));
 
 	ba.Data = CpsRam90;  ba.nLen = 0x030000; ba.szName = "CpsRam90";  BurnAcb(&ba);
 	ba.Data = CpsRamFF;  ba.nLen = 0x010000; ba.szName = "CpsRamFF";  BurnAcb(&ba);
@@ -372,7 +372,7 @@ int CpsAreaScan(int nAction, int *pnMin)
 	}
 
 	if (nAction & ACB_MEMORY_ROM) {
-		gp2x_memset(&ba, 0, sizeof(ba));
+		memset(&ba, 0, sizeof(ba));
 		ba.Data   = CpsRom;
 		ba.nLen   = nCpsRomLen;
 		ba.szName = "CpsRom";
@@ -393,7 +393,7 @@ int CpsAreaScan(int nAction, int *pnMin)
 		ScanRam();
 
 		if (Cps == 2) {
-			gp2x_memset(&ba, 0, sizeof(ba));
+			memset(&ba, 0, sizeof(ba));
 			ba.Data   = CpsRam660;
 			ba.nLen   = 0x004000;
 			ba.szName = "CpsRam660";

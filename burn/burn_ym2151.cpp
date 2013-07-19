@@ -140,7 +140,7 @@ int BurnYM2151Init(int nClockFrequency, float nVolume, bool stereo)
 	YM2151Init(1, nClockFrequency, nBurnYM2151SoundRate,stereo?1:0);
 
 	pBuffer = (short*)malloc(65536 * 2 * sizeof(short));
-	gp2x_memset(pBuffer, 0, 65536 * 2 * sizeof(short));
+	memset(pBuffer, 0, 65536 * 2 * sizeof(short));
 
 	nSampleSize = (unsigned int)nBurnYM2151SoundRate * (1 << 16) / nBurnSoundRate;
 	nFractionalPosition = 4 << 16;
