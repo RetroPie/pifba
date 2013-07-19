@@ -107,7 +107,6 @@ void parse_cmd(int argc, char *argv[], char *path)
 		{"hw-rescale", 0, &config_options.option_rescale, 2},
 		{"showfps", 0, &config_options.option_showfps, 1},
 		{"no-showfps", 0, &config_options.option_showfps, 0},
-		{"frontend", required_argument, 0, 'f'},
 		{"gamelist", 0, 0, 'l'}
 	};
 
@@ -120,14 +119,6 @@ void parse_cmd(int argc, char *argv[], char *path)
 				if(strcmp(optarg, "11025") == 0) config_options.option_samplerate = 0;
 				if(strcmp(optarg, "22050") == 0) config_options.option_samplerate = 1;
 				if(strcmp(optarg, "44100") == 0) config_options.option_samplerate = 2;
-				break;
-			case 'f':
-				if(!optarg) continue;
-				p = strrchr(optarg, '/');
-				if(p == NULL)
-					sprintf(config_options.option_frontend, "%s%s", "./", optarg);
-				else
-					strcpy(config_options.option_frontend, optarg);
 				break;
 			case 'l':
 			    //Generate full gamelist
@@ -180,7 +171,6 @@ int main( int argc, char **argv )
 	config_options.option_samplerate = 2;
 	config_options.option_showfps = 0;
 	config_options.option_display_border = 30;
-	strcpy(config_options.option_frontend, "");
 	parse_cmd(argc, argv,path);
 
 	pi_initialize();
@@ -190,5 +180,5 @@ int main( int argc, char **argv )
 
 	fclose(errorlog);
 
-	pi_terminate(config_options.option_frontend);
+	pi_terminate();
 }
