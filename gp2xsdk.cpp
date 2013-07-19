@@ -32,6 +32,8 @@ static int surface_height;
 unsigned char joy_buttons[2][32];
 unsigned char joy_axes[2][8];
 
+int joyaxis_LR, joyaxis_UD;
+
 static GKeyFile *gkeyfile=0;
 
 static void open_config_file(void)
@@ -111,7 +113,11 @@ void pi_initialize_input()
     
 	pi_joy[QLOAD] = get_integer_conf("Joystick", "QLOAD", RPI_JOY_QLOAD);
 	pi_joy[QSAVE] = get_integer_conf("Joystick", "QSAVE", RPI_JOY_QSAVE);
-    
+
+	//Read joystick axis to use, default to 0 & 1
+	joyaxis_LR = get_integer_conf("Joystick", "JA_LR", 0);
+	joyaxis_UD = get_integer_conf("Joystick", "JA_UD", 1);
+
 	close_config_file();
     
 }
@@ -155,17 +161,14 @@ void pi_initialize()
 	
 }
 
-void pi_terminate(char *frontend)
+void pi_terminate(void)
 {
 	struct stat info;
 
     pi_deinit();
     deinit_SDL();
 
-	if( (stat(frontend, &info) == 0) && S_ISREG(info.st_mode) )
-	{
-		execl(frontend, frontend, NULL);
-	}
+	exit(0);
 }
 
 // create two resources for 'page flipping'
@@ -475,24 +478,22 @@ void pi_process_events (void)
                 joy_buttons[event.jbutton.which][event.jbutton.button] = 0;
                 break;
             case SDL_JOYAXISMOTION:
-                switch(event.jaxis.axis) {
-                    case JA_LR:
-                        if(event.jaxis.value > -10000 && event.jaxis.value < 10000)
-                            joy_axes[event.jbutton.which][JA_LR] = CENTER;
-                        else if(event.jaxis.value > 10000)
-                            joy_axes[event.jbutton.which][JA_LR] = RIGHT;
-                        else
-                            joy_axes[event.jbutton.which][JA_LR] = LEFT;
-                        break;
-                    case JA_UD:
-                        if(event.jaxis.value > -10000 && event.jaxis.value < 10000)
-                            joy_axes[event.jbutton.which][JA_UD] = CENTER;
-                        else if(event.jaxis.value > 10000)
-                            joy_axes[event.jbutton.which][JA_UD] = DOWN;
-                        else
-                            joy_axes[event.jbutton.which][JA_UD] = UP;
-                        break;
-                }
+				if(event.jaxis.axis == joyaxis_LR) {
+					if(event.jaxis.value > -10000 && event.jaxis.value < 10000)
+						joy_axes[event.jbutton.which][joyaxis_LR] = CENTER;
+					else if(event.jaxis.value > 10000)
+						joy_axes[event.jbutton.which][joyaxis_LR] = RIGHT;
+					else
+						joy_axes[event.jbutton.which][joyaxis_LR] = LEFT;
+				}
+				if(event.jaxis.axis == joyaxis_UD) {
+   					if(event.jaxis.value > -10000 && event.jaxis.value < 10000)
+						joy_axes[event.jbutton.which][joyaxis_UD] = CENTER;
+					else if(event.jaxis.value > 10000)
+						joy_axes[event.jbutton.which][joyaxis_UD] = DOWN;
+					else
+						joy_axes[event.jbutton.which][joyaxis_UD] = UP;
+				}
                 break;
             case SDL_KEYDOWN:
                 sdl_keys = SDL_GetKeyState(NULL);
@@ -561,10 +562,10 @@ unsigned long pi_joystick_read(void)
 		if (joy_buttons[which1][pi_joy[A_1]])		val |= GP2X_A;
 		if (joy_buttons[which1][pi_joy[START_1]])	val |= GP2X_START;
 		if (joy_buttons[which1][pi_joy[SELECT_1]]) val |= GP2X_SELECT;
-		if (joy_axes[which1][JA_UD] == UP)          val |= GP2X_UP;
-		if (joy_axes[which1][JA_UD] == DOWN)        val |= GP2X_DOWN;
-		if (joy_axes[which1][JA_LR] == LEFT)        val |= GP2X_LEFT;
-		if (joy_axes[which1][JA_LR] == RIGHT)       val |= GP2X_RIGHT;
+		if (joy_axes[which1][joyaxis_UD] == UP)          val |= GP2X_UP;
+		if (joy_axes[which1][joyaxis_UD] == DOWN)        val |= GP2X_DOWN;
+		if (joy_axes[which1][joyaxis_LR] == LEFT)        val |= GP2X_LEFT;
+		if (joy_axes[which1][joyaxis_LR] == RIGHT)       val |= GP2X_RIGHT;
 	} else {
 		if (joy_buttons[which1][pi_joy[L_1]])		val |= GP2X_L;
 		if (joy_buttons[which1][pi_joy[R_1]])		val |= GP2X_R;
@@ -574,10 +575,10 @@ unsigned long pi_joystick_read(void)
 		if (joy_buttons[which1][pi_joy[A_1]])		val |= GP2X_A;
 		if (joy_buttons[which1][pi_joy[START_1]])	val |= GP2X_START;
 		if (joy_buttons[which1][pi_joy[SELECT_1]])	val |= GP2X_SELECT;
-		if (joy_axes[which1][JA_UD] == UP)			val |= GP2X_UP;
-		if (joy_axes[which1][JA_UD] == DOWN)		val |= GP2X_DOWN;
-		if (joy_axes[which1][JA_LR] == LEFT)		val |= GP2X_LEFT;
-		if (joy_axes[which1][JA_LR] == RIGHT)		val |= GP2X_RIGHT;
+		if (joy_axes[which1][joyaxis_UD] == UP)			val |= GP2X_UP;
+		if (joy_axes[which1][joyaxis_UD] == DOWN)		val |= GP2X_DOWN;
+		if (joy_axes[which1][joyaxis_LR] == LEFT)		val |= GP2X_LEFT;
+		if (joy_axes[which1][joyaxis_LR] == RIGHT)		val |= GP2X_RIGHT;
 	}
     
     if(sdl_keys)
@@ -601,52 +602,16 @@ unsigned long pi_joystick_read(void)
 	return(val);
 }
 
+//sq Historical GP2X function to replace malloc,
+// saves having to rename all the function calls
 void *UpperMalloc(size_t size)
 {
     return (void*)calloc(1, size);
-//  int i = 0;
-//ReDo:
-//  for (; TakenSize[i]; i += TakenSize[i]);
-//  if (i >= 0x2000000 / BLOCKSIZE) {
-//    printf("UpperMalloc out of mem!");
-//    return NULL;
-//  }
-//  int BSize = (size - 1) / BLOCKSIZE + 1;
-//  for(int j = 1; j < BSize; j++) {
-//    if (TakenSize[i + j]) {
-//      i += j;
-//      goto ReDo; //OMG Goto, kill me.
-//    }
-//  }
-//  
-//  TakenSize[i] = BSize;
-//  void* mem = ((char*)UpperMem) + i * BLOCKSIZE;
-//  gp2x_memset(mem, 0, size);
-//  return mem;
 }
 
-//Releases UpperMalloced memory
+//sq Historical GP2X function to replace malloc,
+// saves having to rename all the function calls
 void UpperFree(void* mem)
 {
     free(mem);
-//  int i = (((int)mem) - ((int)UpperMem));
-//  if (i < 0 || i >= 0x2000000) {
-//    fprintf(stderr, "UpperFree of not UpperMalloced mem: %p\n", mem);
-//  } else {
-//    if (i % BLOCKSIZE)
-//      fprintf(stderr, "delete error: %p\n", mem);
-//    TakenSize[i / BLOCKSIZE] = 0;
-//  }
 }
-
-////Returns the size of a UpperMalloced block.
-//int GetUpperSize(void* mem)
-//{
-//  int i = (((int)mem) - ((int)UpperMem));
-//  if (i < 0 || i >= 0x2000000) {
-//    fprintf(stderr, "GetUpperSize of not UpperMalloced mem: %p\n", mem);
-//    return -1;
-//  }
-//  return TakenSize[i / BLOCKSIZE] * BLOCKSIZE;
-//}
-
