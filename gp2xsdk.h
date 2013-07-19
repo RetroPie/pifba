@@ -108,10 +108,6 @@ enum {
 #define CTRLL 32
 #define CTRLR 33
 
-// Axes
-#define JA_LR 0
-#define JA_UD 1
-
 // Axis positions
 #define CENTER  0
 #define LEFT    1
@@ -125,7 +121,7 @@ enum {
 #endif
 
 void pi_initialize();
-void pi_terminate(char *frontend);
+void pi_terminate(void);
 int init_SDL(void);
 void deinit_SDL(void);
 void pi_deinit(void);
