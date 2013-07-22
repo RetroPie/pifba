@@ -10,18 +10,23 @@
 
 CC	=	arm-linux-gnueabihf-gcc
 CXX	=	arm-linux-gnueabihf-g++
-CFLAGS	= -march=armv6 -mfpu=vfp -mfloat-abi=hard -pipe -Wall -W -O3 -DOOPSWARE_FIX -D_T="" -DNEOGEO_HACKS -D__cdecl="" -D__fastcall="" -DUSE_SPEEDHACKS -DNEO_DISPLAY_OVERSCAN 
+
+CFLAGS	= -march=armv6 -mfpu=vfp -mfloat-abi=hard -pipe -Wall -W -Wno-write-strings -O3 -DOOPSWARE_FIX -D_T="" -DNEOGEO_HACKS -D__cdecl="" -D__fastcall="" -DUSE_SPEEDHACKS -DNEO_DISPLAY_OVERSCAN 
 CFLAGS += -falign-functions=32 -falign-loops -falign-labels -falign-jumps -fomit-frame-pointer -ffast-math -fexpensive-optimizations -finline -finline-functions
 CFLAGS += -mstructure-size-boundary=32 -frename-registers 
+
 CFLAGSPROFILE = -mcpu=arm920t -mtune=arm920t -pipe -Wall -W -O3 -DOOPSWARE_FIX -D_T="" -DNEOGEO_HACKS -D__cdecl="" -D__fastcall="" -DUSE_SPEEDHACKS -DNEO_DISPLAY_OVERSCAN 
 CFLAGSPROFILE += -falign-functions=32 -falign-loops -falign-labels -falign-jumps -fomit-frame-pointer -ffast-math -fexpensive-optimizations -finline -finline-functions
 CFLAGSPROFILE += -mstructure-size-boundary=32 -frename-registers 
-CXXFLAGS= -march=armv6 -mfpu=vfp -mfloat-abi=hard -pipe -DQWS -fno-exceptions -fno-rtti -Wall -W -O3 -DOOPSWARE_FIX -D_T="" -DNEOGEO_HACKS -D__cdecl="" -D__fastcall="" -DUSE_SPEEDHACKS -DNEO_DISPLAY_OVERSCAN 
+
+CXXFLAGS= -march=armv6 -mfpu=vfp -mfloat-abi=hard -pipe -DQWS -fno-exceptions -fno-rtti -Wall -W -Wno-write-strings -O3 -DOOPSWARE_FIX -D_T="" -DNEOGEO_HACKS -D__cdecl="" -D__fastcall="" -DUSE_SPEEDHACKS -DNEO_DISPLAY_OVERSCAN 
 CXXFLAGS += -falign-functions=32 -falign-loops -falign-labels -falign-jumps -fomit-frame-pointer -ffast-math -fexpensive-optimizations -finline -finline-functions
 CXXFLAGS += -mstructure-size-boundary=32 -frename-registers 
+
 CXXFLAGSPROFILE= -mcpu=arm920t -mtune=arm920t -pipe -DQWS -fno-exceptions -fno-rtti -Wall -W -O3 -DOOPSWARE_FIX -D_T="" -DNEOGEO_HACKS -D__cdecl="" -D__fastcall="" -DUSE_SPEEDHACKS -DNEO_DISPLAY_OVERSCAN 
 CXXFLAGSPROFILE += -falign-functions=32 -falign-loops -falign-labels -falign-jumps -fomit-frame-pointer -ffast-math -fexpensive-optimizations -finline -finline-functions
 CXXFLAGSPROFILE += -mstructure-size-boundary=32 -frename-registers 
+
 INCPATH	= -I. -I./burn -I./burn/neogeo -I./burn/capcom -I./burn/cave -I./burn/toaplan -I./cpu/cz80 -I./cpu/cyclone -I./cpu/z80 -I./cpu/nec -I./cpu/sh2 -I./burn/misc -I$(EZX_BASE)/include/3pt -I$(EZX_BASE)/include/qt -I$(EZX_BASE)/include/ezx -I$(SDKSTAGE)/opt/vc/include -I$(SDKSTAGE)/opt/vc/include/interface/vcos/pthreads \
 	-I$(SDKSTAGE)/opt/vc/include/interface/vmcs_host/linux -I/usr/include/SDL -I/usr/include/glib-2.0 -I/usr/lib/arm-linux-gnueabihf/glib-2.0/include 
 LINK	= arm-linux-gnueabihf-g++
