@@ -17,6 +17,9 @@ This port supports keyboard and USB joystick input and are configurable. It uses
 Download it from the official Raspberry Pi App Store:
 http://store.raspberrypi.com/projects/pifba
 
+Alternatively download it manually from:
+https://pifba.googlecode.com/git/piFBA.zip
+
 Web page for news, source, additional information:
 http://code.google.com/p/pifba/
 
