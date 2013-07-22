@@ -4,7 +4,6 @@
 #include "snd.h"
 #include "font.h"
 #include "gp2xsdk.h"
-#include "gp2xmemfuncs.h"
 #include "config.h"
 
 extern int fps;

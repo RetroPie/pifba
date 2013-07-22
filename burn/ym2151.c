@@ -12,8 +12,6 @@
 #include "driver.h"
 #include "state.h"
 #include "ym2151.h"
-#include "gp2xmemfuncs.h"
-
 
 /* undef this to not use MAME timer system */
 // #define USE_MAME_TIMERS

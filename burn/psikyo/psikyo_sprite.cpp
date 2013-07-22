@@ -292,7 +292,7 @@ int PsikyoSpriteRender(int nLowPriority, int nHighPriority)
 		if (nZPos >= 0) {
 			nZOffset += nTopSprite;
 			if (nZOffset > 0xFC00) {
-				gp2x_memset(pZBuffer, 0, 320 * 224 * sizeof(short));
+				memset(pZBuffer, 0, 320 * 224 * sizeof(short));
 				nZOffset = 0;
 			}
 		}
@@ -443,7 +443,7 @@ int PsikyoSpriteInit(int nROMSize)
 		return 1;
 	}
 
-	gp2x_memset(pZBuffer, 0, 320 * 224 * sizeof(short));
+	memset(pZBuffer, 0, 320 * 224 * sizeof(short));
 	nZOffset = 0;
 
 	for (nSpriteAddressMask = 1; nSpriteAddressMask < nROMSize; nSpriteAddressMask <<= 1) {}
@@ -492,8 +492,8 @@ int PsikyoSpriteInit(int nROMSize)
 		return 1;
 	}
 
-	gp2x_memset(PsikyoZoomXTable, 0, 272 * sizeof(int));
-	gp2x_memset(PsikyoZoomYTable, 0, 272 * sizeof(int));
+	memset(PsikyoZoomXTable, 0, 272 * sizeof(int));
+	memset(PsikyoZoomYTable, 0, 272 * sizeof(int));
 
 	for (int z = 8; z < 16; z++) {
 		for (int i = 0, x = 0; i < z; i++, x += 0x100000 / z) {

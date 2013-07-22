@@ -1,6 +1,5 @@
 #include "tiles_generic.h"
 #include "msm6295.h"
-#include "gp2xmemfuncs.h"
 
 // FB Alpha - "News" Driver
 

@@ -2,7 +2,6 @@
 #include "burnint.h"
 #include "msm6295.h"
 #include "burn_sound.h"
-#include "gp2xmemfuncs.h"
 
 unsigned char* MSM6295ROM;
 unsigned char* MSM6295SampleInfo[MAX_MSM6295][4];

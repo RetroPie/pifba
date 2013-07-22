@@ -13,7 +13,6 @@
 #define DIRS_MAX (8)								// Maximum number of directories to search
 
 #include "burn.h"
-#include "gp2xmemfuncs.h"
 
 #ifndef MAX_PATH
 #define	MAX_PATH 256

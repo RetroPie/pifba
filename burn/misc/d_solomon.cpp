@@ -1,5 +1,4 @@
 #include "tiles_generic.h"
-#include "gp2xmemfuncs.h"
 
 #include "driver.h"
 extern "C" {

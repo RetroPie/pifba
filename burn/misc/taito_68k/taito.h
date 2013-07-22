@@ -11,7 +11,6 @@ Coding by KEV, with help from Treble Winner and Jan_Klaassen
 #include "taito_gfx.h"
 #include "snd_tc0140.h"
 #include "rain_chip.h"
-#include "gp2xmemfuncs.h"
 extern int rCyclesDone[3];
 #endif
 

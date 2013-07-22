@@ -416,19 +416,19 @@ static int DrvFrame()
 static int MemIndex()
 {
 	Rom01			= (unsigned char*)malloc(0x100000);		// 68K program
-	gp2x_memset(Rom01,0,0x100000);
+	memset(Rom01,0,0x100000);
 	CaveSpriteROM	= (unsigned char*)UpperMalloc(0x1000000);
-	gp2x_memset(CaveSpriteROM,0,0x100000);
+	memset(CaveSpriteROM,0,0x100000);
 	CaveTileROM[0]	= (unsigned char*)malloc(0x400000);		// Tile layer 0
-	gp2x_memset(CaveTileROM[0],0,0x400000);
+	memset(CaveTileROM[0],0,0x400000);
 	CaveTileROM[1]	= (unsigned char*)malloc(0x400000);		// Tile layer 1
-	gp2x_memset(CaveTileROM[1],0,0x400000);
+	memset(CaveTileROM[1],0,0x400000);
 	CaveTileROM[2]	= (unsigned char*)malloc(0x200000);		// Tile layer 2
-	gp2x_memset(CaveTileROM[2],0,0x200000);
+	memset(CaveTileROM[2],0,0x200000);
 	YMZ280BROM		= (unsigned char*)malloc(0x400000);
-	gp2x_memset(YMZ280BROM,0,0x400000);
+	memset(YMZ280BROM,0,0x400000);
 	RamStart		= (unsigned char*)malloc(0x010000+0x008000+0x008000+0x008000+0x010000+0x010000);
-	gp2x_memset(RamStart,0,0x010000+0x008000+0x008000+0x008000+0x010000+0x010000);
+	memset(RamStart,0,0x010000+0x008000+0x008000+0x008000+0x010000+0x010000);
 	Ram01			= RamStart;		// CPU #0 work RAM
 	CaveTileRAM[0]	= Ram01+0x010000;
 	CaveTileRAM[1]	= CaveTileRAM[0]+0x008000;
@@ -499,7 +499,7 @@ static int DrvScan(int nAction, int *pnMin)
 
 	if (nAction & ACB_VOLATILE) {		// Scan volatile ram
 
-		gp2x_memset(&ba, 0, sizeof(ba));
+		memset(&ba, 0, sizeof(ba));
     	ba.Data		= RamStart;
 		ba.nLen		= RamEnd - RamStart;
 		ba.szName	= "RAM";

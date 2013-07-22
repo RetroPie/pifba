@@ -1,5 +1,4 @@
 #include "gp2xsdk.h"
-#include "gp2xmemfuncs.h"
 #include "burner.h"
 #include "config.h"
 

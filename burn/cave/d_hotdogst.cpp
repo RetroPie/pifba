@@ -237,8 +237,8 @@ void __fastcall hotdogstZOut(unsigned short nAddress, unsigned char nValue)
 			DrvOkiBank1 = (nValue >> 0) & 0x03;
 			DrvOkiBank2 = (nValue >> 4) & 0x03;
 			
-			gp2x_memcpy(MSM6295ROM + 0x00000, MSM6295ROMSrc + 0x20000 * DrvOkiBank1, 0x20000);
-			gp2x_memcpy(MSM6295ROM + 0x20000, MSM6295ROMSrc + 0x20000 * DrvOkiBank2, 0x20000);
+			memcpy(MSM6295ROM + 0x00000, MSM6295ROMSrc + 0x20000 * DrvOkiBank1, 0x20000);
+			memcpy(MSM6295ROM + 0x20000, MSM6295ROMSrc + 0x20000 * DrvOkiBank2, 0x20000);
 			return;
 		}
 		
@@ -513,7 +513,7 @@ static int DrvScan(int nAction, int *pnMin)
 
 	if (nAction & ACB_VOLATILE) {		// Scan volatile ram
 
-		gp2x_memset(&ba, 0, sizeof(ba));
+		memset(&ba, 0, sizeof(ba));
     	ba.Data		= RamStart;
 		ba.nLen		= RamEnd - RamStart;
 		ba.szName	= "RAM";
@@ -544,8 +544,8 @@ static int DrvScan(int nAction, int *pnMin)
 			CZetMapArea(0x4000, 0x7FFF, 2, RomZ80 + (DrvZ80Bank * 0x4000));
 			CZetClose();
 			
-			gp2x_memcpy(MSM6295ROM + 0x00000, MSM6295ROMSrc + 0x20000 * DrvOkiBank1, 0x20000);
-			gp2x_memcpy(MSM6295ROM + 0x20000, MSM6295ROMSrc + 0x20000 * DrvOkiBank2, 0x20000);
+			memcpy(MSM6295ROM + 0x00000, MSM6295ROMSrc + 0x20000 * DrvOkiBank1, 0x20000);
+			memcpy(MSM6295ROM + 0x20000, MSM6295ROMSrc + 0x20000 * DrvOkiBank2, 0x20000);
 
 			CaveRecalcPalette = 1;
 		}
@@ -615,7 +615,7 @@ static int DrvInit()
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) {
 		return 1;
 	}
-	gp2x_memset(Mem, 0, nLen);										// blank all memory
+	memset(Mem, 0, nLen);										// blank all memory
 	MemIndex();													// Index the allocated memory
 
 	EEPROMInit(1024, 16);										// EEPROM has 1024 bits, uses 16-bit words
@@ -661,7 +661,7 @@ static int DrvInit()
 	BurnYM2203Init(1, 4000000, &DrvFMIRQHandler, DrvSynchroniseStream, DrvGetTime, 0);
 	BurnTimerAttachCZet(4000000);
 	
-	gp2x_memcpy(MSM6295ROM, MSM6295ROMSrc, 0x40000);
+	memcpy(MSM6295ROM, MSM6295ROMSrc, 0x40000);
 	MSM6295Init(0, 1056000 / 132, 50.0, 1);
 	
 	bDrawScreen = true;

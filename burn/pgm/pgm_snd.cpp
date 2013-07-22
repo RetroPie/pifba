@@ -277,7 +277,7 @@ void ics2115_exit()
 
 void ics2115_reset()
 {
-	gp2x_memset(chip, 0, sizeof(struct ics2115));
+	memset(chip, 0, sizeof(struct ics2115));
 
 	chip->rom = PGMSNDROM;
 //	chip->timer[0].timer = timer_alloc_ptr(timer_cb_0, chip);
@@ -298,8 +298,8 @@ void ics2115_reset()
 	
 	recalc_irq();
 	
-	gp2x_memset(nSoundlatch, 0, sizeof(nSoundlatch));
-	gp2x_memset(bSoundlatchRead, 0, sizeof(bSoundlatchRead));
+	memset(nSoundlatch, 0, sizeof(nSoundlatch));
+	memset(bSoundlatchRead, 0, sizeof(bSoundlatchRead));
 }
 
 unsigned short ics2115_soundlatch_r(int i)
@@ -332,10 +332,10 @@ void ics2115_update(int length)
 	short* pSoundBuf = pBurnSoundOut;
 	
 	if (pSoundBuf)
-		gp2x_memset(pSoundBuf, 0, length * 4);
+		memset(pSoundBuf, 0, length * 4);
 
-	//gp2x_memset(buffer[0], 0, length*sizeof(*buffer[0]));
-	//gp2x_memset(buffer[1], 0, length*sizeof(*buffer[0]));
+	//memset(buffer[0], 0, length*sizeof(*buffer[0]));
+	//memset(buffer[1], 0, length*sizeof(*buffer[0]));
 
 	for(int osc=0; osc<32; osc++)
 		if(chip->voice[osc].state & V_ON) {

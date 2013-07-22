@@ -1,6 +1,5 @@
 #include "tiles_generic.h"
 #include "burn_ym3812.h"
-#include "gp2xmemfuncs.h"
 
 // Input Related Variables
 static unsigned char PrehisleInputPort0[8] = {0, 0, 0, 0, 0, 0, 0, 0};

@@ -3,7 +3,6 @@
 #include "burnint.h"
 #include "ymz280b.h"
 #include "burn_sound.h"
-#include "gp2xmemfuncs.h"
 
 static int nYMZ280BSampleRate;
 

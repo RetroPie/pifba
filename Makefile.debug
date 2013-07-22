@@ -73,9 +73,7 @@ HEADERS = gp2xsdk.h \
 		cave.h \
 		toaplan.h \
 		cache.h
-SOURCES = memcpy.s \
-		memset.s \
-		gp2xsdk.cpp \
+SOURCES = gp2xsdk.cpp \
 		gles2.cpp \
 		thread.c \
 		fifo_buffer.c \
@@ -292,9 +290,7 @@ SOURCES = memcpy.s \
 		drv.cpp \
 		run.cpp \
 		input.cpp 
-OBJECTS = $(OBJ)/memcpy.o \
-		$(OBJ)/memset.o\
-		$(OBJ)/gp2xsdk.o \
+OBJECTS = $(OBJ)/gp2xsdk.o \
 		$(OBJ)/gles2.o \
 		$(OBJ)/thread.o \
 		$(OBJ)/fifo_buffer.o \
@@ -3205,9 +3201,3 @@ $(OBJ)/input.o: input.cpp \
 		burn/cheat.h \
 		burn/state.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/input.o input.cpp
-
-$(OBJ)/memset.o: memset.s
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/memset.o memset.s
-
-$(OBJ)/memcpy.o: memcpy.s
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/memcpy.o memcpy.s

@@ -375,13 +375,13 @@ void pgm_asic28_w(unsigned short offset, unsigned short data)
 void asic28_reset()
 {
 	ASIC28KEY=ASIC28RCNT=0;
-	gp2x_memset(ASIC28REGS, 0, 10);
-	gp2x_memset(ASICPARAMS, 0, 256);
-	gp2x_memset(E0REGS, 0, 16);
+	memset(ASIC28REGS, 0, 10);
+	memset(ASICPARAMS, 0, 256);
+	memset(E0REGS, 0, 16);
 
 	// photoy2k
 	photoy2k_seqpos = photoy2k_soff = 0;
-	gp2x_memset(photoy2k_trf, 0, 3);
+	memset(photoy2k_trf, 0, 3);
 }
 
 // Dragon World 2
@@ -881,8 +881,8 @@ void pstars_reset()
 	PSTARSINT[0] = PSTARSINT[1] = 0;
 	pstar_e7 = pstar_b1 = pstar_ce = 0;
 
-	gp2x_memset(PSTARS_REGS, 0, 16);
-	gp2x_memset(pstar_ram,   0,  3);
+	memset(PSTARS_REGS, 0, 16);
+	memset(pstar_ram,   0,  3);
 }
 
 // Oriental Legends Super

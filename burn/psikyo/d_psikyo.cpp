@@ -1839,11 +1839,11 @@ static int DrvInit()
 		}
 		return 1;
 	}
-	gp2x_memset(Mem, 0, nLen);										// blank all memory
-	gp2x_memset(PsikyoSpriteROM, 0, PsikyoSpriteROMSize);			// blank all memory
-	gp2x_memset(PsikyoTileROM, 0, PsikyoTileROMSize);				// blank all memory
-	gp2x_memset(PsikyoSampleROM01, 0, PsikyoSampleROM01Size);		// blank all memory
-	gp2x_memset(PsikyoSampleROM02, 0, PsikyoSampleROM02Size);		// blank all memory
+	memset(Mem, 0, nLen);										// blank all memory
+	memset(PsikyoSpriteROM, 0, PsikyoSpriteROMSize);			// blank all memory
+	memset(PsikyoTileROM, 0, PsikyoTileROMSize);				// blank all memory
+	memset(PsikyoSampleROM01, 0, PsikyoSampleROM01Size);		// blank all memory
+	memset(PsikyoSampleROM02, 0, PsikyoSampleROM02Size);		// blank all memory
 	MemIndex();													// Index the allocated memory
 
 	// Load the roms into memory

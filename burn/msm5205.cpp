@@ -9,7 +9,6 @@ Needs redsigning as some of the things we are doing here are not needed.
 #include "burnint.h"
 #include "msm5205.h"
 #include "burn_sound.h"
-#include "gp2xmemfuncs.h"
 
 unsigned char* MSM5205ROM;
 unsigned char* MSM5205SampleInfo[MAX_MSM5205];

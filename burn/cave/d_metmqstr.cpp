@@ -275,8 +275,8 @@ void __fastcall metmqstrZOut(unsigned short nAddress, unsigned char nValue)
 			DrvOkiBank1_1 = (nValue >> 0) & 0x07;
 			DrvOkiBank1_2 = (nValue >> 4) & 0x07;
 			
-			gp2x_memcpy(MSM6295ROM + 0x000000, MSM6295ROMSrc1 + 0x20000 * DrvOkiBank1_1, 0x20000);
-			gp2x_memcpy(MSM6295ROM + 0x020000, MSM6295ROMSrc1 + 0x20000 * DrvOkiBank1_2, 0x20000);
+			memcpy(MSM6295ROM + 0x000000, MSM6295ROMSrc1 + 0x20000 * DrvOkiBank1_1, 0x20000);
+			memcpy(MSM6295ROM + 0x020000, MSM6295ROMSrc1 + 0x20000 * DrvOkiBank1_2, 0x20000);
 			return;
 		}
 		
@@ -289,8 +289,8 @@ void __fastcall metmqstrZOut(unsigned short nAddress, unsigned char nValue)
 			DrvOkiBank2_1 = (nValue >> 0) & 0x07;
 			DrvOkiBank2_2 = (nValue >> 4) & 0x07;
 			
-			gp2x_memcpy(MSM6295ROM + 0x100000, MSM6295ROMSrc2 + 0x20000 * DrvOkiBank2_1, 0x20000);
-			gp2x_memcpy(MSM6295ROM + 0x120000, MSM6295ROMSrc2 + 0x20000 * DrvOkiBank2_2, 0x20000);
+			memcpy(MSM6295ROM + 0x100000, MSM6295ROMSrc2 + 0x20000 * DrvOkiBank2_1, 0x20000);
+			memcpy(MSM6295ROM + 0x120000, MSM6295ROMSrc2 + 0x20000 * DrvOkiBank2_2, 0x20000);
 			return;
 		}
 
@@ -383,7 +383,7 @@ static int DrvDoReset()
 	SoundLatch = 0;
 	SoundLatchStatus = 0x0C;
 
-	gp2x_memset(SoundLatchReply, 0, sizeof(SoundLatchReply));
+	memset(SoundLatchReply, 0, sizeof(SoundLatchReply));
 	SoundLatchReplyIndex = 0;
 	SoundLatchReplyMax = -1;
 	
@@ -620,7 +620,7 @@ static int DrvScan(int nAction, int *pnMin)
 	EEPROMScan(nAction, pnMin);			// Scan EEPROM
 
 	if (nAction & ACB_VOLATILE) {		// Scan volatile ram
-		gp2x_memset(&ba, 0, sizeof(ba));
+		memset(&ba, 0, sizeof(ba));
     		ba.Data		= RamStart;
 		ba.nLen		= RamEnd - RamStart;
 		ba.szName	= "RAM";
@@ -654,11 +654,11 @@ static int DrvScan(int nAction, int *pnMin)
 			CZetMapArea(0x4000, 0x7FFF, 2, RomZ80 + (DrvZ80Bank * 0x4000));
 			CZetClose();
 			
-			gp2x_memcpy(MSM6295ROM + 0x000000, MSM6295ROMSrc1 + 0x20000 * DrvOkiBank1_1, 0x20000);
-			gp2x_memcpy(MSM6295ROM + 0x020000, MSM6295ROMSrc1 + 0x20000 * DrvOkiBank1_2, 0x20000);
+			memcpy(MSM6295ROM + 0x000000, MSM6295ROMSrc1 + 0x20000 * DrvOkiBank1_1, 0x20000);
+			memcpy(MSM6295ROM + 0x020000, MSM6295ROMSrc1 + 0x20000 * DrvOkiBank1_2, 0x20000);
 			
-			gp2x_memcpy(MSM6295ROM + 0x100000, MSM6295ROMSrc2 + 0x20000 * DrvOkiBank2_1, 0x20000);
-			gp2x_memcpy(MSM6295ROM + 0x120000, MSM6295ROMSrc2 + 0x20000 * DrvOkiBank2_2, 0x20000);
+			memcpy(MSM6295ROM + 0x100000, MSM6295ROMSrc2 + 0x20000 * DrvOkiBank2_1, 0x20000);
+			memcpy(MSM6295ROM + 0x120000, MSM6295ROMSrc2 + 0x20000 * DrvOkiBank2_2, 0x20000);
 
 			CaveRecalcPalette = 1;
 		}
@@ -718,7 +718,7 @@ static int DrvInit()
 	if ((Mem = (unsigned char *)malloc(nLen)) == NULL) {
 		return 1;
 	}
-	gp2x_memset(Mem, 0, nLen);										// blank all memory
+	memset(Mem, 0, nLen);										// blank all memory
 	MemIndex();													// Index the allocated memory
 
 	EEPROMInit(1024, 16);										// EEPROM has 1024 bits, uses 16-bit words
@@ -767,8 +767,8 @@ static int DrvInit()
 	BurnYM2151Init(4000000, 25.0);
 	BurnYM2151SetIrqHandler(&DrvYM2151IrqHandler);
 	
-	gp2x_memcpy(MSM6295ROM, MSM6295ROMSrc1, 0x40000);
-	gp2x_memcpy(MSM6295ROM + 0x100000, MSM6295ROMSrc2, 0x40000);
+	memcpy(MSM6295ROM, MSM6295ROMSrc1, 0x40000);
+	memcpy(MSM6295ROM + 0x100000, MSM6295ROMSrc2, 0x40000);
 	MSM6295Init(0, 2000000 / 132, 100.0, 1);
 	MSM6295Init(1, 2000000 / 132, 100.0, 1);
 	

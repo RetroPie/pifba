@@ -9,10 +9,10 @@ static unsigned short* PsikyoPalCopy;
 int PsikyoPalInit()
 {
 	PsikyoPalette = (unsigned int*)malloc(0x1000 * sizeof(int));
-	gp2x_memset(PsikyoPalette, 0, 0x1000 * sizeof(int));
+	memset(PsikyoPalette, 0, 0x1000 * sizeof(int));
 
 	PsikyoPalCopy = (unsigned short*)malloc(0x1000 * sizeof(short));
-	gp2x_memset(PsikyoPalCopy, 0, 0x1000 * sizeof(short));
+	memset(PsikyoPalCopy, 0, 0x1000 * sizeof(short));
 
 	return 0;
 }

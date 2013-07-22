@@ -1,7 +1,5 @@
 #if !defined(_STATE_H)
 
-#include "gp2xmemfuncs.h"
-
 #ifdef __cplusplus
  extern "C" {
 #endif

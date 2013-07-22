@@ -1,7 +1,6 @@
 // Tiger Heli, Get Star / Guardian, & Slap Fight
 
 #include "burnint.h"
-#include "gp2xmemfuncs.h"
 
 #include "driver.h"
 extern "C" {

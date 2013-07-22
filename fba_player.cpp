@@ -29,7 +29,6 @@
 #include "snd.h"
 
 #include "burnint.h"
-#include "gp2xmemfuncs.h"
 #include "config.h"
 #include "cache.h"
 

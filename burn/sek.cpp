@@ -5,7 +5,6 @@
 
 #include "burnint.h"
 #include "sekdebug.h"
-#include "gp2xmemfuncs.h"
 
 struct Cyclone PicoCpu;
 static bool bCycloneInited = false;

@@ -1,6 +1,5 @@
 #include "tiles_generic.h"
 #include "msm6295.h"
-#include "gp2xmemfuncs.h"
 
 // define this to enable basic unmapped memory reads and writes
 //#define OHMYGODLOG 1

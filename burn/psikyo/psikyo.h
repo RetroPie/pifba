@@ -1,5 +1,4 @@
 #include "burnint.h"
-#include "gp2xmemfuncs.h"
 
 // General
 enum {

@@ -670,7 +670,7 @@ static void pgm_tile_bg()
 
 int pgmDraw()
 {
-	gp2x_memset(pBurnDraw, 0, 448*224*2);
+	memset(pBurnDraw, 0, 448*224*2);
 
 	pgmPalUpdate();
 	pgm_sprite_source = RamSpr;	

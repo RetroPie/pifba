@@ -1,7 +1,6 @@
 // 93Cxx EEPROM module
 #include "burnint.h"
 #include "eeprom_93cxx.h"
-#include "gp2xmemfuncs.h"
 
 static unsigned char* Memory = NULL;
 static int nMemorySize;

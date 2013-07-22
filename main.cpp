@@ -30,7 +30,6 @@
 #include <getopt.h>
 #include "main.h"
 #include "fba_player.h"
-#include "gp2xmemfuncs.h"
 #include "burner.h"
 #include "snd.h"
 #include "config.h"

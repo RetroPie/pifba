@@ -9,7 +9,6 @@
 
 #include "tchar.h"
 #include "burn.h"
-#include "gp2xmemfuncs.h"
 
 #ifndef MAX_PATH
  #define MAX_PATH (260)

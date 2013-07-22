@@ -675,7 +675,7 @@ static int killbldtInit()
 	nRet = pgmInit();
 
 	/* fill the protection ram with a5 */
-	gp2x_memset(USER0, 0xa5, 0x4000);
+	memset(USER0, 0xa5, 0x4000);
 
 	SekOpen(0);
 	SekMapMemory(USER0,	0x300000, 0x303fff, SM_RAM);

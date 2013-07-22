@@ -34,7 +34,6 @@
 
 #include <math.h>
 #include "driver.h"
-#include "gp2xmemfuncs.h"
 
 #ifdef FBA															/* !!! FBA */
 #include "ymf278b.h"

@@ -1,7 +1,6 @@
 
 #include "pgm.h"
 #include "cache.h"
-#include "gp2xmemfuncs.h"
 #include "gp2xsdk.h"
 
 unsigned char PgmJoy1[8] = {0,0,0,0,0,0,0,0};
@@ -510,7 +509,7 @@ int pgmInit()
 		pgmMemIndex();
 		int nLen = MemEnd - (unsigned char *)0;
 		if ((Mem = (unsigned char *)malloc(nLen)) == NULL) return 1;
-		gp2x_memset(Mem, 0, nLen);
+		memset(Mem, 0, nLen);
 		pgmMemIndex();
 
 		BurnCacheRead(PGM68KBIOS, 0);
@@ -542,7 +541,7 @@ int pgmInit()
 		pgmMemIndex();
 		int nLen = MemEnd - (unsigned char *)0;
 		if ((Mem = (unsigned char *)malloc(nLen)) == NULL) return 1;
-		gp2x_memset(Mem, 0, nLen);
+		memset(Mem, 0, nLen);
 		pgmMemIndex();
 
 		pgmGetRoms(true);
