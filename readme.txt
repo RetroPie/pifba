@@ -149,4 +149,3 @@ Postprocessing can be enabled by setting "DisplayEffect" in fba2x.cfg. In additi
 
 _July 21, 2013:_
   * Initial release.
-
