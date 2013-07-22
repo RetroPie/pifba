@@ -1,0 +1,33 @@
+CAPEX frontend by JYCET and Juanvvc
+for Fireburn Alpha emulator by Headoverheels
+
+UP/DOWN/LEFT/RIGHT = scroll in the list
+A = Launch a rom (all except RED)
+X = help screen
+SELECT = options window
+START (double) = quit
+
+ROMS COLOR:
+RED = missing
+ORANGE = clone rom detected
+YELLOW = parent rom detected or clone rom detected & parent rom detected
+GREEN = clone rom detected & parent rom detected & cache detected
+BLUE = parent rom detected & cache detected
+
+Extract all in your Fba2x folder and launch fbacapex.gpe !
+FBACAPEX.GPE need:
+-emulator fba2x in the same folder
+-file zipname.fba
+-file rominfo.fba
+-folder ./preview/ (empty if you want)
+-folder ./conf/
+Optional
+-file fbacapex.png (icon)
+-file README and COPYING (this file)
+-folder and files ./skin/... (but better :) )
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+v0.7b3:
+- first adaptation from capex 0.6 for CPS2emu by JYCET
+- beta testers: Dullyboy, Haohmaru, Headoverheels, Jurk anv Rivroner.
