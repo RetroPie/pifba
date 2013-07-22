@@ -1,3 +1,4 @@
 rm piFBA.zip
-mv capex.cfg.template capex.cfg
+cp -p capex.cfg.template capex.cfg
+cp -p fba2x.cfg.template fba2x.cfg
 zip piFBA.zip fba2x fbacapex zipname.fba rominfo.fba fba2x.cfg capex.cfg readme.txt FBACache_windows.zip fba_029671_clrmame_dat.zip skin/capex_bg.bmp skin/capex_selector.bmp skin/capex_title.bmp skin/gfx_FONT.bmp roms/dir.txt preview/* install.sh
