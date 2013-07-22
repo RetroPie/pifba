@@ -12,7 +12,7 @@ A number of games will not work properly, some are so large they appear to run o
 
 It uses a modified version of the Capex frontend for game selection but you can use your own frontend and simply call the "fba2x" to play the games.
 
-This port supports keyboard and USB joystick input and are configurable. It uses GLES2 graphics API and can run in the Console or under X-Windows. The audio uses the ALSA API and SDL is used for input.
+This port supports keyboard and USB joystick input and are configurable. It uses GLES2 graphics API and can run in the Console or under X-Windows. The audio uses the ALSA API and SDL is used for input. It uses a Cyclone 68000 core for performance and a MAME z80 core for compatibility.
 
 Download it from the official Raspberry Pi App Store:
 http://store.raspberrypi.com/projects/pifba
@@ -147,6 +147,6 @@ Postprocessing can be enabled by setting "DisplayEffect" in fba2x.cfg. In additi
 
 *CHANGE LOG*
 
-_July 15, 2013:_
+_July 21, 2013:_
   * Initial release.
 
