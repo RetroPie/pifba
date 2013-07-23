@@ -2,7 +2,7 @@
 
 *INTRODUCTION*
 
-PiFBA is Final Burn Alpha 2x for the Raspberry Pi ported by Squid. This emulates old archive games using MAME based roms for CPS1, CPS2, NeoGeo, System 16, Toaplan and many other games. It should support most recent versions of the MAME versions of these ROMS but unfortnately there is no definitive version to use. A full list of supported games is in the frontend program.
+PiFBA is Final Burn Alpha 2x for the Raspberry Pi ported by Squid. This emulates old arcade games using MAME based roms for CPS1, CPS2, NeoGeo, System 16, Toaplan and many other games. It should support most recent versions of the MAME versions of these ROMS but unfortnately there is no definitive version to use. A full list of supported games is in the frontend program.
 
 Some large ROMS may require converting to the '.fba' format before they will work. FBACache_windows.zip is included to do this, which runs on Windows not Linux.
 
@@ -73,7 +73,7 @@ fba_029671_clrmame_dat.zip -> clrmamepro DAT file for ROM validation and convers
 }}}
 
 To run piFBA simple run the "fbacapex" executable. At the command line "./fbacapex".
-This runs the GUI frontend. To simply run piFBA without the GUI enter "./fba2x roms/{gamerom}" where "{gamerom}" is the game rom filename to run. A number of options are available for "fba2x", enter "fba2x -h" on the command line for a list.
+This runs the GUI frontend. To simply run piFBA without the GUI enter "./fba2x roms/{gamerom}" where "{gamerom}" is the game rom filename to run. A number of options are available for "fba2x", enter "./fba2x" on the command line for a list.
 
 For the frontend screenshots you need to put the relevant screenshot files in the preview subdirectory. These files should be BMP and 192x112 dimensions.
 
