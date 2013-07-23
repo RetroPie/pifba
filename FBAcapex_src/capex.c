@@ -432,8 +432,8 @@ void init_title(void)
 	drawSprite( bg , bgs , 0 , 0 , 0 , 0 , 320 , 240 );
 	if (capex.FXshadow < 100) pixel_gamma( bgs );
 	
-	preparation_fenetre( bgs , bg , 124 , 3 , 192 , 112 );
-	preparation_fenetre( bgs , bg , 4 , 53 , 116 , 62 );
+	prepare_window( bgs , bg , 124 , 3 , 192 , 112 );
+	prepare_window( bgs , bg , 4 , 53 , 116 , 62 );
 	drawSprite( title , bg, 0, 0, 0, 0, 123, 52);
 	
 }
@@ -441,7 +441,7 @@ void init_title(void)
 void prep_bg_run(void)
 {
 	drawSprite( bg , bg_temp , 0 , 0 , 0 , 0 , 320 , 240 );
-	preparation_fenetre( bgs , bg_temp , 4 , 119 , 312 , 37 );
+	prepare_window( bgs , bg_temp , 4 , 119 , 312 , 37 );
 	if ( flag_preview )	drawSprite(preview, bg_temp, 0, 0, 220-preview->w/2, 3, 192, 112);
 		
 	put_string( "FBA2X clock:" , 6 , 55 , WHITE , bg_temp);
@@ -467,8 +467,8 @@ void prep_bg_run(void)
 void prep_bg_options(void)
 {
 	drawSprite( bg , bg_temp , 0 , 0 , 0 , 0 , 320 , 240 );
-	preparation_fenetre( bgs , bg_temp , 4 , 119 , 260 , 118 );
-	preparation_fenetre( bgs , bg_temp , 269 , 119 , 47 , 118 );
+	prepare_window( bgs , bg_temp , 4 , 119 , 260 , 118 );
+	prepare_window( bgs , bg_temp , 269 , 119 , 47 , 118 );
 	if ( flag_preview )	drawSprite(preview, bg_temp, 0, 0, 220-preview->w/2, 3, 192, 112);
 		
 	put_string( "ROM" , 6 , 65 , WHITE , bg_temp);
@@ -493,7 +493,7 @@ void prep_bg_options(void)
 void prep_bg_list(void)
 {
 	drawSprite( bg , bg_temp , 0 , 0 , 0 , 0 , 320 , 240 );
-	preparation_fenetre( bgs , bg_temp , 4 , 119 , 312 , 118 );
+	prepare_window( bgs , bg_temp , 4 , 119 , 312 , 118 );
 	if ( flag_preview )	drawSprite(preview, bg_temp, 0, 0, 220-preview->w/2, 3, 192, 112);
 		
 	put_string( "ROM" , 6 , 65 , WHITE , bg_temp);

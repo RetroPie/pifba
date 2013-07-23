@@ -173,13 +173,13 @@ void drawSprite(SDL_Surface* imageSurface, SDL_Surface* screenSurface, int srcX,
 	SDL_BlitSurface(imageSurface, &srcRect, screenSurface, &dstRect);
 }
 
-void preparation_fenetre(SDL_Surface *src, SDL_Surface *dest, int win_x , int win_y , int win_l , int win_h)
+void prepare_window(SDL_Surface *src, SDL_Surface *dest, int win_x , int win_y , int win_l , int win_h)
 {
-	Uint32 Pnoir = SDL_MapRGB(dest->format, 0, 0, 0);
+	Uint32 Pblack = SDL_MapRGB(dest->format, 0, 0, 0);
 	//preparation surface
 	drawSprite( src , dest , win_x , win_y , win_x , win_y , win_l , win_h );
-	ligneV( dest , win_x-1 , win_y , win_h , Pnoir );
-	ligneV( dest , win_x+win_l , win_y , win_h , Pnoir );
-	ligneH( dest , win_x , win_y-1 , win_l , Pnoir);
-	ligneH( dest , win_x , win_y+win_h , win_l , Pnoir);	
+	ligneV( dest , win_x-1 , win_y , win_h , Pblack );
+	ligneV( dest , win_x+win_l , win_y , win_h , Pblack );
+	ligneH( dest , win_x , win_y-1 , win_l , Pblack);
+	ligneH( dest , win_x , win_y+win_h , win_l , Pblack);	
 }
