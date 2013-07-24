@@ -408,7 +408,7 @@ int FstarfrcDoReset()
 	SekReset();
 	SekClose();
 
-	CZetReset();
+	ZetReset();
 
 	MSM6295Reset(0);
 	BurnYM2151Reset();
@@ -419,9 +419,9 @@ int FstarfrcDoReset()
 void FstarfrcYM2151IrqHandler(int Irq)
 {
 	if (Irq) {
-		CZetRaiseIrq(1);
+		ZetRaiseIrq(1);
 	} else {
-		CZetLowerIrq();
+		ZetLowerIrq();
 	}
 }
 
@@ -500,7 +500,7 @@ void __fastcall FstarfrcWriteByte(unsigned int a, unsigned char d)
 	switch (a) {
 		case 0x150011: {
 			FstarfrcSoundLatch = d & 0xff;
-			CZetNmi();
+			ZetNmi();
 			return;
 		}
 	}
@@ -542,7 +542,7 @@ unsigned char __fastcall GinkunReadByte(unsigned int a)
 		case 0x150041: {
 			return FstarfrcDip[0];
 		}
-	}	
+	}	
 
 //	bprintf(PRINT_NORMAL, _T("Read Byte -> %06X\n"), a);
 
@@ -616,7 +616,7 @@ void __fastcall GinkunWriteByte(unsigned int a, unsigned char d)
 
 		case 0x150011: {
 			FstarfrcSoundLatch = d & 0xff;
-			CZetNmi();
+			ZetNmi();
 			return;
 		}
 	}
@@ -787,18 +787,18 @@ int FstarfrcInit()
 	SekClose();
 
 	// Setup the Z80 emulation
-	CZetInit(1);
-	CZetMapArea(0x0000, 0xefff, 0, FstarfrcZ80Rom         );
-	CZetMapArea(0x0000, 0xefff, 2, FstarfrcZ80Rom         );
-	CZetMapArea(0xf000, 0xfbff, 0, FstarfrcZ80Ram         );
-	CZetMapArea(0xf000, 0xfbff, 1, FstarfrcZ80Ram         );
-	CZetMapArea(0xf000, 0xfbff, 2, FstarfrcZ80Ram         );
-	CZetMapArea(0xfffe, 0xffff, 0, FstarfrcZ80Ram + 0xc000);
-	CZetMapArea(0xfffe, 0xffff, 1, FstarfrcZ80Ram + 0xc000);
-	CZetMapArea(0xfffe, 0xffff, 2, FstarfrcZ80Ram + 0xc000);
-	CZetMemEnd();
-	CZetSetReadHandler(FstarfrcZ80Read);
-	CZetSetWriteHandler(FstarfrcZ80Write);
+	ZetInit(1);
+	ZetMapArea(0x0000, 0xefff, 0, FstarfrcZ80Rom         );
+	ZetMapArea(0x0000, 0xefff, 2, FstarfrcZ80Rom         );
+	ZetMapArea(0xf000, 0xfbff, 0, FstarfrcZ80Ram         );
+	ZetMapArea(0xf000, 0xfbff, 1, FstarfrcZ80Ram         );
+	ZetMapArea(0xf000, 0xfbff, 2, FstarfrcZ80Ram         );
+	ZetMapArea(0xfffe, 0xffff, 0, FstarfrcZ80Ram + 0xc000);
+	ZetMapArea(0xfffe, 0xffff, 1, FstarfrcZ80Ram + 0xc000);
+	ZetMapArea(0xfffe, 0xffff, 2, FstarfrcZ80Ram + 0xc000);
+	ZetMemEnd();
+	ZetSetReadHandler(FstarfrcZ80Read);
+	ZetSetWriteHandler(FstarfrcZ80Write);
 
 	// Setup the YM2151 emulation
 	BurnYM2151Init(8000000 / 2, 50.0);
@@ -821,7 +821,7 @@ int FstarfrcExit()
 	MSM6295Exit(0);
 
 	SekExit();
-	CZetExit();
+	ZetExit();
 
 	GenericTilesExit();
 
@@ -1188,7 +1188,7 @@ int FstarfrcFrame()
 		nCurrentCPU = 1;
 		nNext = (i + 1) * nCyclesTotal[nCurrentCPU] / nInterleave;
 		nCyclesSegment = nNext - nCyclesDone[nCurrentCPU];
-		nCyclesSegment = CZetRun(nCyclesSegment);
+		nCyclesSegment = ZetRun(nCyclesSegment);
 		nCyclesDone[nCurrentCPU] += nCyclesSegment;
 
 		if (pBurnSoundOut) {
@@ -1243,7 +1243,7 @@ static int FstarfrcScan(int nAction,int *pnMin)
 
 	if (nAction & ACB_DRIVER_DATA) {
 		SekScan(nAction);					// Scan 68000
-		CZetScan(nAction);					// Scan Z80
+		ZetScan(nAction);					// Scan Z80
 
 		MSM6295Scan(0, nAction);			// Scan OKIM6295
 		BurnYM2151Scan(nAction);

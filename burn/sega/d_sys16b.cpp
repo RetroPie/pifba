@@ -3323,7 +3323,7 @@ void __fastcall System16BWriteByte(unsigned int a, unsigned char d)
 		
 		case 0xfe0007: {
 			System16SoundLatch = d & 0xff;
-			CZetRaiseIrq(0);
+			ZetRaiseIrq(0);
 			return;
 		}
 	}
@@ -3338,7 +3338,7 @@ void __fastcall AliensynWriteByte(unsigned int a, unsigned char d)
 	switch (a) {
 		case 0xc00007: {
 			System16SoundLatch = d & 0xff;
-			CZetRaiseIrq(0);
+			ZetRaiseIrq(0);
 			return;
 		}
 	}
@@ -3397,7 +3397,7 @@ void __fastcall BayrouteWriteByte(unsigned int a, unsigned char d)
 		
 		case 0xff0007: {
 			System16SoundLatch = d & 0xff;
-			CZetRaiseIrq(0);
+			ZetRaiseIrq(0);
 			return;
 		}
 	}
@@ -3439,7 +3439,7 @@ void __fastcall BulletWriteByte(unsigned int a, unsigned char d)
 	switch (a) {
 		case 0xc00007: {
 			System16SoundLatch = d & 0xff;
-			CZetRaiseIrq(0);
+			ZetRaiseIrq(0);
 			return;
 		}
 	}
@@ -3505,7 +3505,7 @@ void __fastcall CottonWriteByte(unsigned int a, unsigned char d)
 		
 		case 0xff0007: {
 			System16SoundLatch = d & 0xff;
-			CZetRaiseIrq(0);
+			ZetRaiseIrq(0);
 			return;
 		}
 	}
@@ -3678,7 +3678,7 @@ void __fastcall EswatSoundWriteByte(unsigned int a, unsigned char d)
 	switch (a) {
 		case 0x123407: {
 			System16SoundLatch = d & 0xff;
-			CZetRaiseIrq(0);
+			ZetRaiseIrq(0);
 			return;
 		}
 	}
@@ -3857,7 +3857,7 @@ void __fastcall PassshtWriteByte(unsigned int a, unsigned char d)
 	switch (a) {
 		case 0xc00007: {
 			System16SoundLatch = d & 0xff;
-			CZetRaiseIrq(0);
+			ZetRaiseIrq(0);
 			return;
 		}
 	}
@@ -3918,7 +3918,7 @@ void __fastcall RiotcityWriteByte(unsigned int a, unsigned char d)
 	switch (a) {
 		case 0xf00007: {
 			System16SoundLatch = d & 0xff;
-			CZetRaiseIrq(0);
+			ZetRaiseIrq(0);
 			return;
 		}
 		
@@ -3989,7 +3989,7 @@ void __fastcall RyukyuWriteByte(unsigned int a, unsigned char d)
 	switch (a) {
 		case 0xff0007: {
 			System16SoundLatch = d & 0xff;
-			CZetRaiseIrq(0);
+			ZetRaiseIrq(0);
 			return;
 		}
 	}
@@ -4053,7 +4053,7 @@ void __fastcall SdibSoundWriteByte(unsigned int a, unsigned char d)
 	switch (a) {
 		case 0x123407: {
 			System16SoundLatch = d & 0xff;
-			CZetRaiseIrq(0);
+			ZetRaiseIrq(0);
 			return;
 		}
 	}
@@ -4108,7 +4108,7 @@ void __fastcall SjryukoWriteByte(unsigned int a, unsigned char d)
 		
 		case 0xc00007: {
 			System16SoundLatch = d & 0xff;
-			CZetRaiseIrq(0);
+			ZetRaiseIrq(0);
 			return;
 		}
 	}
@@ -4134,7 +4134,7 @@ void __fastcall SonicbomWriteByte(unsigned int a, unsigned char d)
 	switch (a) {
 		case 0x123407: {
 			System16SoundLatch = d & 0xff;
-			CZetRaiseIrq(0);
+			ZetRaiseIrq(0);
 			return;
 		}
 	}
@@ -4192,7 +4192,7 @@ void __fastcall ToryumonWriteByte(unsigned int a, unsigned char d)
 		
 		case 0xfe0007: {
 			System16SoundLatch = d & 0xff;
-			CZetRaiseIrq(0);
+			ZetRaiseIrq(0);
 			return;
 		}
 	}
@@ -4229,7 +4229,7 @@ void __fastcall Wb3WriteByte(unsigned int a, unsigned char d)
 	switch (a) {
 		case 0xdf0007: {
 			System16SoundLatch = d & 0xff;
-			CZetRaiseIrq(0);
+			ZetRaiseIrq(0);
 			return;
 		}
 	}
@@ -4296,7 +4296,7 @@ void Altbeast_Sim8751()
 	unsigned short temp = (System16Ram[0x30c4 + 1] << 8) | System16Ram[0x30c4 + 0];
 	if ((temp & 0xff00) != 0x0000) {
 		System16SoundLatch = temp >> 8;
-		CZetRaiseIrq(0);
+		ZetRaiseIrq(0);
 		*((unsigned short*)(System16Ram + 0x30c4)) = (unsigned short)(temp & 0xff);
 	}
 }
@@ -4313,7 +4313,7 @@ void Altbeasj_Sim8751()
 	unsigned short temp = (System16Ram[0x30d4 + 1] << 8) | System16Ram[0x30d4 + 0];
 	if ((temp & 0xff00) != 0x0000) {
 		System16SoundLatch = temp >> 8;
-		CZetRaiseIrq(0);
+		ZetRaiseIrq(0);
 		*((unsigned short*)(System16Ram + 0x30d4)) = (unsigned short)(temp & 0xff);
 	}
 }
@@ -4330,7 +4330,7 @@ void Altbeas5_Sim8751()
 	unsigned short temp = (System16Ram[0x3098 + 1] << 8) | System16Ram[0x3098 + 0];
 	if ((temp & 0xff00) != 0x0000) {
 		System16SoundLatch = temp >> 8;
-		CZetRaiseIrq(0);
+		ZetRaiseIrq(0);
 		*((unsigned short*)(System16Ram + 0x3098)) = (unsigned short)(temp & 0xff);
 	}
 }
@@ -4596,7 +4596,7 @@ void Ddux_Sim8751()
 	unsigned short temp = (System16Ram[0x0bd0 + 1] << 8) | System16Ram[0x0bd0 + 0];
 	if ((temp & 0xff00) != 0x0000) {
 		System16SoundLatch = temp >> 8;
-		CZetRaiseIrq(0);
+		ZetRaiseIrq(0);
 		*((unsigned short*)(System16Ram + 0x0bd0)) = (unsigned short)(temp & 0xff);
 	}
 }
@@ -4814,7 +4814,7 @@ void Goldnaxe_Sim8751()
 	unsigned short temp = (System16Ram[0x2cfc + 1] << 8) | System16Ram[0x2cfc + 0];
 	if ((temp & 0xff00) != 0x0000) {
 		System16SoundLatch = temp >> 8;
-		CZetRaiseIrq(0);
+		ZetRaiseIrq(0);
 		*((unsigned short*)(System16Ram + 0x2cfc)) = (unsigned short)(temp & 0xff);
 	}
 	
@@ -5383,7 +5383,7 @@ void Tturf_Sim8751()
 	unsigned short temp = (System16Ram[0x01d0 + 1] << 8) | System16Ram[0x01d0 + 0];
 	if ((temp & 0xff00) != 0x0000) {
 		System16SoundLatch = temp & 0xff;
-		CZetRaiseIrq(0);
+		ZetRaiseIrq(0);
 		*((unsigned short*)(System16Ram + 0x01d0)) = (unsigned short)(temp & 0xff);
 	}
 }
@@ -5432,7 +5432,7 @@ void Wb3_Sim8751()
 	unsigned short temp = (System16Ram[0x0008 + 1] << 8) | System16Ram[0x0008 + 0];
 	if ((temp & 0xff00) != 0x0000) {
 		System16SoundLatch = temp >> 8;
-		CZetRaiseIrq(0);
+		ZetRaiseIrq(0);
 		*((unsigned short*)(System16Ram + 0x0008)) = (unsigned short)(temp & 0xff);
 	}
 }
@@ -5537,7 +5537,7 @@ void Wrestwar_Sim8751()
 	unsigned short temp = (System16Ram[0x208e + 1] << 8) | System16Ram[0x208e + 0];
 	if ((temp & 0xff00) != 0x0000) {
 		System16SoundLatch = temp & 0xff;
-		CZetRaiseIrq(0);
+		ZetRaiseIrq(0);
 		*((unsigned short*)(System16Ram + 0x208e)) = (unsigned short)(temp & 0xff);
 	}
 }

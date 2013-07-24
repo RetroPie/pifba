@@ -276,7 +276,7 @@ static int System16DoReset()
 		if (System16HasGears) System16InputPort0[5] = 1;
 	}
 	
-	CZetReset();
+	ZetReset();
 	
 	if (BurnDrvGetHardwareCode() & HARDWARE_SEGA_YM2203) {
 		BurnYM2203Reset();
@@ -1066,29 +1066,29 @@ inline static int PdriftSndGetBank(int Reg86)
 inline void System16YM2151IRQHandler(int Irq)
 {
 	if (Irq) {
-		CZetSetIRQLine(0xff, CZET_IRQSTATUS_ACK);
+		ZetSetIRQLine(0xff, ZET_IRQSTATUS_ACK);
 	} else {
-		CZetSetIRQLine(0,    CZET_IRQSTATUS_NONE);
+		ZetSetIRQLine(0,    ZET_IRQSTATUS_NONE);
 	}
 }
 
 inline static void System16YM2203IRQHandler(int, int nStatus)
 {
 	if (nStatus & 1) {
-		CZetSetIRQLine(0xFF, CZET_IRQSTATUS_ACK);
+		ZetSetIRQLine(0xFF, ZET_IRQSTATUS_ACK);
 	} else {
-		CZetSetIRQLine(0,    CZET_IRQSTATUS_NONE);
+		ZetSetIRQLine(0,    ZET_IRQSTATUS_NONE);
 	}
 }
 
 inline static int System16SynchroniseStream(int nSoundRate)
 {
-	return (long long)CZetTotalCycles() * nSoundRate / 4000000;
+	return (long long)ZetTotalCycles() * nSoundRate / 4000000;
 }
 
 inline static double System16GetTime()
 {
-	return (double)CZetTotalCycles() / 4000000;
+	return (double)ZetTotalCycles() / 4000000;
 }
 
 /*====================================================
@@ -1644,45 +1644,45 @@ int System16Init()
 	}
 	
 	// Setup the Z80 emulation
-	CZetInit(1);
+	ZetInit(1);
 	if (BurnDrvGetHardwareCode() & HARDWARE_SEGA_YM2203) {
-		CZetMapArea(0x0000, 0x7fff, 0, System16Z80Rom);
-		CZetMapArea(0x0000, 0x7fff, 2, System16Z80Rom);
+		ZetMapArea(0x0000, 0x7fff, 0, System16Z80Rom);
+		ZetMapArea(0x0000, 0x7fff, 2, System16Z80Rom);
 	
-		CZetMapArea(0xc000, 0xc7ff, 0, System16Z80Ram);
-		CZetMapArea(0xc000, 0xc7ff, 1, System16Z80Ram);
-		CZetMapArea(0xc000, 0xc7ff, 2, System16Z80Ram);
-		CZetMemEnd();
+		ZetMapArea(0xc000, 0xc7ff, 0, System16Z80Ram);
+		ZetMapArea(0xc000, 0xc7ff, 1, System16Z80Ram);
+		ZetMapArea(0xc000, 0xc7ff, 2, System16Z80Ram);
+		ZetMemEnd();
 		
-		CZetSetReadHandler(System16Z802203Read);
-		CZetSetWriteHandler(System16Z802203Write);
-		CZetSetInHandler(System16Z802203PortRead);
+		ZetSetReadHandler(System16Z802203Read);
+		ZetSetWriteHandler(System16Z802203Write);
+		ZetSetInHandler(System16Z802203PortRead);
 	} else {
-		CZetMapArea(0x0000, 0xefff, 0, System16Z80Rom);
-		CZetMapArea(0x0000, 0xefff, 2, System16Z80Rom);
+		ZetMapArea(0x0000, 0xefff, 0, System16Z80Rom);
+		ZetMapArea(0x0000, 0xefff, 2, System16Z80Rom);
 	
-		CZetMapArea(0xf800, 0xffff, 0, System16Z80Ram);
-		CZetMapArea(0xf800, 0xffff, 1, System16Z80Ram);
-		CZetMapArea(0xf800, 0xffff, 2, System16Z80Ram);
-		CZetMemEnd();
+		ZetMapArea(0xf800, 0xffff, 0, System16Z80Ram);
+		ZetMapArea(0xf800, 0xffff, 1, System16Z80Ram);
+		ZetMapArea(0xf800, 0xffff, 2, System16Z80Ram);
+		ZetMemEnd();
 		
 		if (System16PCMDataSize) {
-			CZetSetReadHandler(System16Z80PCMRead);
-			CZetSetWriteHandler(System16Z80PCMWrite);
+			ZetSetReadHandler(System16Z80PCMRead);
+			ZetSetWriteHandler(System16Z80PCMWrite);
 		} else {
-			CZetSetReadHandler(System16Z80Read);
-			CZetSetWriteHandler(System16Z80Write);
+			ZetSetReadHandler(System16Z80Read);
+			ZetSetWriteHandler(System16Z80Write);
 		}		
-		CZetSetInHandler(System16Z80PortRead);
-		CZetSetOutHandler(System16Z80PortWrite);
+		ZetSetInHandler(System16Z80PortRead);
+		ZetSetOutHandler(System16Z80PortWrite);
 	}
 		
-	CZetClose();
+	ZetClose();
 	
 	// Setup the FM emulation
 	if (BurnDrvGetHardwareCode() & HARDWARE_SEGA_YM2203) {
 		BurnYM2203Init(1, 4000000, &System16YM2203IRQHandler, System16SynchroniseStream, System16GetTime, 0);
-		BurnTimerAttachCZet(4000000);
+		BurnTimerAttachZet(4000000);
 	} else {
 		BurnYM2151Init(4000000, 25.0);
 		if ((BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) == HARDWARE_SEGA_HANGON || (BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) == HARDWARE_SEGA_SYSTEMY) {
@@ -1714,9 +1714,9 @@ int System16Init()
 		if (PPI0PortWriteB == NULL) PPI0PortWriteB = System16APPI0WritePortB;
 		if (PPI0PortWriteC == NULL) PPI0PortWriteC = System16APPI0WritePortC;
 		
-		CZetOpen(0);
-		CZetSetInHandler(System16PPIZ80PortRead);
-		CZetClose();
+		ZetOpen(0);
+		ZetSetInHandler(System16PPIZ80PortRead);
+		ZetClose();
 		
 		ppi8255_init(1);
 	}
@@ -1735,9 +1735,9 @@ int System16Init()
 		if (PPI1PortWriteA == NULL) PPI1PortWriteA = HangonPPI1WritePortA;
 		
 		if (!(BurnDrvGetHardwareCode() & HARDWARE_SEGA_YM2203)) {
-			CZetOpen(0);
-			CZetSetInHandler(System16PPIZ80PortRead);
-			CZetClose();
+			ZetOpen(0);
+			ZetSetInHandler(System16PPIZ80PortRead);
+			ZetClose();
 		}
 		
 		ppi8255_init(2);
@@ -1766,7 +1766,7 @@ int System16Exit()
 	}
 	
 	SekExit();
-	CZetExit();
+	ZetExit();
 	
 	PcmExit();
 	
@@ -1932,7 +1932,7 @@ int System16AFrame()
 		nCurrentCPU = 1;
 		nNext = (i + 1) * nCyclesTotal[nCurrentCPU] / nInterleave;
 		nCyclesSegment = nNext - nSystem16CyclesDone[nCurrentCPU];
-		nCyclesSegment = CZetRun(nCyclesSegment);
+		nCyclesSegment = ZetRun(nCyclesSegment);
 		nSystem16CyclesDone[nCurrentCPU] += nCyclesSegment;
 
 		if (pBurnSoundOut) {
@@ -1979,7 +1979,7 @@ int System16BFrame()
 	int nSoundBufferPos = 0;
 	
 	SekNewFrame();
-	CZetNewFrame();
+	ZetNewFrame();
 
 	SekOpen(0);
 	for (int i = 0; i < nInterleave; i++) {
@@ -1995,7 +1995,7 @@ int System16BFrame()
 		nCurrentCPU = 1;
 		nNext = (i + 1) * nCyclesTotal[nCurrentCPU] / nInterleave;
 		nCyclesSegment = nNext - nSystem16CyclesDone[nCurrentCPU];
-		nCyclesSegment = CZetRun(nCyclesSegment);
+		nCyclesSegment = ZetRun(nCyclesSegment);
 		nSystem16CyclesDone[nCurrentCPU] += nCyclesSegment;
 
 		if (pBurnSoundOut) {
@@ -2049,7 +2049,7 @@ int HangonFrame()
 	int nSoundBufferPos = 0;
 	
 	SekNewFrame();
-	CZetNewFrame();
+	ZetNewFrame();
 
 	for (i = 0; i < nInterleave; i++) {
 		int nCurrentCPU, nNext;
@@ -2075,7 +2075,7 @@ int HangonFrame()
 		nCurrentCPU = 2;
 		nNext = (i + 1) * nCyclesTotal[nCurrentCPU] / nInterleave;
 		nCyclesSegment = nNext - nSystem16CyclesDone[nCurrentCPU];
-		nCyclesSegment = CZetRun(nCyclesSegment);
+		nCyclesSegment = ZetRun(nCyclesSegment);
 		nSystem16CyclesDone[nCurrentCPU] += nCyclesSegment;
 
 		if (pBurnSoundOut) {
@@ -2126,7 +2126,7 @@ int HangonYM2203Frame()
 	nSystem16CyclesDone[0] = nSystem16CyclesDone[1] = nSystem16CyclesDone[2] = 0;
 
 	SekNewFrame();
-	CZetNewFrame();
+	ZetNewFrame();
 
 	for (i = 0; i < nInterleave; i++) {
 		int nCurrentCPU, nNext;
@@ -2156,7 +2156,7 @@ int HangonYM2203Frame()
 	BurnTimerEndFrame(nCyclesTotal[2]);
 	BurnYM2203Update(pBurnSoundOut, nBurnSoundLen);
 	PcmUpdate(pBurnSoundOut, nBurnSoundLen);
-	nSystem16CyclesDone[2] = CZetTotalCycles() - nCyclesTotal[2];
+	nSystem16CyclesDone[2] = ZetTotalCycles() - nCyclesTotal[2];
 	
 	if (Simulate8751) Simulate8751();	
 
@@ -2217,7 +2217,7 @@ int OutrunFrame()
 		nCurrentCPU = 2;
 		nNext = (i + 1) * nCyclesTotal[nCurrentCPU] / nInterleave;
 		nCyclesSegment = nNext - nSystem16CyclesDone[nCurrentCPU];
-		nCyclesSegment = CZetRun(nCyclesSegment);
+		nCyclesSegment = ZetRun(nCyclesSegment);
 		nSystem16CyclesDone[nCurrentCPU] += nCyclesSegment;
 
 		if (pBurnSoundOut) {
@@ -2306,7 +2306,7 @@ int XBoardFrame()
 		nCurrentCPU = 2;
 		nNext = (i + 1) * nCyclesTotal[nCurrentCPU] / nInterleave;
 		nCyclesSegment = nNext - nSystem16CyclesDone[nCurrentCPU];
-		nCyclesSegment = CZetRun(nCyclesSegment);
+		nCyclesSegment = ZetRun(nCyclesSegment);
 		nSystem16CyclesDone[nCurrentCPU] += nCyclesSegment;
 
 		if (pBurnSoundOut) {
@@ -2399,7 +2399,7 @@ int YBoardFrame()
 		nCurrentCPU = 3;
 		nNext = (i + 1) * nCyclesTotal[nCurrentCPU] / nInterleave;
 		nCyclesSegment = nNext - nSystem16CyclesDone[nCurrentCPU];
-		nCyclesSegment = CZetRun(nCyclesSegment);
+		nCyclesSegment = ZetRun(nCyclesSegment);
 		nSystem16CyclesDone[nCurrentCPU] += nCyclesSegment;
 
 		if (pBurnSoundOut) {
@@ -2486,7 +2486,7 @@ int System16Scan(int nAction,int *pnMin)
 
 	if (nAction & ACB_DRIVER_DATA) {
 		SekScan(nAction);					// Scan 68000
-		CZetScan(nAction);					// Scan Z80
+		ZetScan(nAction);					// Scan Z80
 		ppi8255_scan();
 
 		if (BurnDrvGetHardwareCode() & HARDWARE_SEGA_YM2203) {

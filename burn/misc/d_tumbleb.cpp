@@ -1524,9 +1524,9 @@ static int DrvDoReset()
 	SekClose();
 	
 	if (DrvHasZ80) {
-		CZetOpen(0);
-		CZetReset();
-		CZetClose();
+		ZetOpen(0);
+		ZetReset();
+		ZetClose();
 	}
 	
 	if (DrvHasYM2151) BurnYM2151Reset();
@@ -1872,9 +1872,9 @@ void __fastcall Tumbleb68KWriteWord(unsigned int a, unsigned short d)
 			} else {
 				if (Jumpkids) {
 					DrvSoundLatch = d & 0xff;
-					CZetOpen(0);
-					CZetRaiseIrq(0);
-					CZetClose();
+					ZetOpen(0);
+					ZetRaiseIrq(0);
+					ZetClose();
 					return;
 				} else {
 					if (SemicomSoundCommand) {
@@ -2112,10 +2112,10 @@ void __fastcall Jumppop68KWriteWord(unsigned int a, unsigned short d)
 		case 0x18000c: {
 			DrvSoundLatch = d & 0xff;
 			bprintf(PRINT_NORMAL, _T("Latch Sent -> %02X\n"), DrvSoundLatch);
-			CZetOpen(0);
-			CZetRaiseIrq(0);
-			nCyclesDone[1] += CZetRun(100);
-			CZetClose();
+			ZetOpen(0);
+			ZetRaiseIrq(0);
+			nCyclesDone[1] += ZetRun(100);
+			ZetClose();
 			return;
 		}
 		
@@ -2237,7 +2237,7 @@ unsigned char __fastcall JumppopZ80PortRead(unsigned short a)
 		
 		case 0x03: {
 			bprintf(PRINT_IMPORTANT, _T("Latch Read %02X\n"), DrvSoundLatch);
-			CZetLowerIrq();
+			ZetLowerIrq();
 			return DrvSoundLatch;
 		}
 		
@@ -2282,8 +2282,8 @@ void __fastcall JumppopZ80PortWrite(unsigned short a, unsigned char d)
 		case 0x05: {
 			//memory_set_bankptr(1, memory_region(REGION_CPU2) + 0x10000 + (0x4000 * data));
 			DrvZ80Bank = d;
-			CZetMapArea(0x8000, 0xbfff, 0, DrvZ80Rom + (DrvZ80Bank * 0x4000));
-			CZetMapArea(0x8000, 0xbfff, 2, DrvZ80Rom + (DrvZ80Bank * 0x4000));
+			ZetMapArea(0x8000, 0xbfff, 0, DrvZ80Rom + (DrvZ80Bank * 0x4000));
+			ZetMapArea(0x8000, 0xbfff, 2, DrvZ80Rom + (DrvZ80Bank * 0x4000));
 			return;
 		}
 		
@@ -2932,41 +2932,41 @@ static void FncywldMap68k()
 static void JumpkidsMapZ80()
 {
 	// Setup the Z80 emulation
-	CZetInit(1);
-	CZetOpen(0);
-	CZetSetReadHandler(JumpkidsZ80Read);
-	CZetSetWriteHandler(JumpkidsZ80Write);
-	CZetMapArea(0x0000, 0x7fff, 0, DrvZ80Rom                );
-	CZetMapArea(0x0000, 0x7fff, 2, DrvZ80Rom                );
-	CZetMapArea(0x8000, 0x87ff, 0, DrvZ80Ram                );
-	CZetMapArea(0x8000, 0x87ff, 1, DrvZ80Ram                );
-	CZetMapArea(0x8000, 0x87ff, 2, DrvZ80Ram                );
-	CZetMemEnd();
-	CZetClose();
+	ZetInit(1);
+	ZetOpen(0);
+	ZetSetReadHandler(JumpkidsZ80Read);
+	ZetSetWriteHandler(JumpkidsZ80Write);
+	ZetMapArea(0x0000, 0x7fff, 0, DrvZ80Rom                );
+	ZetMapArea(0x0000, 0x7fff, 2, DrvZ80Rom                );
+	ZetMapArea(0x8000, 0x87ff, 0, DrvZ80Ram                );
+	ZetMapArea(0x8000, 0x87ff, 1, DrvZ80Ram                );
+	ZetMapArea(0x8000, 0x87ff, 2, DrvZ80Ram                );
+	ZetMemEnd();
+	ZetClose();
 }
 
 static void SemicomMapZ80()
 {
 	// Setup the Z80 emulation
-	CZetInit(1);
-	CZetOpen(0);
-	CZetSetReadHandler(SemicomZ80Read);
-	CZetSetWriteHandler(SemicomZ80Write);
-	CZetMapArea(0x0000, 0xcfff, 0, DrvZ80Rom                );
-	CZetMapArea(0x0000, 0xcfff, 2, DrvZ80Rom                );
-	CZetMapArea(0xd000, 0xd7ff, 0, DrvZ80Ram                );
-	CZetMapArea(0xd000, 0xd7ff, 1, DrvZ80Ram                );
-	CZetMapArea(0xd000, 0xd7ff, 2, DrvZ80Ram                );
-	CZetMemEnd();
-	CZetClose();
+	ZetInit(1);
+	ZetOpen(0);
+	ZetSetReadHandler(SemicomZ80Read);
+	ZetSetWriteHandler(SemicomZ80Write);
+	ZetMapArea(0x0000, 0xcfff, 0, DrvZ80Rom                );
+	ZetMapArea(0x0000, 0xcfff, 2, DrvZ80Rom                );
+	ZetMapArea(0xd000, 0xd7ff, 0, DrvZ80Ram                );
+	ZetMapArea(0xd000, 0xd7ff, 1, DrvZ80Ram                );
+	ZetMapArea(0xd000, 0xd7ff, 2, DrvZ80Ram                );
+	ZetMemEnd();
+	ZetClose();
 }
 
 void SemicomYM2151IrqHandler(int Irq)
 {
 	if (Irq) {
-		CZetSetIRQLine(0xff, CZET_IRQSTATUS_ACK);
+		ZetSetIRQLine(0xff, ZET_IRQSTATUS_ACK);
 	} else {
-		CZetSetIRQLine(0,    CZET_IRQSTATUS_NONE);
+		ZetSetIRQLine(0,    ZET_IRQSTATUS_NONE);
 	}
 }
 
@@ -3360,7 +3360,7 @@ static int DquizgoInit()
 
 inline static int JumppopSynchroniseStream(int nSoundRate)
 {
-	return (long long)(CZetTotalCycles() * nSoundRate / 3500000);
+	return (long long)(ZetTotalCycles() * nSoundRate / 3500000);
 }
 
 static int JumppopInit()
@@ -3425,22 +3425,22 @@ static int JumppopInit()
 	SekClose();	
 	
 	// Setup the Z80 emulation
-	CZetInit(1);
-	CZetOpen(0);
-	CZetSetInHandler(JumppopZ80PortRead);
-	CZetSetOutHandler(JumppopZ80PortWrite);
-	CZetMapArea(0x0000, 0x2fff, 0, DrvZ80Rom                );
-	CZetMapArea(0x0000, 0x2fff, 2, DrvZ80Rom                );
-	CZetMapArea(0x8000, 0xbfff, 0, DrvZ80Rom + 0x8000       );
-	CZetMapArea(0x8000, 0xbfff, 2, DrvZ80Rom + 0x8000       );
-	CZetMapArea(0xf800, 0xffff, 0, DrvZ80Ram                );
-	CZetMapArea(0xf800, 0xffff, 1, DrvZ80Ram                );
-	CZetMapArea(0xf800, 0xffff, 2, DrvZ80Ram                );
-	CZetMemEnd();
-	CZetClose();
+	ZetInit(1);
+	ZetOpen(0);
+	ZetSetInHandler(JumppopZ80PortRead);
+	ZetSetOutHandler(JumppopZ80PortWrite);
+	ZetMapArea(0x0000, 0x2fff, 0, DrvZ80Rom                );
+	ZetMapArea(0x0000, 0x2fff, 2, DrvZ80Rom                );
+	ZetMapArea(0x8000, 0xbfff, 0, DrvZ80Rom + 0x8000       );
+	ZetMapArea(0x8000, 0xbfff, 2, DrvZ80Rom + 0x8000       );
+	ZetMapArea(0xf800, 0xffff, 0, DrvZ80Ram                );
+	ZetMapArea(0xf800, 0xffff, 1, DrvZ80Ram                );
+	ZetMapArea(0xf800, 0xffff, 2, DrvZ80Ram                );
+	ZetMemEnd();
+	ZetClose();
 	
 	BurnYM3812Init(3500000, NULL, JumppopSynchroniseStream);
-	BurnTimerAttachCZet(3500000);
+	BurnTimerAttachZet(3500000);
 	
 	// Setup the OKIM6295 emulation
 	MSM6295Init(0, 875000 / 132, 100.0, 1);
@@ -3471,7 +3471,7 @@ static int JumppopInit()
 static int DrvExit()
 {
 	SekExit();
-	if (DrvHasZ80) CZetExit();
+	if (DrvHasZ80) ZetExit();
 	if (DrvHasYM2151) BurnYM2151Exit();
 	MSM6295Exit(0);
 	
@@ -4309,7 +4309,7 @@ static int DrvFrame()
 	nCyclesDone[0] = nCyclesDone[1] = 0;
 
 	SekNewFrame();
-	if (DrvHasZ80) CZetNewFrame();
+	if (DrvHasZ80) ZetNewFrame();
 	
 	DrvVBlank = 0;
 	
@@ -4333,21 +4333,21 @@ static int DrvFrame()
 		if (DrvHasZ80) {
 			// Run Z80
 			nCurrentCPU = 1;
-			CZetOpen(0);
+			ZetOpen(0);
 			nNext = (i + 1) * nCyclesTotal[nCurrentCPU] / nInterleave;
 			nCyclesSegment = nNext - nCyclesDone[nCurrentCPU];
-			nCyclesSegment = CZetRun(nCyclesSegment);
+			nCyclesSegment = ZetRun(nCyclesSegment);
 			nCyclesDone[nCurrentCPU] += nCyclesSegment;
-			CZetClose();
+			ZetClose();
 		}
 		
 		if (pBurnSoundOut) {
 			int nSegmentLength = nBurnSoundLen / nInterleave;
 			short* pSoundBuf = pBurnSoundOut + (nSoundBufferPos << 1);
 			if (DrvHasYM2151) {
-				if (DrvHasZ80) CZetOpen(0);
+				if (DrvHasZ80) ZetOpen(0);
 				BurnYM2151Render(pSoundBuf, nSegmentLength);
-				if (DrvHasZ80) CZetClose();
+				if (DrvHasZ80) ZetClose();
 			}
 			MSM6295Render(0, pSoundBuf, nSegmentLength);
 			nSoundBufferPos += nSegmentLength;
@@ -4361,9 +4361,9 @@ static int DrvFrame()
 
 		if (nSegmentLength) {
 			if (DrvHasYM2151) {
-				if (DrvHasZ80) CZetOpen(0);
+				if (DrvHasZ80) ZetOpen(0);
 				BurnYM2151Render(pSoundBuf, nSegmentLength);
-				if (DrvHasZ80) CZetClose();
+				if (DrvHasZ80) ZetClose();
 			}
 			MSM6295Render(0, pSoundBuf, nSegmentLength);
 		}
@@ -4385,7 +4385,7 @@ static int JumppopFrame()
 	nCyclesDone[0] = nCyclesDone[1] = 0;
 
 	SekNewFrame();
-	CZetNewFrame();
+	ZetNewFrame();
 	
 	for (int i = 0; i < nInterleave; i++) {
 		int nCurrentCPU, nNext;
@@ -4403,19 +4403,19 @@ static int JumppopFrame()
 		
 		// Run Z80
 		nCurrentCPU = 1;
-		CZetOpen(0);
+		ZetOpen(0);
 		nNext = (i + 1) * nCyclesTotal[nCurrentCPU] / nInterleave;
 		nCyclesSegment = nNext - nCyclesDone[nCurrentCPU];
-		nCyclesSegment = CZetRun(nCyclesSegment);
+		nCyclesSegment = ZetRun(nCyclesSegment);
 		nCyclesDone[nCurrentCPU] += nCyclesSegment;
-		CZetNmi();
-		CZetClose();
+		ZetNmi();
+		ZetClose();
 	}
 	
-	CZetOpen(0);
+	ZetOpen(0);
 	BurnTimerEndFrame(nCyclesTotal[1] - nCyclesDone[1]);
 	BurnYM3812Update(nBurnSoundLen);
-	CZetClose();
+	ZetClose();
 	MSM6295Render(0, pBurnSoundOut, nBurnSoundLen);
 	
 	if (pBurnDraw) JumppopDraw();
@@ -4445,7 +4445,7 @@ static int DrvScan(int nAction, int *pnMin)
 	
 	if (nAction & ACB_DRIVER_DATA) {
 		SekScan(nAction);
-		if (DrvHasZ80) CZetScan(nAction);
+		if (DrvHasZ80) ZetScan(nAction);
 		if (DrvHasYM2151) BurnYM2151Scan(nAction);
 		MSM6295Scan(0, nAction);
 
@@ -4474,10 +4474,10 @@ static int DrvScan(int nAction, int *pnMin)
 		}
 		
 		if (DrvZ80Bank) {
-			CZetOpen(0);
-			CZetMapArea(0x8000, 0xbfff, 0, DrvZ80Rom + (DrvZ80Bank * 0x4000));
-			CZetMapArea(0x8000, 0xbfff, 2, DrvZ80Rom + (DrvZ80Bank * 0x4000));
-			CZetClose();
+			ZetOpen(0);
+			ZetMapArea(0x8000, 0xbfff, 0, DrvZ80Rom + (DrvZ80Bank * 0x4000));
+			ZetMapArea(0x8000, 0xbfff, 2, DrvZ80Rom + (DrvZ80Bank * 0x4000));
+			ZetClose();
 		}
 	}
 	

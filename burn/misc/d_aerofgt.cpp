@@ -362,12 +362,12 @@ static void SoundCommand(unsigned char nCommand)
 {
 //	bprintf(PRINT_NORMAL, _T("  - Sound command sent (0x%02X).\n"), nCommand);
 	int nCycles = ((long long)SekTotalCycles() * nCyclesTotal[1] / nCyclesTotal[0]);
-	if (nCycles <= CZetTotalCycles()) return;
+	if (nCycles <= ZetTotalCycles()) return;
 	
 	BurnTimerUpdate(nCycles);
 
 	nSoundlatch = nCommand;
-	CZetNmi();
+	ZetNmi();
 }
 
 void __fastcall aerofgtWriteByte(unsigned int sekAddress, unsigned char byteValue)
@@ -457,20 +457,20 @@ static void aerofgtFMIRQHandler(int, int nStatus)
 {
 //	bprintf(PRINT_NORMAL, _T("  - IRQ -> %i.\n"), nStatus);
 	if (nStatus) {
-		CZetSetIRQLine(0xFF, CZET_IRQSTATUS_ACK);
+		ZetSetIRQLine(0xFF, ZET_IRQSTATUS_ACK);
 	} else {
-		CZetSetIRQLine(0,    CZET_IRQSTATUS_NONE);
+		ZetSetIRQLine(0,    ZET_IRQSTATUS_NONE);
 	}
 }
 
 static int aerofgtSynchroniseStream(int nSoundRate)
 {
-	return (long long)CZetTotalCycles() * nSoundRate / 4000000;
+	return (long long)ZetTotalCycles() * nSoundRate / 4000000;
 }
 
 static double aerofgtGetTime()
 {
-	return (double)CZetTotalCycles() / 4000000.0;
+	return (double)ZetTotalCycles() / 4000000.0;
 }
 
 /*
@@ -503,8 +503,8 @@ static void aerofgtSndBankSwitch(unsigned char v)
 	v &= 0x03;
 	if (v != nAerofgtZ80Bank) {
 		unsigned char* nStartAddress = RomZ80 + 0x10000 + (v << 15);
-		CZetMapArea(0x8000, 0xFFFF, 0, nStartAddress);
-		CZetMapArea(0x8000, 0xFFFF, 2, nStartAddress);
+		ZetMapArea(0x8000, 0xFFFF, 0, nStartAddress);
+		ZetMapArea(0x8000, 0xFFFF, 2, nStartAddress);
 		nAerofgtZ80Bank = v;
 	}
 }
@@ -556,7 +556,7 @@ static int DrvDoReset()
 	SekReset();
 	SekClose();
 
-	CZetReset();
+	ZetReset();
 	BurnYM2610Reset();
 
 	memset(RamGfxBank, 0 , sizeof(RamGfxBank));
@@ -609,28 +609,28 @@ static int aerofgtInit()
 	}
 	
 	{
-		CZetInit(1);
-		CZetOpen(0);
+		ZetInit(1);
+		ZetOpen(0);
 		
-		CZetMapArea(0x0000, 0x77FF, 0, RomZ80);
-		CZetMapArea(0x0000, 0x77FF, 2, RomZ80);
+		ZetMapArea(0x0000, 0x77FF, 0, RomZ80);
+		ZetMapArea(0x0000, 0x77FF, 2, RomZ80);
 		
-		CZetMapArea(0x7800, 0x7FFF, 0, RamZ80);
-		CZetMapArea(0x7800, 0x7FFF, 1, RamZ80);
-		CZetMapArea(0x7800, 0x7FFF, 2, RamZ80);
+		ZetMapArea(0x7800, 0x7FFF, 0, RamZ80);
+		ZetMapArea(0x7800, 0x7FFF, 1, RamZ80);
+		ZetMapArea(0x7800, 0x7FFF, 2, RamZ80);
 		
-		CZetMemEnd();
+		ZetMemEnd();
 		
-		//CZetSetReadHandler(aerofgtZ80Read);
-		//CZetSetWriteHandler(aerofgtZ80Write);
-		CZetSetInHandler(aerofgtZ80PortRead);
-		CZetSetOutHandler(aerofgtZ80PortWrite);
+		//ZetSetReadHandler(aerofgtZ80Read);
+		//ZetSetWriteHandler(aerofgtZ80Write);
+		ZetSetInHandler(aerofgtZ80PortRead);
+		ZetSetOutHandler(aerofgtZ80PortWrite);
 		
-		CZetClose();
+		ZetClose();
 	}
 	
 	BurnYM2610Init(8000000, RomSnd2, &RomSndSize2, RomSnd1, &RomSndSize1, &aerofgtFMIRQHandler, aerofgtSynchroniseStream, aerofgtGetTime);
-	BurnTimerAttachCZet(4000000);
+	BurnTimerAttachZet(4000000);
 	
 	DrvDoReset();												// Reset machine
 	return 0;
@@ -640,7 +640,7 @@ static int DrvExit()
 {
 	BurnYM2610Exit();
 	
-	CZetExit();
+	ZetExit();
 	SekExit();
 	
 	free(Mem);
@@ -1136,7 +1136,7 @@ static int DrvFrame()
 	}
 
 	SekNewFrame();
-	CZetNewFrame();
+	ZetNewFrame();
 	
 	nCyclesTotal[0] = 10000000 / 60;
 	nCyclesTotal[1] = 4000000  / 60;
@@ -1144,7 +1144,7 @@ static int DrvFrame()
 //	SekSetCyclesScanline(nCyclesTotal[0] / 262);
 	
 	SekOpen(0);
-	CZetOpen(0);
+	ZetOpen(0);
 	
 	SekRun(nCyclesTotal[0]);
 	SekSetIRQLine(1, SEK_IRQSTATUS_AUTO);
@@ -1152,7 +1152,7 @@ static int DrvFrame()
 	BurnTimerEndFrame(nCyclesTotal[1]);
 	BurnYM2610Update(nBurnSoundLen);
 
-	CZetClose();
+	ZetClose();
 	SekClose();
 	
 	if (pBurnDraw) DrvDraw();
@@ -1194,9 +1194,9 @@ static int DrvScan(int nAction,int *pnMin)
 
 		SekScan(nAction);										// Scan 68000 state
 
-		CZetOpen(0);
-		CZetScan(nAction);										// Scan Z80 state
-		CZetClose();
+		ZetOpen(0);
+		ZetScan(nAction);										// Scan Z80 state
+		ZetClose();
 		
 		SCAN_VAR(RamGfxBank);
 		SCAN_VAR(DrvInput);
@@ -1643,26 +1643,26 @@ static int turbofrcInit()
 	}
 	
 	{
-		CZetInit(1);
-		CZetOpen(0);
+		ZetInit(1);
+		ZetOpen(0);
 		
-		CZetMapArea(0x0000, 0x77FF, 0, RomZ80);
-		CZetMapArea(0x0000, 0x77FF, 2, RomZ80);
+		ZetMapArea(0x0000, 0x77FF, 0, RomZ80);
+		ZetMapArea(0x0000, 0x77FF, 2, RomZ80);
 		
-		CZetMapArea(0x7800, 0x7FFF, 0, RamZ80);
-		CZetMapArea(0x7800, 0x7FFF, 1, RamZ80);
-		CZetMapArea(0x7800, 0x7FFF, 2, RamZ80);
+		ZetMapArea(0x7800, 0x7FFF, 0, RamZ80);
+		ZetMapArea(0x7800, 0x7FFF, 1, RamZ80);
+		ZetMapArea(0x7800, 0x7FFF, 2, RamZ80);
 		
-		CZetMemEnd();
+		ZetMemEnd();
 		
-		CZetSetInHandler(turbofrcZ80PortRead);
-		CZetSetOutHandler(turbofrcZ80PortWrite);
+		ZetSetInHandler(turbofrcZ80PortRead);
+		ZetSetOutHandler(turbofrcZ80PortWrite);
 		
-		CZetClose();
+		ZetClose();
 	}
 	
 	BurnYM2610Init(8000000, RomSnd2, &RomSndSize2, RomSnd1, &RomSndSize1, &aerofgtFMIRQHandler, aerofgtSynchroniseStream, aerofgtGetTime);
-	BurnTimerAttachCZet(4000000);
+	BurnTimerAttachZet(4000000);
 	
 	DrvDoReset();	
 	
@@ -2169,13 +2169,13 @@ static int turbofrcFrame()
 	}
 	
 	SekNewFrame();
-	CZetNewFrame();
+	ZetNewFrame();
 	
 	nCyclesTotal[0] = 10000000 / 60;
 	nCyclesTotal[1] = 4000000  / 60;
 
 	SekOpen(0);
-	CZetOpen(0);
+	ZetOpen(0);
 	
 	SekRun(nCyclesTotal[0]);
 	SekSetIRQLine(1, SEK_IRQSTATUS_AUTO);
@@ -2183,7 +2183,7 @@ static int turbofrcFrame()
 	BurnTimerEndFrame(nCyclesTotal[1]);
 	BurnYM2610Update(nBurnSoundLen);
 
-	CZetClose();
+	ZetClose();
 	SekClose();
 	
 	if (pBurnDraw) turbofrcDraw();
@@ -2556,26 +2556,26 @@ static int karatblzInit()
 	}
 	
 	{
-		CZetInit(1);
-		CZetOpen(0);
+		ZetInit(1);
+		ZetOpen(0);
 		
-		CZetMapArea(0x0000, 0x77FF, 0, RomZ80);
-		CZetMapArea(0x0000, 0x77FF, 2, RomZ80);
+		ZetMapArea(0x0000, 0x77FF, 0, RomZ80);
+		ZetMapArea(0x0000, 0x77FF, 2, RomZ80);
 		
-		CZetMapArea(0x7800, 0x7FFF, 0, RamZ80);
-		CZetMapArea(0x7800, 0x7FFF, 1, RamZ80);
-		CZetMapArea(0x7800, 0x7FFF, 2, RamZ80);
+		ZetMapArea(0x7800, 0x7FFF, 0, RamZ80);
+		ZetMapArea(0x7800, 0x7FFF, 1, RamZ80);
+		ZetMapArea(0x7800, 0x7FFF, 2, RamZ80);
 		
-		CZetMemEnd();
+		ZetMemEnd();
 		
-		CZetSetInHandler(turbofrcZ80PortRead);
-		CZetSetOutHandler(turbofrcZ80PortWrite);
+		ZetSetInHandler(turbofrcZ80PortRead);
+		ZetSetOutHandler(turbofrcZ80PortWrite);
 		
-		CZetClose();
+		ZetClose();
 	}
 	
 	BurnYM2610Init(8000000, RomSnd2, &RomSndSize2, RomSnd1, &RomSndSize1, &aerofgtFMIRQHandler, aerofgtSynchroniseStream, aerofgtGetTime);
-	BurnTimerAttachCZet(4000000);
+	BurnTimerAttachZet(4000000);
 	
 	DrvDoReset();	
 	
@@ -2761,13 +2761,13 @@ static int karatblzFrame()
 	}
 	
 	SekNewFrame();
-	CZetNewFrame();
+	ZetNewFrame();
 	
 	nCyclesTotal[0] = 10000000 / 60;
 	nCyclesTotal[1] = 4000000  / 60;
 
 	SekOpen(0);
-	CZetOpen(0);
+	ZetOpen(0);
 	
 	SekRun(nCyclesTotal[0]);
 	SekSetIRQLine(1, SEK_IRQSTATUS_AUTO);
@@ -2775,7 +2775,7 @@ static int karatblzFrame()
 	BurnTimerEndFrame(nCyclesTotal[1]);
 	BurnYM2610Update(nBurnSoundLen);
 
-	CZetClose();
+	ZetClose();
 	SekClose();
 	
 	if (pBurnDraw) karatblzDraw();
@@ -2945,28 +2945,28 @@ static int aerofgtbInit()
 	}
 	
 	{
-		CZetInit(1);
-		CZetOpen(0);
+		ZetInit(1);
+		ZetOpen(0);
 		
-		CZetMapArea(0x0000, 0x77FF, 0, RomZ80);
-		CZetMapArea(0x0000, 0x77FF, 2, RomZ80);
+		ZetMapArea(0x0000, 0x77FF, 0, RomZ80);
+		ZetMapArea(0x0000, 0x77FF, 2, RomZ80);
 		
-		CZetMapArea(0x7800, 0x7FFF, 0, RamZ80);
-		CZetMapArea(0x7800, 0x7FFF, 1, RamZ80);
-		CZetMapArea(0x7800, 0x7FFF, 2, RamZ80);
+		ZetMapArea(0x7800, 0x7FFF, 0, RamZ80);
+		ZetMapArea(0x7800, 0x7FFF, 1, RamZ80);
+		ZetMapArea(0x7800, 0x7FFF, 2, RamZ80);
 		
-		CZetMemEnd();
+		ZetMemEnd();
 		
-		//CZetSetReadHandler(aerofgtZ80Read);
-		//CZetSetWriteHandler(aerofgtZ80Write);
-		CZetSetInHandler(aerofgtZ80PortRead);
-		CZetSetOutHandler(aerofgtZ80PortWrite);
+		//ZetSetReadHandler(aerofgtZ80Read);
+		//ZetSetWriteHandler(aerofgtZ80Write);
+		ZetSetInHandler(aerofgtZ80PortRead);
+		ZetSetOutHandler(aerofgtZ80PortWrite);
 		
-		CZetClose();
+		ZetClose();
 	}
 	
 	BurnYM2610Init(8000000, RomSnd2, &RomSndSize2, RomSnd1, &RomSndSize1, &aerofgtFMIRQHandler, aerofgtSynchroniseStream, aerofgtGetTime);
-	BurnTimerAttachCZet(4000000);
+	BurnTimerAttachZet(4000000);
 	
 	DrvDoReset();												// Reset machine
 	return 0;
@@ -3440,26 +3440,26 @@ static int spinlbrkInit()
 	}
 	
 	{
-		CZetInit(1);
-		CZetOpen(0);
+		ZetInit(1);
+		ZetOpen(0);
 		
-		CZetMapArea(0x0000, 0x77FF, 0, RomZ80);
-		CZetMapArea(0x0000, 0x77FF, 2, RomZ80);
+		ZetMapArea(0x0000, 0x77FF, 0, RomZ80);
+		ZetMapArea(0x0000, 0x77FF, 2, RomZ80);
 		
-		CZetMapArea(0x7800, 0x7FFF, 0, RamZ80);
-		CZetMapArea(0x7800, 0x7FFF, 1, RamZ80);
-		CZetMapArea(0x7800, 0x7FFF, 2, RamZ80);
+		ZetMapArea(0x7800, 0x7FFF, 0, RamZ80);
+		ZetMapArea(0x7800, 0x7FFF, 1, RamZ80);
+		ZetMapArea(0x7800, 0x7FFF, 2, RamZ80);
 		
-		CZetMemEnd();
+		ZetMemEnd();
 		
-		CZetSetInHandler(turbofrcZ80PortRead);
-		CZetSetOutHandler(turbofrcZ80PortWrite);
+		ZetSetInHandler(turbofrcZ80PortRead);
+		ZetSetOutHandler(turbofrcZ80PortWrite);
 		
-		CZetClose();
+		ZetClose();
 	}
 	
 	BurnYM2610Init(8000000, RomSnd2, &RomSndSize2, RomSnd1, &RomSndSize1, &aerofgtFMIRQHandler, aerofgtSynchroniseStream, aerofgtGetTime);
-	BurnTimerAttachCZet(4000000);
+	BurnTimerAttachZet(4000000);
 	
 	bg2scrollx = 0;	// 
 	
@@ -3578,13 +3578,13 @@ static int spinlbrkFrame()
 	}
 
 	SekNewFrame();
-	CZetNewFrame();
+	ZetNewFrame();
 	
 	nCyclesTotal[0] = 10000000 / 60;
 	nCyclesTotal[1] = 4000000  / 60;
 
 	SekOpen(0);
-	CZetOpen(0);
+	ZetOpen(0);
 	
 	SekRun(nCyclesTotal[0]);
 	SekSetIRQLine(1, SEK_IRQSTATUS_AUTO);
@@ -3592,7 +3592,7 @@ static int spinlbrkFrame()
 	BurnTimerEndFrame(nCyclesTotal[1]);
 	BurnYM2610Update(nBurnSoundLen);
 
-	CZetClose();
+	ZetClose();
 	SekClose();
 	
 	if (pBurnDraw) spinlbrkDraw();
