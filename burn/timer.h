@@ -22,7 +22,6 @@ void BurnTimerReset();
 int BurnTimerInit(int (*pOverCallback)(int, int), double (*pTimeCallback)());
 int BurnTimerAttachSek(int nClockspeed);
 int BurnTimerAttachZet(int nClockspeed);
-int BurnTimerAttachCZet(int nClockspeed);
 void BurnTimerScan(int nAction, int* pnMin);
 int BurnTimerUpdate(int nCycles);
 void BurnTimerUpdateEnd();
