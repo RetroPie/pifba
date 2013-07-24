@@ -1,6 +1,4 @@
 
-#include "ezxaudio.h"
-
 #define AUDIO_FORMAT	AFMT_S16_LE
 
 //#define AUDIO_BITRATE	8000

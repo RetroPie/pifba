@@ -24,7 +24,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "fba_player.h"
-#include "ezxaudio.h"
 #include "font.h"
 #include "snd.h"
 
