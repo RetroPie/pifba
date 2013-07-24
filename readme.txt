@@ -141,14 +141,16 @@ Postprocessing can be enabled by setting "DisplayEffect" in fba2x.cfg. In additi
   * AY8910/YM2149 core by various authors (http://www.mamedev.org/).
   * M6502 emulation core by Marat (http://fms.komkon.org/EMUL8/).
   * I8039 emulation core by Mirko Buffoni (http://www.mamedev.org/).
-  * ARM7 emulation core by Steve Ellenoff (http://www.mamedev.org/).
   * Z80 emulation core by Dave, modifications by Team FB Alpha (http://www.finalburn.com/).
-  * Alternative Z80 emulation core by Juergen Buchmueller (http://www.mamedev.org/).
-  * Alternative Z80 emulation core by Stéphane Dallongeville, modifications by Team FB Alpha.
   * PNG functionality provided by libpng (http://www.libpng.org/) and PNGlib (http://www.madwizard.org/).
   * Zip functionality provided by zlib (http://www.zlib.net/).
 
 *CHANGE LOG*
+
+_July 26, 2013:_
+  * Fixed some games
+  * Added more Taito games
+  * Added "MaintainAspectRatio" option to allow filled screen
 
 _July 21, 2013:_
   * Initial release.
