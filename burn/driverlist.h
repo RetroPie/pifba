@@ -749,6 +749,15 @@ DRV		BurnDrvMchampda;
 DRV		BurnDrvTangtang;
 DRV		BurnDrvSwatpolc;	
 
+DRV 	BurnDrvrainbow;
+DRV		BurnDrvrainbowo;
+DRV		BurnDrvrainbowe;
+DRV		BurnDrvSuperman;
+DRV		BurnDrvSuprmanj;
+DRV		BurnDrvtwinhawk;
+DRV		BurnDrvtwinhwku;
+DRV		BurnDrvDaisenpu;
+
 #undef DRV
 
 // Structure containing addresses of all drivers
@@ -1488,5 +1497,14 @@ static struct BurnDriver* pDriver[] = {
 	&BurnDrvMchampdx,
 	&BurnDrvMchampda,
 	&BurnDrvTangtang,
-	&BurnDrvSwatpolc		
+	&BurnDrvSwatpolc,
+	&BurnDrvrainbow,
+&BurnDrvrainbowo,
+&BurnDrvrainbowe,
+&BurnDrvSuperman,
+&BurnDrvSuprmanj,
+&BurnDrvtwinhawk,
+&BurnDrvtwinhwku,
+&BurnDrvDaisenpu
+
 };
