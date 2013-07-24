@@ -174,10 +174,10 @@ void __fastcall mazingerWriteWord(unsigned int sekAddress, unsigned short wordVa
 			SoundLatch = wordValue;
 			SoundLatchStatus |= 0x0C;
 
-			CZetOpen(0);
-			CZetNmi();
-			nCyclesDone[1] += CZetRun(0x0400);
-			CZetClose();
+			ZetOpen(0);
+			ZetNmi();
+			nCyclesDone[1] += ZetRun(0x0400);
+			ZetClose();
 			return;
 		
 		case 0x600000:
@@ -252,8 +252,8 @@ void __fastcall mazingerZOut(unsigned short nAddress, unsigned char nValue)
 		case 0x00: {
 			DrvZ80Bank = nValue & 0x07;
 			
-			CZetMapArea(0x4000, 0x7FFF, 0, RomZ80 + (DrvZ80Bank * 0x4000));
-			CZetMapArea(0x4000, 0x7FFF, 2, RomZ80 + (DrvZ80Bank * 0x4000));
+			ZetMapArea(0x4000, 0x7FFF, 0, RomZ80 + (DrvZ80Bank * 0x4000));
+			ZetMapArea(0x4000, 0x7FFF, 2, RomZ80 + (DrvZ80Bank * 0x4000));
 			return;
 		}
 		
@@ -327,7 +327,7 @@ static int DrvExit()
     CavePalExit();
 
 	SekExit();				// Deallocate 68000s
-	CZetExit();
+	ZetExit();
 	
 	BurnYM2203Exit();
 	
@@ -351,9 +351,9 @@ static int DrvDoReset()
 	SekReset();
 	SekClose();
 	
-	CZetOpen(0);
-	CZetReset();
-	CZetClose();
+	ZetOpen(0);
+	ZetReset();
+	ZetClose();
 	
 	BurnYM2203Reset();
 	MSM6295Reset(0);
@@ -430,7 +430,7 @@ static int DrvFrame()
 	CaveClearOpposites(&DrvInput[1]);
 
 	SekNewFrame();
-	CZetNewFrame();
+	ZetNewFrame();
 	
 	SekOpen(0);
 	
@@ -483,11 +483,11 @@ static int DrvFrame()
 	
 	SekClose();
 	
-	CZetOpen(0);
+	ZetOpen(0);
 	BurnTimerEndFrame(nCyclesTotal[1] - nCyclesDone[1]);
 	BurnYM2203Update(pBurnSoundOut, nBurnSoundLen);
 	if (pBurnSoundOut) MSM6295Render(0, pBurnSoundOut, nBurnSoundLen);
-	CZetClose();
+	ZetClose();
 
 	return 0;
 }
@@ -595,7 +595,7 @@ static int DrvScan(int nAction, int *pnMin)
 		BurnAcb(&ba);
 
 		SekScan(nAction);
-		CZetScan(nAction);
+		ZetScan(nAction);
 
 		BurnYM2203Scan(nAction, pnMin);
 		MSM6295Scan(0, nAction);
@@ -614,10 +614,10 @@ static int DrvScan(int nAction, int *pnMin)
 		SCAN_VAR(DrvOkiBank2);
 		
 		if (nAction & ACB_WRITE) {
-			CZetOpen(0);
-			CZetMapArea(0x4000, 0x7FFF, 0, RomZ80 + (DrvZ80Bank * 0x4000));
-			CZetMapArea(0x4000, 0x7FFF, 2, RomZ80 + (DrvZ80Bank * 0x4000));
-			CZetClose();
+			ZetOpen(0);
+			ZetMapArea(0x4000, 0x7FFF, 0, RomZ80 + (DrvZ80Bank * 0x4000));
+			ZetMapArea(0x4000, 0x7FFF, 2, RomZ80 + (DrvZ80Bank * 0x4000));
+			ZetClose();
 			
 			memcpy(MSM6295ROM + 0x00000, MSM6295ROMSrc + 0x20000 * DrvOkiBank1, 0x20000);
 			memcpy(MSM6295ROM + 0x20000, MSM6295ROMSrc + 0x20000 * DrvOkiBank2, 0x20000);
@@ -632,51 +632,51 @@ static int DrvScan(int nAction, int *pnMin)
 static void DrvFMIRQHandler(int, int nStatus)
 {
 	if (nStatus & 1) {
-		CZetSetIRQLine(0xff, CZET_IRQSTATUS_ACK);
+		ZetSetIRQLine(0xff, ZET_IRQSTATUS_ACK);
 	} else {
-		CZetSetIRQLine(0,    CZET_IRQSTATUS_NONE);
+		ZetSetIRQLine(0,    ZET_IRQSTATUS_NONE);
 	}
 }
 
 static int DrvSynchroniseStream(int nSoundRate)
 {
-	return (long long)CZetTotalCycles() * nSoundRate / 4000000;
+	return (long long)ZetTotalCycles() * nSoundRate / 4000000;
 }
 
 static double DrvGetTime()
 {
-	return (double)CZetTotalCycles() / 4000000;
+	return (double)ZetTotalCycles() / 4000000;
 }
 
 static int drvZInit()
 {
-	CZetInit(1);
+	ZetInit(1);
 	
-	CZetOpen(0);
+	ZetOpen(0);
 
-	CZetSetInHandler(mazingerZIn);
-	CZetSetOutHandler(mazingerZOut);
-	CZetSetReadHandler(mazingerZRead);
-	CZetSetWriteHandler(mazingerZWrite);
+	ZetSetInHandler(mazingerZIn);
+	ZetSetOutHandler(mazingerZOut);
+	ZetSetReadHandler(mazingerZRead);
+	ZetSetWriteHandler(mazingerZWrite);
 
 	// ROM bank 1
-	CZetMapArea    (0x0000, 0x3FFF, 0, RomZ80 + 0x0000); // Direct Read from ROM
-	CZetMapArea    (0x0000, 0x3FFF, 2, RomZ80 + 0x0000); // Direct Fetch from ROM
+	ZetMapArea    (0x0000, 0x3FFF, 0, RomZ80 + 0x0000); // Direct Read from ROM
+	ZetMapArea    (0x0000, 0x3FFF, 2, RomZ80 + 0x0000); // Direct Fetch from ROM
 	// ROM bank 2
-	CZetMapArea    (0x4000, 0x7FFF, 0, RomZ80 + 0x4000); // Direct Read from ROM
-	CZetMapArea    (0x4000, 0x7FFF, 2, RomZ80 + 0x4000); //
+	ZetMapArea    (0x4000, 0x7FFF, 0, RomZ80 + 0x4000); // Direct Read from ROM
+	ZetMapArea    (0x4000, 0x7FFF, 2, RomZ80 + 0x4000); //
 	// RAM
-	CZetMapArea    (0xc000, 0xc7FF, 0, RamZ80 + 0x0000);			// Direct Read from RAM
-	CZetMapArea    (0xc000, 0xc7FF, 1, RamZ80 + 0x0000);			// Direct Write to RAM
-	CZetMapArea    (0xc000, 0xc7FF, 2, RamZ80 + 0x0000);			//
+	ZetMapArea    (0xc000, 0xc7FF, 0, RamZ80 + 0x0000);			// Direct Read from RAM
+	ZetMapArea    (0xc000, 0xc7FF, 1, RamZ80 + 0x0000);			// Direct Write to RAM
+	ZetMapArea    (0xc000, 0xc7FF, 2, RamZ80 + 0x0000);			//
 	
-	CZetMapArea    (0xf800, 0xffFF, 0, RamZ80 + 0x0800);			// Direct Read from RAM
-	CZetMapArea    (0xf800, 0xffFF, 1, RamZ80 + 0x0800);			// Direct Write to RAM
-	CZetMapArea    (0xf800, 0xffFF, 2, RamZ80 + 0x0800);			//
+	ZetMapArea    (0xf800, 0xffFF, 0, RamZ80 + 0x0800);			// Direct Read from RAM
+	ZetMapArea    (0xf800, 0xffFF, 1, RamZ80 + 0x0800);			// Direct Write to RAM
+	ZetMapArea    (0xf800, 0xffFF, 2, RamZ80 + 0x0800);			//
 
-	CZetMemEnd();
+	ZetMemEnd();
 	
-	CZetClose();
+	ZetClose();
 
 	return 0;
 }
@@ -744,7 +744,7 @@ static int DrvInit()
 	CaveTileInitLayer(1, 0x400000, 6, 0x4400);
 	
 	BurnYM2203Init(1, 4000000, &DrvFMIRQHandler, DrvSynchroniseStream, DrvGetTime, 0);
-	BurnTimerAttachCZet(4000000);
+	BurnTimerAttachZet(4000000);
 	
 	memcpy(MSM6295ROM, MSM6295ROMSrc, 0x40000);
 	MSM6295Init(0, 1056000 / 132, 100.0, 1);
