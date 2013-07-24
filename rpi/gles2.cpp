@@ -273,12 +273,12 @@ void gles2_create(int display_width, int display_height, int bitmap_width, int b
 	dis_width = display_width;
 	dis_height = display_height;
 
+	// Screen aspect ratio adjustment
+	float a = (float)display_width/(float)display_height;
+	float a0 = (float)bitmap_width/(float)bitmap_height;
+
 	 // Screen aspect ratio adjustment
-    if(config_options.maintain_aspect_ratio) {
-	
-		// Screen aspect ratio adjustment
-		float a = (float)display_width/(float)display_height;
-		float a0 = (float)bitmap_width/(float)bitmap_height;
+    if(config_options.maintain_aspect_ratio || a0 < 1) {
 		if(a > a0)
 			sx = a0/a;
 		else

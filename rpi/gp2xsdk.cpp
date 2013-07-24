@@ -342,10 +342,12 @@ void pi_setvideo_mode(int width, int height)
 		display_x = sx = display_adj_width;
 		display_y = sy = display_adj_height;
         
-	 	if (game_ratio>display_ratio)
-			sy = (float)display_adj_width/(float)game_ratio;
-	 	else
-			sx = (float)display_adj_height*(float)game_ratio;
+		if(config_options.maintain_aspect_ratio || game_ratio < 1) {
+	 			if (game_ratio>display_ratio)
+					sy = (float)display_adj_width/(float)game_ratio;
+			 	else
+					sx = (float)display_adj_height*(float)game_ratio;
+		}
         
 		// Centre bitmap on screen
 	 	display_x = (display_x - sx) / 2;
