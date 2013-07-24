@@ -104,6 +104,7 @@
 | cybotsj       |       | Cyberbots - fullmetal madness (950420 Japan)          | cybots        | 1995  | Capcom        | CPS2          |                                       |
 | cybotsu       |       | Cyberbots - fullmetal madness (950424 USA)            | cybots        | 1995  | Capcom        | CPS2          |                                       |
 | daimakai      |       | Dai Makai-Mura (Japan)                                | ghouls        | 1988  | Capcom        | CPS1          |                                       |
+| daisenpu      |       | Daisenpu (Japan)                                      | twinhawk      | 1989  | Taito         | Taito X Syste |                                       |
 | ddonpach      |       | DoDonPachi (1997 2/5 master ver, international)       |               | 1997  | Atlus / Cave  | Cave          |                                       |
 | ddonpchj      |       | DoDonPachi (1997 2/5 master ver, Japan)               | ddonpach      | 1997  | Atlus / Cave  | Cave          |                                       |
 | ddsoma        |       | Dungeons & Dragons - shadow over mystara (960619 Asia | ddsom         | 1996  | Capcom        | CPS2          |                                       |
@@ -459,6 +460,9 @@
 | raf102j       |       | Real and Fake / Photo Y2K (ver. 102, Japan Board)     | photoy2k      | 1999  | IGS           | PGM           |                                       |
 | ragnagrd      |       | Operation Ragnagard                                   |               | 1996  | Saurus        | Neo Geo       |                                       |
 | raiga         |       | Raiga - Strato Fighter (Japan)                        | stratof       | 1991  | Tecmo         | Miscellaneous |                                       |
+| rainbowe      |       | Rainbow Islands (Extra)                               | rainbow       | 1988  | Taito         | Custom Taito  |                                       |
+| rainbowo      |       | Rainbow Islands (old version)                         | rainbow       | 1987  | Taito         | Custom Taito  |                                       |
+| rainbow       |       | Rainbow Islands (new version)                         |               | 1987  | Taito         | Custom Taito  |                                       |
 | rbff1         |       | Real Bout Fatal Fury                                  |               | 1995  | SNK           | Neo Geo       |                                       |
 | rbff2h        |       | Real Bout Fatal Fury 2 - the newcomers (set 2)        | rbff2         | 1998  | SNK           | Neo Geo       |                                       |
 | rbff2k        |       | Real Bout Fatal Fury 2 - the newcomers (Korean Releas | rbff2         | 1998  | SNK           | Neo Geo       |                                       |
@@ -621,8 +625,10 @@
 | strider       |       | Strider (US set 1)                                    |               | 1989  | Capcom        | CPS1          |                                       |
 | stridrja      |       | Strider Hiryu (Japan set 2)                           | strider       | 1989  | Capcom        | CPS1          |                                       |
 | stridrua      |       | Strider (US set 2)                                    | strider       | 1989  | Capcom        | CPS1          |                                       |
+| superman      |       | Superman                                              |               | 1988  | Taito         | Taito X Syste |                                       |
 | superspy      |       | The Super Spy                                         |               | 1990  | SNK           | Neo Geo       |                                       |
 | supmodel      |       | Super Model                                           |               | 1994  | Comad / New J | Miscellaneous |                                       |
+| suprmanj      |       | Superman (Japan)                                      | superman      | 1988  | Taito         | Taito X Syste |                                       |
 | suprtrio      |       | Super Trio                                            |               | 1994  | Gameace       | Miscellaneous |                                       |
 | svcboot       |       | SvC Chaos - SNK vs Capcom (MVS, bootleg)              | svc           | 2003  | bootleg       | Neo Geo       | bootleg of "SvC Chaos - SNK vs Capcom |
 | svcpcba       |       | SvC Chaos - SNK vs Capcom (JAMMA PCB, set 2)          | svcpcb        | 2003  | SNK Playmore  | Neo Geo       |                                       |
@@ -650,6 +656,8 @@
 | turfmast      |       | Neo Turf Masters                                      |               | 1996  | Nazca         | Neo Geo       |                                       |
 | twinadvk      |       | Twin Adventure (Korea)                                | twinadv       | 1995  | Barko Corp    | Kaneko Pandor |                                       |
 | twinadv       |       | Twin Adventure (World)                                |               | 1995  | Barko Corp    | Kaneko Pandor |                                       |
+| twinhawk      |       | Twin Hawk (World)                                     |               | 1989  | Taito         | Taito X Syste |                                       |
+| twinhwku      |       | Twin Hawk (US)                                        | twinhawk      | 1989  | Taito         | Taito X Syste |                                       |
 | twinkle       |       | Twinkle                                               |               | 1997  | SemiCom       | Kaneko Pandor |                                       |
 | twinspri      |       | Twinklestar Sprites                                   |               | 1996  | ADK           | Neo Geo       |                                       |
 | tws96         |       | Tecmo World Soccer '96                                |               | 1996  | Tecmo         | Neo Geo       |                                       |
