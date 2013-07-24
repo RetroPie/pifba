@@ -308,16 +308,17 @@ int BurnTimerAttachZet(int nClockspeed)
 
 	return 0;
 }
-int BurnTimerAttachCZet(int nClockspeed)
-{
-	nCPUClockspeed = nClockspeed;
-	pCPUTotalCycles = CZetTotalCycles;
-	pCPURun = CZetRun;
-	pCPURunEnd = CZetRunEnd;
-
-	nTicksExtra = MAKE_TIMER_TICKS(1, nCPUClockspeed) - 1;
-
-//	bprintf(PRINT_NORMAL, _T("--- timer cpu speed %iHz, one cycle = %i ticks.\n"), nClockspeed, MAKE_TIMER_TICKS(1, nCPUClockspeed));
-
-	return 0;
-}
+//sq
+//int BurnTimerAttachCZet(int nClockspeed)
+//{
+//	nCPUClockspeed = nClockspeed;
+//	pCPUTotalCycles = CZetTotalCycles;
+//	pCPURun = CZetRun;
+//	pCPURunEnd = CZetRunEnd;
+//
+//	nTicksExtra = MAKE_TIMER_TICKS(1, nCPUClockspeed) - 1;
+//
+////	bprintf(PRINT_NORMAL, _T("--- timer cpu speed %iHz, one cycle = %i ticks.\n"), nClockspeed, MAKE_TIMER_TICKS(1, nCPUClockspeed));
+//
+//	return 0;
+//}
