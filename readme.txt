@@ -2,7 +2,7 @@
 
 *INTRODUCTION*
 
-PiFBA is Final Burn Alpha 2x for the Raspberry Pi ported by Squid. This emulates old arcade games using MAME based roms for CPS1, CPS2, NeoGeo, System 16, Toaplan and many other games. It should support most recent versions of the MAME versions of these ROMS but unfortnately there is no definitive version to use. A full list of supported games is in the frontend program.
+PiFBA is Final Burn Alpha 2x for the Raspberry Pi ported by Squid. This emulates old arcade games using MAME based roms for CPS1, CPS2, Neogeo, Toaplan and many other games. It should support most recent versions of the MAME versions of these ROMS but unfortnately there is no definitive version to use. A full list of supported games is in the frontend program.
 
 Some large ROMS may require converting to the '.fba' format before they will work. FBACache_windows.zip is included to do this, which runs on Windows not Linux.
 
