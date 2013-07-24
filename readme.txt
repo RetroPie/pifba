@@ -147,7 +147,7 @@ Postprocessing can be enabled by setting "DisplayEffect" in fba2x.cfg. In additi
 
 *CHANGE LOG*
 
-_July 26, 2013:_
+_July 24, 2013:_
   * Fixed some games
   * Added more Taito games
   * Added "MaintainAspectRatio" option to allow filled screen
