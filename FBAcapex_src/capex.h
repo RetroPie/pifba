@@ -73,8 +73,9 @@
 #define GP2X_BUTTON_VOLDOWN         60
 //#endif
 
-#define START_X	8
-#define START_Y	120
+//Initial position of cursor on screen
+#define START_X	16
+#define START_Y	240
 
 #define NB_FILTRE	4
 #define NB_MAX_GAMES	2048
@@ -158,6 +159,8 @@ void carre_plein(SDL_Surface* screenSurface, int x, int y, int w, int h, Uint32 
 
 void drawSprite(SDL_Surface* imageSurface, SDL_Surface* screenSurface, int srcX, int srcY, int dstX, int dstY, int width, int height)
 {
+	int error;
+
 	SDL_Rect srcRect;
 	srcRect.x = srcX;
 	srcRect.y = srcY;
@@ -170,8 +173,28 @@ void drawSprite(SDL_Surface* imageSurface, SDL_Surface* screenSurface, int srcX,
 	dstRect.w = width;
 	dstRect.h = height;
 
-	SDL_BlitSurface(imageSurface, &srcRect, screenSurface, &dstRect);
+	error=SDL_BlitSurface(imageSurface, &srcRect, screenSurface, &dstRect);
 }
+
+////Scale bitmap. image types much match 
+//void scaleSprite(SDL_Surface* srcSurface, SDL_Surface* dstSurface, int srcX, int srcY, int srcw, int srch, int dstX, int dstY, int dstw, int dsth)
+//{
+//	int error;
+//
+//	SDL_Rect srcRect;
+//	srcRect.x = srcX;
+//	srcRect.y = srcY;
+//	srcRect.w = srcw;
+//	srcRect.h = srch;
+//
+//	SDL_Rect dstRect;
+//	dstRect.x = dstX;
+//	dstRect.y = dstY;
+//	dstRect.w = dstw;
+//	dstRect.h = dsth;
+//
+//	error=SDL_SoftStretch(srcSurface, NULL, dstSurface, &dstRect);
+//}
 
 void prepare_window(SDL_Surface *src, SDL_Surface *dest, int win_x , int win_y , int win_l , int win_h)
 {
