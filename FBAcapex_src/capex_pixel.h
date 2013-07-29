@@ -30,8 +30,8 @@ void pixel_gamma( SDL_Surface *Surface )
 	capex.FLshadow = (float) capex.FXshadow / 100 ;
 	for(x=255;x>-1;--x) precal_pal[x]=x*capex.FLshadow;
 	
-	for(y=239;y>-1;y--){
-		for(x=319;x>-1;x--){
+	for(y=479;y>-1;y--){
+		for(x=639;x>-1;x--){
 			pixel=getPixel(Surface,x,y);
 			SDL_GetRGBA(pixel, Surface->format, &r, &g, &b, &a);
 			//Ici, on mettra du code pour modifier les pixels.
