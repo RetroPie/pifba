@@ -36,8 +36,6 @@ void write_cfg()
 //	fputs(g_string,fp);
 	sprintf((char*)g_string, "fba2x_showfps %d\n",options.showfps);
 	fputs(g_string,fp);
-	sprintf((char*)g_string, "fba2x_hiscore %d\n",options.hiscore);
-	fputs(g_string,fp);
 
 	fputs("\n",fp);
 	
@@ -55,32 +53,3 @@ void write_cfg()
 	fclose(fp);
 }
 
-//void write_cf()
-//{
-//	FILE *fp;
-//	
-//	sprintf((char*)g_string, "conf/%s.cf", conf.cf);
-//	
-//	fp = fopen(g_string, "w");
-//	
-//	fputs("# Config file generate by CAPEX\n",fp);
-//	sprintf((char*)g_string, "# %s\n", conf.cf );
-//	fputs(g_string,fp);
-//	fputs("\n",fp);
-//	sprintf((char*)g_string, "fba2x_clock %d\n",options.cpu);
-//	fputs(g_string,fp);
-//	sprintf((char*)g_string, "fba2x_sound %d\n",options.sound);
-//	fputs(g_string,fp);
-//	sprintf((char*)g_string, "fba2x_samplerate %d\n",options.samplerate);
-//	fputs(g_string,fp);
-//	sprintf((char*)g_string, "fba2x_rescale %d\n",options.rescale);
-//	fputs(g_string,fp);
-//	sprintf((char*)g_string, "fba2x_showfps %d\n",options.showfps);
-//	fputs(g_string,fp);
-//	sprintf((char*)g_string, "fba2x_tweak %d\n",options.tweak);
-//	fputs(g_string,fp);
-//	sprintf((char*)g_string, "fba2x_hiscore %d\n",options.hiscore);
-//	fputs(g_string,fp);
-//
-//	fclose(fp);
-//}
