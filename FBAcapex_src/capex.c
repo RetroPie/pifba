@@ -54,7 +54,6 @@ SDL_Surface *preview;
 SDL_Surface *title;
 SDL_Surface *help;
 SDL_Surface *credit;
-SDL_Surface *preview_load;
 //sq SDL_Surface *Tmp;
 
 SDL_RWops *rw;
@@ -141,18 +140,11 @@ struct conf
 
 struct capex
 {
-	unsigned char clock;
-	unsigned char tweak;
-	unsigned char delayspeed;
-	signed char repeatspeed;
 	unsigned char list;
-	unsigned char sely;
+	unsigned int sely;
 	unsigned int selnum;
 	unsigned int seloffset_num;
-	signed char FXshadow;
-	float FLshadow;
-	unsigned char skin;
-}capex;
+} capex;
 
 struct selector
 {
@@ -160,13 +152,13 @@ struct selector
 	unsigned int crt_x;
 	unsigned int num;
 	unsigned int offset_num;
-}selector;
+} selector;
 
-struct run
-{
-	unsigned char y;
-	signed char num;
-}run;
+//struct run
+//{
+//	unsigned char y;
+//	signed char num;
+//}run;
 
 #include "capex_write.h"
 #include "capex_read.h"
@@ -182,7 +174,6 @@ void free_memory(void)
 	SDL_FreeSurface(font); font=0;
 	SDL_FreeSurface(bar); bar=0;
 	SDL_FreeSurface(preview); preview=0;
-	SDL_FreeSurface(preview_load); preview_load=0;
 	SDL_FreeSurface(title); title=0;
 	SDL_FreeSurface(help); help=0;
 	SDL_FreeSurface(credit); credit=0;
@@ -216,8 +207,8 @@ void put_string(char *string, unsigned int pos_x, unsigned int pos_y, unsigned c
 	SDL_Rect Dest;
 
 	Src.y = colour;
-	Src.w = 5;
-	Src.h = 9;
+	Src.w = FONT_WIDTH;
+	Src.h = FONT_HEIGHT;
 	Dest.y = pos_y;
 
 	while(*string)
@@ -228,29 +219,29 @@ void put_string(char *string, unsigned int pos_x, unsigned int pos_y, unsigned c
 			SDL_BlitSurface(font, &Src, s, &Dest);
 		}
 		++string;
-		pos_x += 6;
+		pos_x += FONT_WIDTH;
 	}
 }
 
 //Draw string from font bitmap to screen, with clipping
-void put_stringM(char *string, unsigned int pos_x, unsigned int pos_y, unsigned int size, unsigned char colour)
+void put_stringM(char *string, int pos_x, int pos_y, unsigned int size, unsigned int colour)
 {
 	SDL_Rect Src;
 	SDL_Rect Dest;
-	unsigned char caratere;
+	unsigned int caratere;
 	
 	if( size > selector.crt_x ){
 		
 		string += selector.crt_x ;
 		
 		Src.y = colour;
-		Src.w = 5;
-		Src.h = 9;
+		Src.w = FONT_WIDTH;
+		Src.h = FONT_HEIGHT;
 		Dest.y = pos_y;
-
 		
-		if ( (size-selector.crt_x) > 52 ) {
-			for( caratere=selector.crt_x ; caratere<(selector.crt_x+48) ; ++caratere)
+		if ( (size-selector.crt_x) > 38 ) {
+			//Truncate the list to 38 characters wide
+			for( caratere=selector.crt_x ; caratere<(selector.crt_x+38) ; ++caratere)
 			{
 				if (font6x[*string]){
 					Src.x = font6x[*string];
@@ -258,18 +249,20 @@ void put_stringM(char *string, unsigned int pos_x, unsigned int pos_y, unsigned 
 					SDL_BlitSurface(font, &Src, screen, &Dest);
 				}
 				++string;
-				pos_x += 6;
+				pos_x += FONT_WIDTH;
 			}
-			for( caratere=0 ; caratere<3 ; ++caratere)
-			{
-				if (font6x[*string]){
-					Src.x = font6x[46];
-					Dest.x = pos_x;
-					SDL_BlitSurface(font, &Src, screen, &Dest);
-				}
-				pos_x += 6;
-			}
-		}else{
+//			for( caratere=0 ; caratere<3 ; ++caratere)
+//			{
+//				if (font6x[*string]){
+//					Src.x = font6x[46];
+//					Dest.x = pos_x;
+//					SDL_BlitSurface(font, &Src, screen, &Dest);
+//				}
+//				pos_x += FONT_WIDTH;
+//			}
+		}
+		else 
+		{
 			while(*string)
 			{
 				if (font6x[*string]){
@@ -278,7 +271,7 @@ void put_stringM(char *string, unsigned int pos_x, unsigned int pos_y, unsigned 
 					SDL_BlitSurface(font, &Src, screen, &Dest);
 				}
 				++string;
-				pos_x += 6;
+				pos_x += FONT_WIDTH;
 			}
 		}
 	}
@@ -323,7 +316,7 @@ char ss_prg_credit(void)
 		
 		SDL_PollEvent(&event);
 		if (event.type==SDL_JOYBUTTONDOWN){
-			if (counter==0 || (counter>capex.delayspeed && ((counter&joy_speed[capex.repeatspeed])==0))){
+			if (counter==0 ) {
 				if ( event.jbutton.button==GP2X_BUTTON_START ){
 					return 1 ;
 				}else return 0;
@@ -420,26 +413,29 @@ void init_title(void)
 		fclose(fp);
 	}
 	//sq title = SDL_DisplayFormat(Tmp);
-//sq	SDL_FreeSurface(Tmp);
-	SDL_SetColorKey(title ,SDL_SRCCOLORKEY,SDL_MapRGB(title ->format,0,255,255));
+	//sq SDL_FreeSurface(Tmp);
+	//sq SDL_SetColorKey(title ,SDL_SRCCOLORKEY,SDL_MapRGB(title ->format,0,255,255));
 	
-	rw = SDL_RWFromMem(gfx_FONT,sizeof(gfx_FONT)/sizeof(unsigned char));
-	//sq Tmp = SDL_LoadBMP_RW(rw,0);
-	font = SDL_LoadBMP_RW(rw,0);
+	//rw = SDL_RWFromMem(gfx_FONT,sizeof(gfx_FONT)/sizeof(unsigned char));
+	//font = SDL_LoadBMP_RW(rw,0);
+	if ((fp = fopen( "./skin/gfx_FONT.bmp" , "r")) != NULL){
+		font = SDL_LoadBMP( "./skin/gfx_FONT.bmp" );
+		fclose(fp);
+	}
 	//sq font = SDL_DisplayFormat(Tmp);
 	//sq SDL_FreeSurface(Tmp);
 	SDL_FreeRW (rw);
-	SDL_SetColorKey(font,SDL_SRCCOLORKEY,SDL_MapRGB(font->format,255,0,255));
+	//sq SDL_SetColorKey(font,SDL_SRCCOLORKEY,SDL_MapRGB(font->format,255,0,255));
+	//sq set transparent colour to black
+	SDL_SetColorKey(font,SDL_SRCCOLORKEY,SDL_MapRGB(font->format,0,0,0));
 
 	screen = SDL_CreateRGBSurface(SDL_SWSURFACE, 640, 480, 16, 0xf800, 0x07e0, 0x001f, 0x0000);
 	bg_temp = SDL_CreateRGBSurface(SDL_SWSURFACE, 640, 480, 16, 0xf800, 0x07e0, 0x001f, 0x0000);
 	bgs = SDL_CreateRGBSurface(SDL_SWSURFACE, 640, 480, 16, 0xf800, 0x07e0, 0x001f, 0x0000);
 	help = SDL_CreateRGBSurface(SDL_SWSURFACE, 640, 480, 16, 0xf800, 0x07e0, 0x001f, 0x0000);
 	credit = SDL_CreateRGBSurface(SDL_SWSURFACE, 640, 480, 16, 0xf800, 0x07e0, 0x001f, 0x0000);
-	preview_load = SDL_CreateRGBSurface(SDL_SWSURFACE, 192, 112, 16, 0xf800, 0x07e0, 0x001f, 0x0000);
 
 	drawSprite( bg , bgs , 0 , 0 , 0 , 0 , 640 , 480 );
-	if (capex.FXshadow < 100) pixel_gamma( bgs );
 	
 	prepare_window( bgs , bg , 248 , 6 , 384 , 224 );
 	prepare_window( bgs , bg , 8 , 106, 232 , 124);
@@ -447,55 +443,27 @@ void init_title(void)
 	
 }
 
-void prep_bg_run(void)
-{
-	drawSprite( bg , bg_temp , 0 , 0 , 0 , 0 , 640 , 480 );
-	prepare_window( bgs , bg_temp , 8 , 238 , 624 , 74 );
-	//sq if ( flag_preview )	drawSprite(preview, bg_temp, 0, 0, 440-preview->w/2, 6, 384, 224);
-	load_preview(selector.num);
-		
-	put_string( "FBA2X clock:" , 12 , 110 , WHITE , bg_temp);
-	put_string( "ROM" , 12 , 130 , WHITE , bg_temp);
-		switch(capex.list)
-		{
-			case 0:
-				sprintf((char*)g_string, "Database: %d roms" , data.nb_list[0] );
-				break;
-			case 1:
-				sprintf((char*)g_string, "Missing: %d roms" , data.nb_list[1] );
-				break;
-			case 2:
-				sprintf((char*)g_string, "Available: %d roms" , data.nb_list[2] );
-				break;
-			case 3:
-				sprintf((char*)g_string, "Available: %d roms" , data.nb_list[3] );
-				break;
-		}
-		put_string( g_string , 12 , 210 , WHITE , bg_temp );
-}
-
 void prep_bg_options(void)
 {
 	drawSprite( bg , bg_temp , 0 , 0 , 0 , 0 , 640 , 480 );
-	prepare_window( bgs , bg_temp , 8 , 238 , 520 , 236 );
-	prepare_window( bgs , bg_temp , 538 , 238 , 94 , 236 );
-	// if ( flag_preview )	drawSprite(preview, bg_temp, 0, 0, 440-preview->w/2, 6, 384, 224);
+	prepare_window( bgs , bg_temp , 8 , 238 , 624 , 236 );
+//sq	prepare_window( bgs , bg_temp , 538 , 238 , 94 , 236 );
 	load_preview(selector.num);
 		
 	put_string( "ROM" , 12 , 130 , WHITE , bg_temp);
 		switch(capex.list)
 		{
 			case 0:
-				sprintf((char*)g_string, "Database: %d roms" , data.nb_list[0] );
+				sprintf((char*)g_string, "Database: %d" , data.nb_list[0] );
 				break;
 			case 1:
-				sprintf((char*)g_string, "Missing: %d roms" , data.nb_list[1] );
+				sprintf((char*)g_string, "Missing: %d" , data.nb_list[1] );
 				break;
 			case 2:
-				sprintf((char*)g_string, "Available: %d roms" , data.nb_list[2] );
+				sprintf((char*)g_string, "Avail: %d" , data.nb_list[2] );
 				break;
 			case 3:
-				sprintf((char*)g_string, "Available: %d roms" , data.nb_list[3] );
+				sprintf((char*)g_string, "Avail: %d" , data.nb_list[3] );
 				break;
 		}
 		put_string( g_string , 12 , 210 , WHITE , bg_temp );
@@ -505,23 +473,22 @@ void prep_bg_list(void)
 {
 	drawSprite( bg , bg_temp , 0 , 0 , 0 , 0 , 640 , 480 );
 	prepare_window( bgs , bg_temp , 8 , 238 , 624 , 236 );
-	// if ( flag_preview )	drawSprite(preview, bg_temp, 0, 0, 448-preview->w/2, 6, 384, 224);
 	load_preview(selector.num);
 		
 	put_string( "ROM" , 12 , 130 , WHITE , bg_temp);
     switch(capex.list)
     {
         case 0:
-            sprintf((char*)g_string, "Database: %d roms" , data.nb_list[0] );
+            sprintf((char*)g_string, "Database: %d" , data.nb_list[0] );
             break;
         case 1:
-            sprintf((char*)g_string, "Missing: %d roms" , data.nb_list[1] );
+            sprintf((char*)g_string, "Missing: %d" , data.nb_list[1] );
             break;
         case 2:
-            sprintf((char*)g_string, "Available: %d roms" , data.nb_list[2] );
+            sprintf((char*)g_string, "Avail: %d" , data.nb_list[2] );
             break;
         case 3:
-            sprintf((char*)g_string, "Available: %d roms" , data.nb_list[3] );
+            sprintf((char*)g_string, "Avail: %d" , data.nb_list[3] );
             break;
     }
     put_string( g_string , 12 , 210 , WHITE , bg_temp );
@@ -530,24 +497,21 @@ void prep_bg_list(void)
 void display_BG(void)
 {
 	FILE *fp2;
+	char tempstr1[20];
 
     drawSprite( bg_temp , screen , 0 , 0 , 0 , 0 , 640 , 480 );
 		
-//sqdebug
-//	sprintf((char*)g_string, "%d %d" , selector.num, selector.offset_num );
-//	put_string( g_string , 30 , 55 , WHITE , screen );
-    
     //.fba files prioritise over .rom files
     sprintf((char*)g_string, "roms/%s.fba" , data.zip[listing_tri[capex.list][selector.num]]);
     if ((fp2 = fopen(g_string, "r")) != NULL){
-        sprintf((char*)g_string, "%s.fba" , data.zip[listing_tri[capex.list][selector.num]]);
+        sprintf((char*)g_string, "%s" , data.zip[listing_tri[capex.list][selector.num]]);
         fclose(fp2);
     }
 	else {
-        sprintf((char*)g_string, "%s.zip" , data.zip[listing_tri[capex.list][selector.num]]);
+        sprintf((char*)g_string, "%s" , data.zip[listing_tri[capex.list][selector.num]]);
     }
     
-    put_string( g_string , 60 , 130 , WHITE , screen );
+    put_string( g_string , 68 , 130 , WHITE , screen );
     
     if ( strcmp( data.parent[listing_tri[capex.list][selector.num]] , "fba" ) == 0 ){
         put_string( "Parent rom" , 12 , 150 , WHITE , screen );
@@ -557,12 +521,16 @@ void display_BG(void)
     }		
     
     if ( data.status[listing_tri[capex.list][selector.num]] != NULL ){
-        put_string( data.status[listing_tri[capex.list][selector.num]] , 12 , 190 , WHITE , screen );
+		strncpy(tempstr1, data.status[listing_tri[capex.list][selector.num]], 4);
+		tempstr1[4] = 0;
+        put_string( tempstr1 , 12 , 170 , WHITE , screen );
+		strncpy(tempstr1, data.status[listing_tri[capex.list][selector.num]]+5, 14);
+        put_string( tempstr1 , 12 , 190 , WHITE , screen );
     }
 
 }
 
-void display_line_options(unsigned char num, unsigned char y)
+void display_line_options(unsigned char num, unsigned int y)
 {
 	#define OPTIONS_START_X	16
 	#define CONF_START_X	544
@@ -591,20 +559,20 @@ void display_line_options(unsigned char num, unsigned char y)
 //			}
 //			break;
 		case OPTION_NUM_FBA2X_SHOWFPS:
-			if (options.showfps) put_string( "Show FPS: Enable" , OPTIONS_START_X , y , WHITE , screen );
-			else put_string( "Show FPS: Disable" , OPTIONS_START_X , y , WHITE , screen );
-			if (conf.exist){
-				put_string( abreviation_cf[0][conf.showfps] , CONF_START_X , y , GREEN , screen );
-				
-			}else{
-				put_string( "-" , CONF_START_X , y , RED , screen );
-			}
+			if (options.showfps) 
+				put_string( "Show FPS: Enable" , OPTIONS_START_X , y , WHITE , screen );
+			else 
+				put_string( "Show FPS: Disable" , OPTIONS_START_X , y , WHITE , screen );
 			break;
 		case OPTION_NUM_CAPEX_LIST:
-			if (capex.list == 3) put_string( "Listing view: Available without clones" , OPTIONS_START_X , y , WHITE , screen );
-			else if (capex.list == 2) put_string( "Listing view: Available only" , OPTIONS_START_X , y , WHITE , screen );
-			else if (capex.list == 1) put_string( "Listing view: Missing only" , OPTIONS_START_X , y , WHITE , screen );
-			else put_string( "Listing view: All" , OPTIONS_START_X , y , WHITE , screen );
+			if (capex.list == 3) 
+				put_string( "Listing: Available no clones" , OPTIONS_START_X , y , WHITE , screen );
+			else 
+				if (capex.list == 2) put_string( "Listing: Available only" , OPTIONS_START_X , y , WHITE , screen );
+			else 
+				if (capex.list == 1) put_string( "Listing: Missing only" , OPTIONS_START_X , y , WHITE , screen );
+			else 
+				put_string( "Listing view: All" , OPTIONS_START_X , y , WHITE , screen );
 			break;
 //		case OPTION_NUM_SAVE:
 //			put_string( "Save all settings" , OPTIONS_START_X , y , flag_save , screen );
@@ -623,18 +591,18 @@ void ss_prg_options(void)
 {
 	int Quit;
 //	unsigned int counter = 1;
-	unsigned char y;
+	unsigned int y;
 
 	Uint32 Joypads;
 	unsigned long keytimer=0;
 	int keydirection=0, last_keydirection=0;
 
 	flag_save = GREEN;
-	options.y = START_Y-1;
+	options.y = START_Y;
 	options.num = 0;
 	options.offset_num = 0;
 	
-	unsigned option_start;
+	unsigned int option_start;
 	
 	prep_bg_options();
 		
@@ -644,11 +612,10 @@ void ss_prg_options(void)
         
 		display_BG();
 		
-		drawSprite(bar , screen, 0, 0, 8, options.y, 520, 20);
-		drawSprite(bar , screen, 0, 0, 538, options.y, 94, 20);
+		drawSprite(bar , screen, 0, 0, 8, options.y, 624, 20);
 		
 		option_start = START_Y;
-		for ( y = options.offset_num ; y<(options.offset_num+26) ; ++y){
+		for ( y = options.offset_num ; y<(options.offset_num+7) ; ++y){
 			display_line_options( y , option_start );
 			option_start += 18;
 		}
@@ -693,7 +660,7 @@ void ss_prg_options(void)
         
         if(Joypads & GP2X_DOWN) {
             if ( options.num == NOMBRE_OPTIONS ){
-                options.y = START_Y-1;
+                options.y = START_Y;
                 options.num = 0;
                 options.offset_num = 0;
             }
@@ -713,7 +680,7 @@ void ss_prg_options(void)
 
         if(Joypads & GP2X_UP) {
             if ( options.num == 0 ){
-                options.y = START_Y -1 + (NOMBRE_OPTIONS*9) ;
+                options.y = START_Y + (NOMBRE_OPTIONS*9) ;
                 options.num = NOMBRE_OPTIONS;
                 options.offset_num = 0;
             }else{
@@ -750,7 +717,7 @@ void ss_prg_options(void)
                     flag_save = RED;
                     ++capex.list;
                     if ( capex.list == NB_FILTRE ) capex.list = 0;
-                    selector.y = START_Y-1;
+                    selector.y = START_Y;
                     selector.crt_x=0;
                     selector.num = 0;
                     selector.offset_num = 0;
@@ -894,7 +861,7 @@ void pi_initialize_input()
 
 int main(int argc, char *argv[])
 {
-//    sleep(10);
+//    sleep(12);
     
 	int Quit,ErrorQuit ;
 	//int Write = 0;
@@ -953,7 +920,7 @@ int main(int argc, char *argv[])
 		
 		//precalc font6 x coordinates
 		for (i=0;i<32;++i) font6x[i]=0;
-		for (i=32;i<255;++i) font6x[i]=(i-32)*6;
+		for (i=32;i<255;++i) font6x[i]=(i-32)*FONT_WIDTH;
 			
 		//Load initial game row position from saved config values
 	    selector.y = capex.sely;
@@ -994,6 +961,11 @@ int main(int argc, char *argv[])
 					}
 				}
 			}
+
+{
+SDL_SaveBMP(screen, "scrshot.bmp");
+exit_prog();
+}
 			
 			//SDL_Flip(screen);
 			dispmanx_display();
@@ -1036,7 +1008,7 @@ int main(int argc, char *argv[])
 	       	if(Joypads & GP2X_DOWN) {
 				updown=1;
 				if ( selector.num == (data.nb_list[capex.list]-1)) { //was bottom of list so move to top
-					selector.y = START_Y-1;
+					selector.y = START_Y;
 					selector.num = 0;
 					selector.offset_num = 0;
 				}
@@ -1068,11 +1040,12 @@ int main(int argc, char *argv[])
 				if ( selector.num==0 ){
 					selector.num = data.nb_list[capex.list] - 1 ;
 					if (data.nb_list[capex.list] < 14){
-						selector.y = START_Y -1 + ( ( data.nb_list[capex.list] - 1 ) * 18 );
+						selector.y = START_Y + ( ( data.nb_list[capex.list] - 1 ) * 18 );
 						//selector.offset_num = 0;
 					}
 	                else {
-						selector.y = START_Y -1 + (24*18) ;
+						//sq selector.y = START_Y -1 + (24*18) ;
+						selector.y = START_Y + (12*18) ;
 						selector.offset_num = data.nb_list[capex.list] - 13;
 					}
 				}
@@ -1094,12 +1067,12 @@ int main(int argc, char *argv[])
 	
 	        if (Joypads & GP2X_RIGHT && !updown) {
 	            if ( selector.num < (data.nb_list[capex.list]-14)) {
-	                selector.y = START_Y-1;
+	                selector.y = START_Y;
 	                selector.num += 13;
 	                selector.offset_num = selector.num;
 	                if(selector.offset_num > data.nb_list[capex.list]-14) selector.offset_num=data.nb_list[capex.list]-14;
 	            } else {
-	                selector.y = START_Y-1;
+	                selector.y = START_Y;
 	                selector.num = data.nb_list[capex.list]-13;
 	                selector.offset_num = selector.num;
 	            }
@@ -1108,11 +1081,11 @@ int main(int argc, char *argv[])
 	        
 	        if (Joypads & GP2X_LEFT && !updown) {
 	            if ( selector.num >= 13) {
-	                selector.y = START_Y-1;
+	                selector.y = START_Y;
 	                selector.num -= 13;
 	                selector.offset_num = selector.num;
 	            } else {
-	                selector.y = START_Y-1;
+	                selector.y = START_Y;
 	                selector.offset_num = 0;
 	                selector.num = 0;
 	            }
@@ -1278,7 +1251,8 @@ static void dispmanx_init(void)
 
     fe_resource = vc_dispmanx_resource_create(VC_IMAGE_RGB565, 640, 480, &crap);
 
-    vc_dispmanx_rect_set( &dst_rect, 0, 0, display_width, display_height);
+    //sq vc_dispmanx_rect_set( &dst_rect, 0, 0, display_width, display_height);
+    vc_dispmanx_rect_set( &dst_rect, 50, 30, display_width-100, display_height-60);
     vc_dispmanx_rect_set( &src_rect, 0, 0, 640 << 16, 480 << 16);
 
     //Make sure mame and background overlay the menu program

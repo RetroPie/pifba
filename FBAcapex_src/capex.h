@@ -75,17 +75,21 @@
 
 //Initial position of cursor on screen
 #define START_X	16
-#define START_Y	240
+#define START_Y	239
 
 #define NB_FILTRE	4
 #define NB_MAX_GAMES	2048
 
+//font bitmap font sizes
+#define FONT_WIDTH 8
+#define FONT_HEIGHT 14
+
 #define WHITE  0
-#define RED    9
-#define ORANGE 18
-#define YELLOW 27
-#define GREEN  36
-#define BLUE   45
+#define RED    FONT_HEIGHT
+#define ORANGE FONT_HEIGHT*2
+#define YELLOW FONT_HEIGHT*3
+#define GREEN  FONT_HEIGHT*4
+#define BLUE   FONT_HEIGHT*5
 
 //#define OPTION_NUM_FBA2X_CPU		0
 //#define OPTION_NUM_FBA2X_68K		91

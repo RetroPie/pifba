@@ -129,13 +129,13 @@ char read_zipname(void)
 				
 			//verify rom exists, .fba priority over .zip SET
 			data.state[data.nb_list[0]] = RED ; //absent
+
 			sprintf((char*)g_string, "./roms/%s.fba", data.zip[data.nb_list[0]] );
 			if ((fp2 = fopen(g_string, "r")) != NULL){
 				data.state[data.nb_list[0]] = ORANGE ;
 				++data.nb_rom;
 				fclose(fp2);
 			} else {
-                data.state[data.nb_list[0]] = RED ; //absent
                 sprintf((char*)g_string, "./roms/%s.zip", data.zip[data.nb_list[0]] );
                 if ((fp2 = fopen(g_string, "r")) != NULL){
                     data.state[data.nb_list[0]] = ORANGE ;
@@ -157,73 +157,18 @@ char read_zipname(void)
 void read_playable_roms(void)
 {
 	FILE *fp;
-
-	unsigned flag_rom ;
 	unsigned int num;
 	
-//sq	printf("debut analyse set\n");
-		
 	data.nb_cache = 0;
 
 	//verification presence SET
 	for ( num=0 ; num<data.nb_list[0] ; ++num ){
-		
-		//absent
-		//data.state[num] = RED ;
-		flag_rom = 0;
-		
-		if ( data.state[num] == ORANGE ){
-		//test si rom parent
-		if ( strcmp( data.parent[num] , "fba" ) == 0 ) {
-//			sprintf((char*)g_string, "./roms/%s.zip", data.zip[num] );
-//			printf("%s",g_string);
-//			if ((fp = fopen(g_string, "r")) != NULL){
-//				data.state[num] +=18 ;
-//				++data.nb_rom;
-//				++flag_rom;
-//				printf("[");
-//				fclose(fp);
-//			}
-//			if ( flag_rom ){
-				sprintf((char*)g_string, "./cache/%s.cache", data.zip[num] );
-				//printf("%s",g_string);
-				if ((fp = fopen(g_string, "r")) != NULL){
-					data.state[num] = BLUE ;
-					++data.nb_cache;
-					//printf("]");
-					fclose(fp);
-				//}
-			} else data.state[num] = YELLOW ;
-		}
-        else { //sinon pas parent
-//			sprintf((char*)g_string, "./roms/%s.zip", data.zip[num] );
-//			printf("%s",g_string);
-//			if ((fp = fopen(g_string, "r")) != NULL){
-//				data.state[num] +=9 ;
-//				++data.nb_rom;
-//				++flag_rom;
-//				printf("[");
-//				fclose(fp);
-//			}
-//			if ( flag_rom == 1){
-				sprintf((char*)g_string, "./roms/%s.zip", data.parent[num] );
-				if ((fp = fopen(g_string, "r")) != NULL){
-					data.state[num] += 9;
-					++flag_rom;
-					fclose(fp);
-				}
-			//}
-			if ( flag_rom == 1) {
-				sprintf((char*)g_string, "./cache/%s.cache", data.parent[num] );
-				if ((fp = fopen(g_string, "r")) != NULL) {
-					data.state[num] += 9;
-					fclose(fp);
-				}
-			}
+		if ( data.state[num] == ORANGE ) {
+			//test if parent rom
+			if ( strcmp( data.parent[num] , "fba" ) == 0 ) 
+				data.state[num] = YELLOW ;
 		}
 	}
-	}
-	//sq printf("fin analyse set\n");
 }
 
 char read_rominfo(void)
@@ -300,12 +245,13 @@ void load_preview(unsigned int numero)
 		//sq drawSprite(preview, preview_load, 0, 0, 0, 0, 192, 112 );
 		//sq scaleSprite(preview_load, bg_temp, 0, 0, 192, 112, 440-(384/2), 6, 384, 224 );
 		
-	}else{
+	}
+	else {
 		drawSprite( bg , bg_temp , 248 , 6 , 248 , 6 , 384 , 224 );
 
 		sprintf((char*)g_string, "PREVIEW %s.bmp" , data.zip[listing_tri[capex.list][numero]]);
-		put_string(g_string , 320 , 98 , RED , bg_temp );
-		put_string( "NOT AVAILABLE" , 362 , 118 , RED , bg_temp );
+		put_string(g_string , 280 , 98 , RED , bg_temp );
+		put_string( "NOT AVAILABLE" , 322 , 118 , RED , bg_temp );
 		
 		flag_preview = 0;
 	}
