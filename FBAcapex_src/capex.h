@@ -84,6 +84,12 @@
 #define FONT_WIDTH 8
 #define FONT_HEIGHT 14
 
+//Height of the full line including the font (with line spacing)
+//#define LIST_LINE_HEIGHT 18
+//#define LIST_MAX_ROWS 13
+#define LIST_LINE_HEIGHT 15
+#define LIST_MAX_ROWS 15
+
 #define WHITE  0
 #define RED    FONT_HEIGHT
 #define ORANGE FONT_HEIGHT*2

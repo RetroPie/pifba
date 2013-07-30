@@ -250,8 +250,8 @@ void load_preview(unsigned int numero)
 		drawSprite( bg , bg_temp , 248 , 6 , 248 , 6 , 384 , 224 );
 
 		sprintf((char*)g_string, "PREVIEW %s.bmp" , data.zip[listing_tri[capex.list][numero]]);
-		put_string(g_string , 280 , 98 , RED , bg_temp );
-		put_string( "NOT AVAILABLE" , 322 , 118 , RED , bg_temp );
+		put_string(g_string , 340 , 98 , RED , bg_temp );
+		put_string("NOT AVAILABLE" , 382 , 118 , RED , bg_temp );
 		
 		flag_preview = 0;
 	}

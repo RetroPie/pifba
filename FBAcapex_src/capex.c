@@ -125,6 +125,7 @@ struct options
 	
 	unsigned char nb;
 	unsigned char listing;
+	unsigned int display_border;
 } options;
 
 struct conf
@@ -239,9 +240,9 @@ void put_stringM(char *string, int pos_x, int pos_y, unsigned int size, unsigned
 		Src.h = FONT_HEIGHT;
 		Dest.y = pos_y;
 		
-		if ( (size-selector.crt_x) > 38 ) {
-			//Truncate the list to 38 characters wide
-			for( caratere=selector.crt_x ; caratere<(selector.crt_x+38) ; ++caratere)
+		if ( (size-selector.crt_x) > 80 ) {
+			//Truncate the list to window size
+			for( caratere=selector.crt_x ; caratere<(selector.crt_x+80) ; ++caratere)
 			{
 				if (font6x[*string]){
 					Src.x = font6x[*string];
@@ -251,15 +252,6 @@ void put_stringM(char *string, int pos_x, int pos_y, unsigned int size, unsigned
 				++string;
 				pos_x += FONT_WIDTH;
 			}
-//			for( caratere=0 ; caratere<3 ; ++caratere)
-//			{
-//				if (font6x[*string]){
-//					Src.x = font6x[46];
-//					Dest.x = pos_x;
-//					SDL_BlitSurface(font, &Src, screen, &Dest);
-//				}
-//				pos_x += FONT_WIDTH;
-//			}
 		}
 		else 
 		{
@@ -425,7 +417,6 @@ void init_title(void)
 	//sq font = SDL_DisplayFormat(Tmp);
 	//sq SDL_FreeSurface(Tmp);
 	SDL_FreeRW (rw);
-	//sq SDL_SetColorKey(font,SDL_SRCCOLORKEY,SDL_MapRGB(font->format,255,0,255));
 	//sq set transparent colour to black
 	SDL_SetColorKey(font,SDL_SRCCOLORKEY,SDL_MapRGB(font->format,0,0,0));
 
@@ -438,35 +429,9 @@ void init_title(void)
 	drawSprite( bg , bgs , 0 , 0 , 0 , 0 , 640 , 480 );
 	
 	prepare_window( bgs , bg , 248 , 6 , 384 , 224 );
-	prepare_window( bgs , bg , 8 , 106, 232 , 124);
-	drawSprite( title , bg, 0, 0, 8, 6, 232, 90);
+	prepare_window( bgs , bg , 8 , 125, 232 , 105);
+	drawSprite( title , bg, 0, 0, 7, 6, 234, 112);
 	
-}
-
-void prep_bg_options(void)
-{
-	drawSprite( bg , bg_temp , 0 , 0 , 0 , 0 , 640 , 480 );
-	prepare_window( bgs , bg_temp , 8 , 238 , 624 , 236 );
-//sq	prepare_window( bgs , bg_temp , 538 , 238 , 94 , 236 );
-	load_preview(selector.num);
-		
-	put_string( "ROM" , 12 , 130 , WHITE , bg_temp);
-		switch(capex.list)
-		{
-			case 0:
-				sprintf((char*)g_string, "Database: %d" , data.nb_list[0] );
-				break;
-			case 1:
-				sprintf((char*)g_string, "Missing: %d" , data.nb_list[1] );
-				break;
-			case 2:
-				sprintf((char*)g_string, "Avail: %d" , data.nb_list[2] );
-				break;
-			case 3:
-				sprintf((char*)g_string, "Avail: %d" , data.nb_list[3] );
-				break;
-		}
-		put_string( g_string , 12 , 210 , WHITE , bg_temp );
 }
 
 void prep_bg_list(void)
@@ -476,42 +441,41 @@ void prep_bg_list(void)
 	load_preview(selector.num);
 		
 	put_string( "ROM" , 12 , 130 , WHITE , bg_temp);
-    switch(capex.list)
-    {
-        case 0:
-            sprintf((char*)g_string, "Database: %d" , data.nb_list[0] );
-            break;
-        case 1:
-            sprintf((char*)g_string, "Missing: %d" , data.nb_list[1] );
-            break;
-        case 2:
-            sprintf((char*)g_string, "Avail: %d" , data.nb_list[2] );
-            break;
-        case 3:
-            sprintf((char*)g_string, "Avail: %d" , data.nb_list[3] );
-            break;
-    }
-    put_string( g_string , 12 , 210 , WHITE , bg_temp );
+	switch(capex.list)
+	{
+		case 0:
+			sprintf((char*)g_string, "Database: %d" , data.nb_list[0] );
+			break;
+		case 1:
+			sprintf((char*)g_string, "Missing: %d of %d" , data.nb_list[1], data.nb_list[0] );
+			break;
+		case 2:
+			sprintf((char*)g_string, "Available: %d of %d" , data.nb_list[2], data.nb_list[0] );
+			break;
+		case 3:
+			sprintf((char*)g_string, "Available: %d of %d" , data.nb_list[3], data.nb_list[0] );
+			break;
+	}
+	put_string( g_string , 12 , 210 , WHITE , bg_temp );
 }
 
 void display_BG(void)
 {
 	FILE *fp2;
-	char tempstr1[20];
 
     drawSprite( bg_temp , screen , 0 , 0 , 0 , 0 , 640 , 480 );
 		
     //.fba files prioritise over .rom files
     sprintf((char*)g_string, "roms/%s.fba" , data.zip[listing_tri[capex.list][selector.num]]);
     if ((fp2 = fopen(g_string, "r")) != NULL){
-        sprintf((char*)g_string, "%s" , data.zip[listing_tri[capex.list][selector.num]]);
+        sprintf((char*)g_string, "%s.fba" , data.zip[listing_tri[capex.list][selector.num]]);
         fclose(fp2);
     }
 	else {
-        sprintf((char*)g_string, "%s" , data.zip[listing_tri[capex.list][selector.num]]);
+        sprintf((char*)g_string, "%s.zip" , data.zip[listing_tri[capex.list][selector.num]]);
     }
     
-    put_string( g_string , 68 , 130 , WHITE , screen );
+    put_string( g_string , 64 , 130 , WHITE , screen );
     
     if ( strcmp( data.parent[listing_tri[capex.list][selector.num]] , "fba" ) == 0 ){
         put_string( "Parent rom" , 12 , 150 , WHITE , screen );
@@ -521,11 +485,7 @@ void display_BG(void)
     }		
     
     if ( data.status[listing_tri[capex.list][selector.num]] != NULL ){
-		strncpy(tempstr1, data.status[listing_tri[capex.list][selector.num]], 4);
-		tempstr1[4] = 0;
-        put_string( tempstr1 , 12 , 170 , WHITE , screen );
-		strncpy(tempstr1, data.status[listing_tri[capex.list][selector.num]]+5, 14);
-        put_string( tempstr1 , 12 , 190 , WHITE , screen );
+        put_string( data.status[listing_tri[capex.list][selector.num]] , 12 , 190 , WHITE , screen );
     }
 
 }
@@ -566,7 +526,7 @@ void display_line_options(unsigned char num, unsigned int y)
 			break;
 		case OPTION_NUM_CAPEX_LIST:
 			if (capex.list == 3) 
-				put_string( "Listing: Available no clones" , OPTIONS_START_X , y , WHITE , screen );
+				put_string( "Listing: Available with no clones" , OPTIONS_START_X , y , WHITE , screen );
 			else 
 				if (capex.list == 2) put_string( "Listing: Available only" , OPTIONS_START_X , y , WHITE , screen );
 			else 
@@ -574,13 +534,6 @@ void display_line_options(unsigned char num, unsigned int y)
 			else 
 				put_string( "Listing view: All" , OPTIONS_START_X , y , WHITE , screen );
 			break;
-//		case OPTION_NUM_SAVE:
-//			put_string( "Save all settings" , OPTIONS_START_X , y , flag_save , screen );
-//			break;
-//		case OPTION_NUM_SAVE_CF:
-//			sprintf((char*)g_string, "Save FBA2X settings in %s.cf file" , conf.cf );
-//			put_string( g_string , OPTIONS_START_X , y , flag_save , screen );
-//			break;
 		case OPTION_NUM_RETURN:
 			put_string( "Return to the game list" , OPTIONS_START_X , y , WHITE , screen );
 			break;
@@ -590,8 +543,8 @@ void display_line_options(unsigned char num, unsigned int y)
 void ss_prg_options(void)
 {
 	int Quit;
-//	unsigned int counter = 1;
 	unsigned int y;
+	unsigned int option_start;
 
 	Uint32 Joypads;
 	unsigned long keytimer=0;
@@ -602,9 +555,7 @@ void ss_prg_options(void)
 	options.num = 0;
 	options.offset_num = 0;
 	
-	unsigned int option_start;
-	
-	prep_bg_options();
+	prep_bg_list();
 		
 	Quit=0;
 	while(!Quit)
@@ -612,12 +563,12 @@ void ss_prg_options(void)
         
 		display_BG();
 		
-		drawSprite(bar , screen, 0, 0, 8, options.y, 624, 20);
+		drawSprite(bar , screen, 0, 0, 8, options.y-1, 624,  LIST_LINE_HEIGHT+2);
 		
 		option_start = START_Y;
 		for ( y = options.offset_num ; y<(options.offset_num+7) ; ++y){
 			display_line_options( y , option_start );
-			option_start += 18;
+			option_start += LIST_LINE_HEIGHT;
 		}
 
 		//SDL_Flip(screen);
@@ -667,7 +618,7 @@ void ss_prg_options(void)
             else {
                 if (options.num < NOMBRE_OPTIONS || options.offset_num == ( NOMBRE_OPTIONS - 5 ) ){
                     if ( options.num < NOMBRE_OPTIONS ){
-                        options.y += 18;
+                        options.y += LIST_LINE_HEIGHT;
                         ++options.num;
                     }
                 }
@@ -680,13 +631,13 @@ void ss_prg_options(void)
 
         if(Joypads & GP2X_UP) {
             if ( options.num == 0 ){
-                options.y = START_Y + (NOMBRE_OPTIONS*9) ;
+                options.y = START_Y + (NOMBRE_OPTIONS*LIST_LINE_HEIGHT) ;
                 options.num = NOMBRE_OPTIONS;
                 options.offset_num = 0;
             }else{
                 if ( options.num > ( NOMBRE_OPTIONS - 6 ) || options.offset_num == 0 ){
                     if (options.num>0){
-                        options.y -= 18;
+                        options.y -= LIST_LINE_HEIGHT;
                         --options.num;
                     }
                 }else{
@@ -854,6 +805,8 @@ void pi_initialize_input()
 	joyaxis_LR = get_integer_conf("Joystick", "JA_LR", 0);
 	joyaxis_UD = get_integer_conf("Joystick", "JA_UD", 1);
 
+	options.display_border = get_integer_conf("Graphics", "DisplayBorder", 0);
+
     close_config_file();
 
 }
@@ -939,7 +892,7 @@ int main(int argc, char *argv[])
 		{
 			display_BG();
 			
-			drawSprite(bar , screen, 0, 0, 8, selector.y, 624, 20);
+			drawSprite(bar , screen, 0, 0, 8, selector.y-1, 624, LIST_LINE_HEIGHT+2);
 			
 			if (ErrorQuit == 1) 
 				put_string("Missing file zipname.fba" , 16 , 440 , 0 , screen );
@@ -949,22 +902,22 @@ int main(int argc, char *argv[])
 			else 
 			{
 				zipnum = START_Y;
-				if ( data.nb_list[capex.list] < 14){
+				if ( data.nb_list[capex.list] <= LIST_MAX_ROWS){
 					for ( y = 0 ; y<data.nb_list[capex.list] ; ++y){
 						put_stringM(data.name[listing_tri[capex.list][y]] , 16 , zipnum, data.length[listing_tri[capex.list][y]] , data.state[listing_tri[capex.list][y]] );
-						zipnum += 18;
+						zipnum += LIST_LINE_HEIGHT;
 					}
 				}else{
-					for ( y = selector.offset_num ; y<(selector.offset_num+13) ; ++y){
+					for ( y = selector.offset_num ; y<(selector.offset_num+LIST_MAX_ROWS) ; ++y){
 						put_stringM(data.name[listing_tri[capex.list][y]] , 16 , zipnum, data.length[listing_tri[capex.list][y]] , data.state[listing_tri[capex.list][y]] );
-						zipnum += 18;
+						zipnum += LIST_LINE_HEIGHT;
 					}
 				}
 			}
 
 {
-SDL_SaveBMP(screen, "scrshot.bmp");
-exit_prog();
+//SDL_SaveBMP(screen, "scrshot.bmp");
+//exit_prog();
 }
 			
 			//SDL_Flip(screen);
@@ -1013,16 +966,16 @@ exit_prog();
 					selector.offset_num = 0;
 				}
 				else {
-					if (data.nb_list[capex.list] < 14) { 
+					if (data.nb_list[capex.list] < LIST_MAX_ROWS+1) { 
 						if (selector.num < (data.nb_list[capex.list]-1) ) {
-							selector.y+=18;
+							selector.y+=LIST_LINE_HEIGHT;
 							++selector.num;
 						}
 					}
 	                else {
-						if (selector.num<7 || selector.offset_num==(data.nb_list[capex.list]-13)) {
+						if (selector.num<7 || selector.offset_num==(data.nb_list[capex.list]-LIST_MAX_ROWS)) {
 							if (selector.num < (data.nb_list[capex.list]-1)){
-								selector.y+=18;
+								selector.y+=LIST_LINE_HEIGHT;
 								++selector.num;
 							}
 						}
@@ -1039,20 +992,20 @@ exit_prog();
 				updown=1;
 				if ( selector.num==0 ){
 					selector.num = data.nb_list[capex.list] - 1 ;
-					if (data.nb_list[capex.list] < 14){
-						selector.y = START_Y + ( ( data.nb_list[capex.list] - 1 ) * 18 );
+					if (data.nb_list[capex.list] < LIST_MAX_ROWS+1){
+						selector.y = START_Y + ( ( data.nb_list[capex.list] - 1 ) * LIST_LINE_HEIGHT );
 						//selector.offset_num = 0;
 					}
 	                else {
-						//sq selector.y = START_Y -1 + (24*18) ;
-						selector.y = START_Y + (12*18) ;
-						selector.offset_num = data.nb_list[capex.list] - 13;
+						//sq selector.y = START_Y -1 + (24*LIST_LINE_HEIGHT) ;
+						selector.y = START_Y + ((LIST_MAX_ROWS-1)*LIST_LINE_HEIGHT) ;
+						selector.offset_num = data.nb_list[capex.list] - LIST_MAX_ROWS;
 					}
 				}
 	            else {
 					if ( selector.num > (data.nb_list[capex.list]-7) || selector.offset_num==0) {
 						if (selector.num>0){
-							selector.y-=18;
+							selector.y-=LIST_LINE_HEIGHT;
 							--selector.num;
 						}
 					}
@@ -1066,23 +1019,24 @@ exit_prog();
 			}
 	
 	        if (Joypads & GP2X_RIGHT && !updown) {
-	            if ( selector.num < (data.nb_list[capex.list]-14)) {
+	            if ( selector.num < (data.nb_list[capex.list]-(LIST_MAX_ROWS+1))) {
 	                selector.y = START_Y;
-	                selector.num += 13;
+	                selector.num += LIST_MAX_ROWS;
 	                selector.offset_num = selector.num;
-	                if(selector.offset_num > data.nb_list[capex.list]-14) selector.offset_num=data.nb_list[capex.list]-14;
+	                if(selector.offset_num > data.nb_list[capex.list]-(LIST_MAX_ROWS+1)) 
+						selector.offset_num=data.nb_list[capex.list]-(LIST_MAX_ROWS+1);
 	            } else {
 	                selector.y = START_Y;
-	                selector.num = data.nb_list[capex.list]-13;
+	                selector.num = data.nb_list[capex.list]-LIST_MAX_ROWS;
 	                selector.offset_num = selector.num;
 	            }
 	            load_preview(selector.num);
 	        }
 	        
 	        if (Joypads & GP2X_LEFT && !updown) {
-	            if ( selector.num >= 13) {
+	            if ( selector.num >= LIST_MAX_ROWS) {
 	                selector.y = START_Y;
-	                selector.num -= 13;
+	                selector.num -= LIST_MAX_ROWS;
 	                selector.offset_num = selector.num;
 	            } else {
 	                selector.y = START_Y;
@@ -1252,7 +1206,8 @@ static void dispmanx_init(void)
     fe_resource = vc_dispmanx_resource_create(VC_IMAGE_RGB565, 640, 480, &crap);
 
     //sq vc_dispmanx_rect_set( &dst_rect, 0, 0, display_width, display_height);
-    vc_dispmanx_rect_set( &dst_rect, 50, 30, display_width-100, display_height-60);
+    vc_dispmanx_rect_set( &dst_rect, options.display_border, options.display_border, 
+						display_width-(options.display_border*2), display_height-(options.display_border*2));
     vc_dispmanx_rect_set( &src_rect, 0, 0, 640 << 16, 480 << 16);
 
     //Make sure mame and background overlay the menu program
