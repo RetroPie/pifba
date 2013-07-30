@@ -68,8 +68,8 @@ void generate_gamelist(void)
 	FILE *fp;
 
 	fp = fopen("gamelist.txt", "w");
-	fprintf(fp, "  name            status  full name                                               parent          year    company         hardware        remarks\n");
-	fprintf(fp, "+---------------+-------+-------------------------------------------------------+---------------+-------+---------------+---------------+---------------------------------------+\n");
+	fprintf(fp, "  name            status  full name                                                                     parent          year    company         hardware        remarks\n");
+	fprintf(fp, "+---------------+-------+-----------------------------------------------------------------------------+---------------+-------+---------------+---------------+---------------------------------------+\n");
 	fclose(fp);
 
 	fp = popen("sort >> gamelist.txt", "w");
@@ -84,7 +84,7 @@ void generate_gamelist(void)
         if  ( BurnDrvGetTextA(DRV_COMMENT) == NULL ) strcpy(tcomment, "");
         else strcpy(tcomment, BurnDrvGetTextA(DRV_COMMENT));
 			
-        fprintf (fp, "| %-13s |       | %-53.53s | %-13.13s | %-5.5s | %-13.13s | %-13.13s | %-37.37s |\n", BurnDrvGetTextA(DRV_NAME), BurnDrvGetTextA(DRV_FULLNAME), tparent, BurnDrvGetTextA(DRV_DATE), BurnDrvGetTextA(DRV_MANUFACTURER), BurnDrvGetTextA(DRV_SYSTEM), tcomment );
+        fprintf (fp, "| %-13s |       | %-75.75s | %-13.13s | %-5.5s | %-13.13s | %-13.13s | %-37.37s |\n", BurnDrvGetTextA(DRV_NAME), BurnDrvGetTextA(DRV_FULLNAME), tparent, BurnDrvGetTextA(DRV_DATE), BurnDrvGetTextA(DRV_MANUFACTURER), BurnDrvGetTextA(DRV_SYSTEM), tcomment );
 	};
 	pclose(fp);		
 	printf("Generated gamelist.txt file\n");
