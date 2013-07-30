@@ -33,10 +33,10 @@
 #include <bcm_host.h>
 
 
-#include "./GFX/gfx_BG.h"
-#include "./GFX/gfx_CAPEX.h"
-#include "./GFX/gfx_FONT.h"
-#include "./GFX/gfx_SELECTEUR.h"
+//#include "./GFX/gfx_BG.h"
+//#include "./GFX/gfx_CAPEX.h"
+//#include "./GFX/gfx_FONT.h"
+//#include "./GFX/gfx_SELECTEUR.h"
 
 #include "capex.h"
 
@@ -374,48 +374,37 @@ void init_title(void)
 	FILE *fp;
 
 	//load background image
-	//sq rw = SDL_RWFromMem(gfx_BG,sizeof(gfx_BG)/sizeof(unsigned char));
-	//sq Tmp = SDL_LoadBMP_RW(rw,0);
 	if ((fp = fopen( "./skin/capex_bg.bmp" , "r")) != NULL){
 		//sq Tmp = SDL_LoadBMP( "./skin/capex_bg.bmp" );
 		bg = SDL_LoadBMP( "./skin/capex_bg.bmp" );
 		fclose(fp);
 	}
-	//sq bg = SDL_DisplayFormat(Tmp);
-	//sq SDL_FreeSurface(Tmp);
 	
 	//load selector image
-//sq	rw = SDL_RWFromMem(gfx_SELECTEUR,sizeof(gfx_SELECTEUR)/sizeof(unsigned char));
-//sq	Tmp = SDL_LoadBMP_RW(rw,0);
 	if ((fp = fopen( "./skin/capex_selector.bmp" , "r")) != NULL){
 		//sq Tmp = SDL_LoadBMP( "./skin/capex_selector.bmp" );
 		bar = SDL_LoadBMP( "./skin/capex_selector.bmp" );
 		fclose(fp);
 	}
-	//sq bar = SDL_DisplayFormat(Tmp);
-	//sq SDL_FreeSurface(Tmp);
 	SDL_SetColorKey(bar ,SDL_SRCCOLORKEY,SDL_MapRGB(bar ->format,255,0,255));
 	
 	//load title/icon
-	//sq rw = SDL_RWFromMem(gfx_CAPEX,sizeof(gfx_CAPEX)/sizeof(unsigned char));
-	//sq Tmp = SDL_LoadBMP_RW(rw,0);
 	if ((fp = fopen( "./skin/capex_title.bmp" , "r")) != NULL){
 		//sq Tmp = SDL_LoadBMP( "./skin/capex_title.bmp" );
 		title = SDL_LoadBMP( "./skin/capex_title.bmp" );
 		fclose(fp);
 	}
-	//sq title = SDL_DisplayFormat(Tmp);
-	//sq SDL_FreeSurface(Tmp);
-	//sq SDL_SetColorKey(title ,SDL_SRCCOLORKEY,SDL_MapRGB(title ->format,0,255,255));
 	
-	//rw = SDL_RWFromMem(gfx_FONT,sizeof(gfx_FONT)/sizeof(unsigned char));
-	//font = SDL_LoadBMP_RW(rw,0);
 	if ((fp = fopen( "./skin/gfx_FONT.bmp" , "r")) != NULL){
 		font = SDL_LoadBMP( "./skin/gfx_FONT.bmp" );
 		fclose(fp);
 	}
-	//sq font = SDL_DisplayFormat(Tmp);
-	//sq SDL_FreeSurface(Tmp);
+	else 
+	{
+		printf("\n\nERROR: gfx_FONT.bmp file is missing, installed incorrectly!\n");
+		exit_prog();
+	}
+	
 	SDL_FreeRW (rw);
 	//sq set transparent colour to black
 	SDL_SetColorKey(font,SDL_SRCCOLORKEY,SDL_MapRGB(font->format,0,0,0));
