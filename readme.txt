@@ -65,7 +65,7 @@ fbacapex    -> Frontend binary
 fba2x.cfg   -> Keyboard and joystick configuration
 rominfo.fba -> required by the frontend
 zipname.fba -> required by the frontend
-preview/    -> screenshots (BMP 192x112)
+preview/    -> screenshots (BMP 384x224)
 roms/       -> ROMs directory (Put your game ROMs in here)
 skin/       -> Frontend skins directory
 FBACache_windows.zip -> for converting large ROMS to .fba cache format
@@ -75,7 +75,7 @@ fba_029671_clrmame_dat.zip -> clrmamepro DAT file for ROM validation and convers
 To run piFBA simple run the "fbacapex" executable. At the command line "./fbacapex".
 This runs the GUI frontend. To simply run piFBA without the GUI enter "./fba2x roms/{gamerom}" where "{gamerom}" is the game rom filename to run. A number of options are available for "fba2x", enter "./fba2x" on the command line for a list.
 
-For the frontend screenshots you need to put the relevant screenshot files in the preview subdirectory. These files should be BMP and 192x112 dimensions.
+For the frontend screenshots you need to put the relevant screenshot files in the preview subdirectory. These files should be BMP and 384x224 (non-compressed BMP) dimensions.
 
 An output file called "output.log" is generated for each game which may show useful information for problem ROMS.
 
@@ -146,6 +146,9 @@ Postprocessing can be enabled by setting "DisplayEffect" in fba2x.cfg. In additi
   * Zip functionality provided by zlib (http://www.zlib.net/).
 
 *CHANGE LOG*
+
+_July 30, 2013:_
+  * Higher resolution frontend
 
 _July 24, 2013:_
   * Fixed some games
