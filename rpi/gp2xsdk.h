@@ -51,7 +51,9 @@ enum {
 #define RPI_KEY_UP      SDLK_UP
 #define RPI_KEY_DOWN    SDLK_DOWN
 #define RPI_KEY_QUIT    SDLK_ESCAPE
-#define RPI_KEY_ACCEL   SDLK_BACKSPACE
+//#define RPI_KEY_ACCEL   SDLK_BACKSPACE
+#define RPI_KEY_QLOAD   SDLK_F1
+#define RPI_KEY_QSAVE   SDLK_F2
 
 #define RPI_JOY_A       3
 #define RPI_JOY_B       2
@@ -72,29 +74,13 @@ enum {
 #define X_1 2
 #define Y_1 3
 #define L_1 4
-#define R_1 5
-#define A_2 6
-#define B_2 7
-#define X_2 8
-#define Y_2 9
-#define L_2 10
-#define R_2 11
+#define R_1 6
 #define START_1 12
 #define SELECT_1 13
-#define START_2 14
-#define SELECT_2 15
 #define UP_1 16
 #define DOWN_1 17
 #define LEFT_1 18
 #define RIGHT_1 19
-#define UP_2 20
-#define DOWN_2 21
-#define LEFT_2 22
-#define RIGHT_2 23
-#define LU_2 24
-#define LD_2 25
-#define RU_2 26
-#define RD_2 27
 
 #define ACCEL 50
 #define QUIT 51
@@ -126,9 +112,8 @@ int init_SDL(void);
 void deinit_SDL(void);
 void pi_deinit(void);
 void pi_setvideo_mode(int hw, int vh);
-unsigned long pi_joystick_read(void);
+unsigned long pi_joystick_read(int which1);
 void pi_video_flip(void);
-void pi_clear_framebuffers();
 void * UpperMalloc(size_t size);
 void UpperFree(void* mem);
 int GetUpperSize(void* mem);

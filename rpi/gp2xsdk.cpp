@@ -20,10 +20,12 @@ static SDL_Surface* sdlscreen = NULL;
 void logoutput(const char *text,...);
 
 unsigned short *VideoBuffer = NULL;
-struct usbjoy *joys[4];
+SDL_Joystick *joys[4];
 char joyCount = 0;
 
 extern CFG_OPTIONS config_options;
+
+extern bool bShowFPS;
 
 static int surface_width;
 static int surface_height;
@@ -95,7 +97,6 @@ void pi_initialize_input()
 	pi_key[DOWN_1] = get_integer_conf("Keyboard", "DOWN_1", RPI_KEY_DOWN);
     
 	pi_key[QUIT] = get_integer_conf("Keyboard", "QUIT", RPI_KEY_QUIT);
-	pi_key[ACCEL] = get_integer_conf("Keyboard", "ACCEL", RPI_KEY_ACCEL);
         
 	//Configure joysticks from config file or defaults
 	pi_joy[A_1] = get_integer_conf("Joystick", "A_1", RPI_JOY_A);
@@ -156,7 +157,6 @@ void pi_initialize()
     
     //Initialise display just for the rom loading screen first.
     pi_setvideo_mode(320,240);
-    pi_clear_framebuffers();
     pi_video_flip();
 	
 }
@@ -206,10 +206,10 @@ SDL_Joystick* myjoy[4];
 
 int init_SDL(void)
 {
-	myjoy[0]=0;
-	myjoy[1]=0;
-	myjoy[2]=0;
-	myjoy[3]=0;
+	joys[0]=0;
+	joys[1]=0;
+	joys[2]=0;
+	joys[3]=0;
     
     if (SDL_Init(SDL_INIT_JOYSTICK) < 0) {
         fprintf(stderr, "Unable to init SDL: %s\n", SDL_GetError());
@@ -224,23 +224,25 @@ int init_SDL(void)
     	SDL_JoystickEventState(SDL_ENABLE);
 		
 		for(i=0;i<SDL_NumJoysticks();i++) {
-			myjoy[i]=SDL_JoystickOpen(i);
+			joys[i]=SDL_JoystickOpen(i);
             
 			//Check for valid joystick, some keyboards
 			//aren't SDL compatible
-			if(myjoy[i])
+			if(joys[i])
 			{
 				if (SDL_JoystickNumAxes(myjoy[i]) > 6)
 				{
 					SDL_JoystickClose(myjoy[i]);
-					myjoy[i]=0;
+					joys[i]=0;
 					logoutput("Error detected invalid joystick/keyboard\n");
 					break;
 				}
+				else
+					joyCount++;
 			}
 		}
-		if(myjoy[0])
-			logoutput("Found %d joysticks\n",SDL_NumJoysticks());
+		if(joys[0])
+			logoutput("Found %d joysticks\n",joyCount);
 	}
 	SDL_EventState(SDL_ACTIVEEVENT,SDL_IGNORE);
 	SDL_EventState(SDL_SYSWMEVENT,SDL_IGNORE);
@@ -460,15 +462,14 @@ void pi_video_flip()
     eglSwapBuffers(display, surface);
 }
 
-void pi_clear_framebuffers()
-{
-}
+int StatedLoad(int nSlot);
+int StatedSave(int nSlot);
 
 unsigned char *sdl_keys;
 
 void pi_process_events (void)
 {
-//	unsigned long num = 0;
+	int num = 0;
     
 	SDL_Event event;
 	while(SDL_PollEvent(&event)) {
@@ -500,25 +501,18 @@ void pi_process_events (void)
             case SDL_KEYDOWN:
                 sdl_keys = SDL_GetKeyState(NULL);
                 
-//                if (event.key.keysym.sym == SDLK_0)
-//                    Settings.DisplayFrameRate = !Settings.DisplayFrameRate;
-//                
-//                else if (event.key.keysym.sym == SDLK_F1)	num = 1;
+                if (event.key.keysym.sym == SDLK_0)
+                    bShowFPS = !bShowFPS;
+                
+//                if (event.key.keysym.sym == SDLK_F1)	num = 1;
 //                else if (event.key.keysym.sym == SDLK_F2)	num = 2;
 //                else if (event.key.keysym.sym == SDLK_F3)	num = 3;
 //                else if (event.key.keysym.sym == SDLK_F4)	num = 4;
-//                else if (event.key.keysym.sym == SDLK_r) {
-//                    if (event.key.keysym.mod & KMOD_SHIFT)
-//                        S9xReset();
-//                }
 //                if (num) {
-//                    char fname[256], ext[8];
-//                    sprintf(ext, ".00%d", num - 1);
-//                    strcpy(fname, S9xGetFilename (ext));
 //                    if (event.key.keysym.mod & KMOD_SHIFT)
-//                        S9xFreezeGame (fname);
+//                        StatedSave(num);
 //                    else
-//                        S9xLoadSnapshot (fname);
+//                        StatedLoad(num);
 //                }
                 break;
             case SDL_KEYUP:
@@ -544,46 +538,27 @@ void pi_process_events (void)
 
 extern bool GameLooping;
 
-//sq unsigned long pi_joystick_read(int which1)
-unsigned long pi_joystick_read(void)
+unsigned long pi_joystick_read(int which1)
 {
-//sq    unsigned long val=0x80000000;
     unsigned long val=0;
-    
-    int which1 = 0;
     
 	//Only handle two joysticks
 	if(which1 > 1) return val;
     
-	if(which1 == 0) {
-        if (joy_buttons[which1][pi_joy[L_1]])		val |= GP2X_L;
-		if (joy_buttons[which1][pi_joy[R_1]])		val |= GP2X_R;
-		if (joy_buttons[which1][pi_joy[X_1]])		val |= GP2X_X;
-		if (joy_buttons[which1][pi_joy[Y_1]])		val |= GP2X_Y;
-		if (joy_buttons[which1][pi_joy[B_1]])		val |= GP2X_B;
-		if (joy_buttons[which1][pi_joy[A_1]])		val |= GP2X_A;
-		if (joy_buttons[which1][pi_joy[START_1]])	val |= GP2X_START;
-		if (joy_buttons[which1][pi_joy[SELECT_1]]) val |= GP2X_SELECT;
-		if (joy_axes[which1][joyaxis_UD] == UP)          val |= GP2X_UP;
-		if (joy_axes[which1][joyaxis_UD] == DOWN)        val |= GP2X_DOWN;
-		if (joy_axes[which1][joyaxis_LR] == LEFT)        val |= GP2X_LEFT;
-		if (joy_axes[which1][joyaxis_LR] == RIGHT)       val |= GP2X_RIGHT;
-	} else {
-		if (joy_buttons[which1][pi_joy[L_1]])		val |= GP2X_L;
-		if (joy_buttons[which1][pi_joy[R_1]])		val |= GP2X_R;
-		if (joy_buttons[which1][pi_joy[X_1]])		val |= GP2X_X;
-		if (joy_buttons[which1][pi_joy[Y_1]])		val |= GP2X_Y;
-		if (joy_buttons[which1][pi_joy[B_1]])		val |= GP2X_B;
-		if (joy_buttons[which1][pi_joy[A_1]])		val |= GP2X_A;
-		if (joy_buttons[which1][pi_joy[START_1]])	val |= GP2X_START;
-		if (joy_buttons[which1][pi_joy[SELECT_1]])	val |= GP2X_SELECT;
-		if (joy_axes[which1][joyaxis_UD] == UP)			val |= GP2X_UP;
-		if (joy_axes[which1][joyaxis_UD] == DOWN)		val |= GP2X_DOWN;
-		if (joy_axes[which1][joyaxis_LR] == LEFT)		val |= GP2X_LEFT;
-		if (joy_axes[which1][joyaxis_LR] == RIGHT)		val |= GP2X_RIGHT;
-	}
+    if (joy_buttons[which1][pi_joy[L_1]])		val |= GP2X_L;
+	if (joy_buttons[which1][pi_joy[R_1]])		val |= GP2X_R;
+	if (joy_buttons[which1][pi_joy[X_1]])		val |= GP2X_X;
+	if (joy_buttons[which1][pi_joy[Y_1]])		val |= GP2X_Y;
+	if (joy_buttons[which1][pi_joy[B_1]])		val |= GP2X_B;
+	if (joy_buttons[which1][pi_joy[A_1]])		val |= GP2X_A;
+	if (joy_buttons[which1][pi_joy[START_1]])	val |= GP2X_START;
+	if (joy_buttons[which1][pi_joy[SELECT_1]]) 	val |= GP2X_SELECT;
+	if (joy_axes[which1][joyaxis_UD] == UP)          val |= GP2X_UP;
+	if (joy_axes[which1][joyaxis_UD] == DOWN)        val |= GP2X_DOWN;
+	if (joy_axes[which1][joyaxis_LR] == LEFT)        val |= GP2X_LEFT;
+	if (joy_axes[which1][joyaxis_LR] == RIGHT)       val |= GP2X_RIGHT;
     
-    if(sdl_keys)
+    if(sdl_keys && which1 == 0)
     {
         if (sdl_keys[pi_key[L_1]] == SDL_PRESSED) 		val |= GP2X_L;
         if (sdl_keys[pi_key[R_1]] == SDL_PRESSED) 		val |= GP2X_R;

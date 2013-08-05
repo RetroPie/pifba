@@ -187,6 +187,5 @@ void VideoExit()
 void ChangeFrameskip()
 {
 	bShowFPS = !bShowFPS;
-	pi_clear_framebuffers();
 	nFramesRendered = 0;
 }

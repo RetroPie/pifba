@@ -25,6 +25,7 @@ static int DoLibInit() // Do Init of Burn library driver
 	return (nRet) ? 3 : 0 ;
 }
 
+
 int DrvExit()
 {
 	if (bDrvOkay) {
@@ -108,8 +109,6 @@ int DrvInit(int nDrvNum, bool bRestore)
 		return 1;
 	}
 
-//  TrainStart(); // Trainer allocate memory copies
-
 //  GameInpInit(); // Init game input
   // Load config for the game
 //  nRet=ConfigGameLoad(); if (nRet!=0) ConfigGameSave(); // create initial game config file
@@ -122,11 +121,6 @@ int DrvInit(int nDrvNum, bool bRestore)
 
 	bDrvOkay=1; // Okay to use the BurnDrv functions
 
-//  StatedAuto(0); // Load nv (or full) ram
-
-//  ScrnTitle();
-//  ScrnSize();
-
 	nBurnLayer=0xff; // show all layers
 
   // Init the video plugin
@@ -137,5 +131,10 @@ int DrvInit(int nDrvNum, bool bRestore)
 //	RunReset();
 
 	return 0;
+}
+
+int DrvInitCallback()
+{
+    return DrvInit(nBurnDrvSelect, false);
 }
 

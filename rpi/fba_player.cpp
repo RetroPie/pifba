@@ -27,6 +27,8 @@
 #include "font.h"
 #include "snd.h"
 
+#include <SDL.h>
+
 #include "burnint.h"
 #include "config.h"
 #include "cache.h"
@@ -46,52 +48,53 @@ unsigned char P1P2Start = 0;
 unsigned short titlefb[320][240];
 extern bool bShowFPS;
 void ChangeFrameskip();
-extern struct usbjoy *joys[4];
+extern SDL_Joystick *joys[4];
 extern char joyCount;
 extern CFG_OPTIONS config_options;
 
 void logoutput(const char *text,...);
 void logflush(void);
 
-int joyMap[8] = {0x0040,0x0080,0x0100,0x0200,0x0400,0x0800,0x10,0x20};
-
 void do_keypad()
 {
-	static unsigned int turbo = 0;
-	unsigned long joy = pi_joystick_read();
+	unsigned long joy;
 	int bVert = 0;
-	turbo ++;
 	
 	FBA_KEYPAD[0] = 0;
 	FBA_KEYPAD[1] = 0;
 	FBA_KEYPAD[2] = 0;
 	FBA_KEYPAD[3] = 0;
-	ServiceRequest =0;
+	ServiceRequest = 0;
 	P1P2Start = 0;
 	
-	if ( joy & GP2X_UP || joy & GP2X_UP_LEFT || joy & GP2X_UP_RIGHT ) FBA_KEYPAD[0] |= bVert?0x0004:0x0001;
-	if ( joy & GP2X_DOWN || joy & GP2X_DOWN_LEFT || joy & GP2X_DOWN_RIGHT ) FBA_KEYPAD[0] |= bVert?0x0008:0x0002;
-	if ( joy & GP2X_LEFT || joy & GP2X_UP_LEFT || joy & GP2X_DOWN_LEFT ) FBA_KEYPAD[0] |= bVert?0x0002:0x0004;
-	if ( joy & GP2X_RIGHT || joy & GP2X_UP_RIGHT || joy & GP2X_DOWN_RIGHT ) FBA_KEYPAD[0] |= bVert?0x0001:0x0008;
-	
-	if ( joy & GP2X_SELECT )	FBA_KEYPAD[0] |= 0x0010;	
-	if ( joy & GP2X_START )		FBA_KEYPAD[0] |= 0x0020;	
-	
-	if ( joy & GP2X_A )	FBA_KEYPAD[0] |= 0x0040;	// A
-	if ( joy & GP2X_X )	FBA_KEYPAD[0] |= 0x0080;	// B
-	if ( joy & GP2X_B )	FBA_KEYPAD[0] |= 0x0100;	// C
-	if ( joy & GP2X_Y )	FBA_KEYPAD[0] |= 0x0200;	// D
-	if ( joy & GP2X_L )	FBA_KEYPAD[0] |= 0x0400;    // E
-	if ( joy & GP2X_R )	FBA_KEYPAD[0] |= 0x0800;    // F
-	if ( joy & GP2X_L && joy & GP2X_R)
-	{
-		//sq if (joy & GP2X_Y) ChangeFrameskip();
-		//sq else if (joy & GP2X_START) GameLooping = false;
-		if ( joy & GP2X_SELECT) ServiceRequest = 1;
+	for (int i=0;i<joyCount;i++) {
+
+		joy = pi_joystick_read(i);
+
+		if ( joy & GP2X_UP ) 	FBA_KEYPAD[i] |= bVert?0x0004:0x0001;
+		if ( joy & GP2X_DOWN ) 	FBA_KEYPAD[i] |= bVert?0x0008:0x0002;
+		if ( joy & GP2X_LEFT ) 	FBA_KEYPAD[i] |= bVert?0x0002:0x0004;
+		if ( joy & GP2X_RIGHT ) FBA_KEYPAD[i] |= bVert?0x0001:0x0008;
+		
+		if ( joy & GP2X_SELECT )	FBA_KEYPAD[i] |= 0x0010;	
+		if ( joy & GP2X_START )		FBA_KEYPAD[i] |= 0x0020;	
+		
+		if ( joy & GP2X_A )	FBA_KEYPAD[i] |= 0x0040;	// A
+		if ( joy & GP2X_X )	FBA_KEYPAD[i] |= 0x0080;	// B
+		if ( joy & GP2X_B )	FBA_KEYPAD[i] |= 0x0100;	// C
+		if ( joy & GP2X_Y )	FBA_KEYPAD[i] |= 0x0200;	// D
+		if ( joy & GP2X_L )	FBA_KEYPAD[i] |= 0x0400;    // E
+		if ( joy & GP2X_R )	FBA_KEYPAD[i] |= 0x0800;    // F
+
+		if ( joy & GP2X_L && joy & GP2X_R)
+		{
+			if ( joy & GP2X_SELECT) ServiceRequest = 1;
+		}
+	//sq	else
+	//sq		if (joy & GP2X_START && joy & GP2X_SELECT) P1P2Start = 1;
+		if ( joy & GP2X_START && joy & GP2X_SELECT) GameLooping = false;
+
 	}
-//sq	else
-//sq		if (joy & GP2X_START && joy & GP2X_SELECT) P1P2Start = 1;
-	if ( joy & GP2X_START && joy & GP2X_SELECT) GameLooping = false;
     
 //sq
 //	for (int i=0;i<joyCount;i++)
@@ -216,11 +219,9 @@ void run_fba_emulator(const char *fn)
 	logoutput ("Lets go!\n");
 	logflush();
 
-	pi_clear_framebuffers();
 	if (config_options.option_sound_enable)
 	{
-		int aim=0, done=0, timer = 0, tick=0, i=0, fps = 0;
-		unsigned int frame_limit = nBurnFPS/100, frametime = 100000000/nBurnFPS;
+		int timer = 0, tick=0, i=0, fps = 0;
 		bool bRenderFrame;
 
 		if (SndOpen() == 0)
@@ -291,13 +292,3 @@ finish:
 	InpExit();
 	BurnCacheExit();
 }
-
-int BurnStateLoad(const char * szName, int bAll, int (*pLoadGame)());
-int BurnStateSave(const char * szName, int bAll);
-
-int DrvInitCallback()
-{
-	return DrvInit(nBurnDrvSelect, false);
-}
-
-

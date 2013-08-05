@@ -28,6 +28,10 @@
 #include <sys/types.h>
 #include <sys/ioctl.h>
 #include <getopt.h>
+
+#include <sys/stat.h>
+#include <sys/types.h>
+
 #include "main.h"
 #include "fba_player.h"
 #include "burner.h"
@@ -176,6 +180,9 @@ int main( int argc, char **argv )
 	config_options.option_showfps = 0;
 	config_options.option_display_border = 30;
 	parse_cmd(argc, argv,path);
+
+	//Make sure directory exists
+	mkdir("saves", 0777);
 
 	pi_initialize();
 

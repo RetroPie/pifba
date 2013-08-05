@@ -48,4 +48,5 @@ int BzipInit();
 int BzipExit();
 int BzipStatus();
 
+int DrvInitCallback(); // needed for StatedLoad/StatedSave
 

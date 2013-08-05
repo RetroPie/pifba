@@ -309,3 +309,24 @@ int BurnStateSave(const char * szName, int bAll)
 		return 0;
 	}
 }
+
+int nSavestateSlot = 0;
+
+static char szSavestateName[MAX_PATH];
+
+int StatedLoad(int nSlot)
+{
+    //sprintf(szSavestateName, "%s/%s%i.sav", szAppSavePath, BurnDrvGetText(DRV_NAME), nSlot);
+    sprintf(szSavestateName, "saves/%s%i.sav", BurnDrvGetText(DRV_NAME), nSlot);
+    printf("StatedLoad: %s\n", szSavestateName);
+    return BurnStateLoad(szSavestateName, 1, &DrvInitCallback);
+}
+
+int StatedSave(int nSlot)
+{
+    //sprintf(szSavestateName, "%s/%s%i.sav", szAppSavePath, BurnDrvGetText(DRV_NAME), nSlot);
+    sprintf(szSavestateName, "saves/%s%i.sav", BurnDrvGetText(DRV_NAME), nSlot);
+    printf("StatedSave: %s\n", szSavestateName);
+    return BurnStateSave(szSavestateName, 1);
+}
+
