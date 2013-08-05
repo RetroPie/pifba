@@ -820,11 +820,11 @@ int main(int argc, char *argv[])
     if( dirsep != 0 ) *dirsep = 0;
     chdir(abspath);
 
-	pi_initialize_input();
-
 	while(1)
 	{
 	
+		pi_initialize_input();
+
 		initSDL();
 		dispmanx_init();
 	
