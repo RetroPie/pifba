@@ -43,6 +43,7 @@ Keyboard controls:
 'return'         Start button (opens config menu in the frontend)
 'tab'            Select button (quits in the frontend)
 'escape'         Quit
+'L+R+SELECT'     Service Mode
 }}}
 
 Additionally to quit with the joystick you can press SELECT+START.
@@ -146,6 +147,10 @@ Postprocessing can be enabled by setting "DisplayEffect" in fba2x.cfg. In additi
   * Zip functionality provided by zlib (http://www.zlib.net/).
 
 *CHANGE LOG*
+
+_August 5, 2013:_
+  * Added two player joystick support
+  * Fixed frontend neverending quit with joysticks
 
 _July 30, 2013:_
   * Higher resolution frontend
