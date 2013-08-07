@@ -47,6 +47,7 @@ int RunReset()
 	nFramesEmulated = 0;
 	nCurrentFrame = 0;
 	nFramesRendered = 0;	
+	nFramesRenderedTotal = 0;	
 	
 	return 0;
 }
@@ -63,6 +64,7 @@ int RunOneFrame(bool bDraw, int fps)
 	if ( bDraw )
 	{
 		nFramesRendered++;
+		nFramesRenderedTotal++;
 		VideoBufferUpdate();
 		pBurnDraw = (unsigned char *)&BurnVideoBuffer[0];
 	}
