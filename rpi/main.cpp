@@ -160,6 +160,13 @@ void logflush(void)
 int main( int argc, char **argv )
 { 	
 	char path[MAX_PATH];
+    char abspath[1000];
+
+    //Set the directory to where the binary is
+    realpath(argv[0], abspath);
+    char *dirsep = strrchr(abspath, '/');
+    if( dirsep != 0 ) *dirsep = 0;
+    chdir(abspath);
 
 	errorlog = fopen("output.log","wa");
 
