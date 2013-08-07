@@ -148,6 +148,10 @@ Postprocessing can be enabled by setting "DisplayEffect" in fba2x.cfg. In additi
 
 *CHANGE LOG*
 
+_August 7, 2013:_
+  * Fixed sound in some games, e.g. pang3, forgottn
+  * All sound now rendered in stereo (mono uses both channels)
+
 _August 5, 2013:_
   * Added two player joystick support
   * Fixed frontend neverending quit with joysticks
