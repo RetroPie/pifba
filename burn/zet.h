@@ -10,7 +10,7 @@
 
 //#define EMU_DRZ80
 #define EMU_MAME_Z80
-//sq #define EMU_CZ80
+#define EMU_CZ80
 
 #ifdef EMU_DOZE
  #include "doze.h"
