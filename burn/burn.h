@@ -159,6 +159,7 @@ extern bool bBurnUseASMCPUEmulation;
 
 extern unsigned int nFramesEmulated;
 extern unsigned int nFramesRendered;
+extern unsigned int nFramesRenderedTotal;
 extern clock_t starttime;					// system time when emulation started and after roms loaded
 
 extern bool bForce60Hz;
