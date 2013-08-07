@@ -30,6 +30,7 @@ unsigned int nCurrentFrame;			// Framecount for emulated game
 
 unsigned int nFramesEmulated;		// Counters for FPS	display
 unsigned int nFramesRendered;		//
+unsigned int nFramesRenderedTotal;		//
 bool bForce60Hz = true;
 int nBurnFPS = 6000;
 int nBurnCPUSpeedAdjust = 0x0100;	// CPU speed adjustment (clock * nBurnCPUSpeedAdjust / 0x0100)
@@ -566,6 +567,8 @@ extern "C" int BurnDrvInit()
 	return nReturnValue;
 }
 
+void logoutput(const char *text,...);
+
 // Exit game emulation
 extern "C" int BurnDrvExit()
 {
@@ -582,6 +585,9 @@ extern "C" int BurnDrvExit()
 		bprintf(PRINT_NORMAL, _T("\n"));
 	}
 #endif
+
+//sq	logoutput("%.2f%% of frames rendered (%d out of a total %d).\n", (float)nFramesRenderedTotal / nFramesEmulated * 100, nFramesRenderedTotal, nFramesEmulated);
+//sq	logoutput("%.2f frames per second (average).\n", (float)nFramesRenderedTotal / nFramesEmulated * nBurnFPS / 100);
 
 #ifndef OOPSWARE_FIX
 	CheatExit();
