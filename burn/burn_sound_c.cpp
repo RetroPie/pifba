@@ -26,8 +26,8 @@ void BurnSoundCopyClamp_Add_C(int *Src, short *Dest, int Len)
 void BurnSoundCopyClamp_Mono_C(int *Src, short *Dest, int Len)
 {
 	while (Len--) {
-		Dest[0] = Dest[1] = CLIP((*Src >> 8));
-		//Dest[1] = CLIP((*Src >> 8));
+		Dest[0] = CLIP((*Src >> 8));
+		Dest[1] = CLIP((*Src >> 8));
 		Src++;
 		Dest += 2;
 	}
@@ -36,29 +36,11 @@ void BurnSoundCopyClamp_Mono_C(int *Src, short *Dest, int Len)
 void BurnSoundCopyClamp_Mono_Add_C(int *Src, short *Dest, int Len)
 {
 	while (Len--) {
-		Dest[0] = Dest[1] = CLIP((*Src >> 8) + Dest[0]);
-		//Dest[1] = CLIP((*Src >> 8) + Dest[1]);
+		Dest[0] = CLIP((*Src >> 8) + Dest[0]);
+		Dest[1] = CLIP((*Src >> 8) + Dest[1]);
 		Src++;
 		Dest += 2;
 	}
 }
 
-void BurnSoundCopyClamp_MonoMono_C(int *Src, short *Dest, int Len)
-{
-	while (Len--) {
-		*Dest = CLIP((*Src >> 8));
-		Src++;
-		Dest++;
-	}
-}
-
-void BurnSoundCopyClamp_MonoMono_Add_C(int *Src, short *Dest, int Len)
-{
-	while (Len--) {
-		*Dest = CLIP((*Src >> 8) + *Dest);
-		//Dest[1] = CLIP((*Src >> 8) + Dest[1]);
-		Src++;
-		Dest++;
-	}
-}
 #undef CLIP

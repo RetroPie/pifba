@@ -563,57 +563,6 @@ int CpsInit()
 		nMemLen += nCpsZRomLen * 2;
 	}
 
-//sq
-//	if (nMemLen > 0x1400000)
-//	{
-//		if (nCpsGfxLen <= 0x1600000)
-//		{
-//			CpsGfx = (unsigned char*)UpperMalloc(nCpsGfxLen);
-//			memset(CpsGfx, 0, nCpsGfxLen);
-//			UpperReserved = 1;
-//			nMemLen -= nCpsGfxLen;
-//			CpsRom = (unsigned char*)malloc(nMemLen);		
-//			if (CpsRom == NULL) {
-//				return 1;
-//			}
-//			memset(CpsRom, 0, nMemLen);
-//			CpsCode = CpsRom + nCpsRomLen;
-//			if (Cps1Qs == 1) {
-//				CpsEncZRom = CpsCode + nCpsCodeLen;
-//				CpsZRom = CpsEncZRom + nCpsZRomLen * 2;
-//			} else {
-//				CpsZRom = CpsCode + nCpsCodeLen;
-//			}
-//			CpsQSam =(char*)(CpsZRom + nCpsZRomLen);
-//			CpsAd   =(unsigned char*)(CpsQSam + nCpsQSamLen);
-//		}
-//		else
-//		{
-//			CpsGfxSeg[0]=(unsigned char*)UpperMalloc(0x1000000);
-//			if (CpsGfxSeg[0] == NULL)
-//				return 1;
-//			CpsQSam = (char *)UpperMalloc(nCpsQSamLen);
-//			if (CpsQSam == NULL)
-//				return 1;
-//			CpsGfxSeg[1]=(unsigned char*)malloc(nCpsGfxLen-0x1000000);
-//			if (CpsGfxSeg[1] == NULL)
-//				return 1;
-//			memset(CpsGfxSeg[1], 0, nCpsGfxLen-0x1000000);
-//			nMemLen -= nCpsGfxLen+nCpsQSamLen;
-//			CpsRom = (unsigned char*)malloc(nMemLen);		
-//			if (CpsRom == NULL) {
-//				return 1;
-//			}
-//
-//			memset(CpsRom, 0, nMemLen);
-//			CpsCode = CpsRom + nCpsRomLen;
-//			CpsZRom = CpsCode + nCpsCodeLen;
-//			CpsAd =(unsigned char*)(CpsZRom + nCpsZRomLen);
-//			UpperReserved = 2;
-//		}
-//	}
-//	else
-	{
 		// Allocate Gfx, Rom and Z80 Roms
 		CpsGfx = (unsigned char*)malloc(nMemLen);
 		if (CpsGfx == NULL) {
@@ -631,7 +580,6 @@ int CpsInit()
 		CpsQSam =(char*)(CpsZRom + nCpsZRomLen);
 		CpsAd   =(unsigned char*)(CpsQSam + nCpsQSamLen);
 		UpperReserved = 0;
-	}
 
 	// Create Gfx addr mask
 	for (i = 0; i < 31; i++) {

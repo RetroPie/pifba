@@ -13,6 +13,7 @@
 #include "state.h"
 #include "ym2151.h"
 
+
 /* undef this to not use MAME timer system */
 // #define USE_MAME_TIMERS
 
@@ -484,7 +485,7 @@ static UINT8 lfo_noise_waveform[256] = {
 
 static YM2151 * YMPSG = NULL;	/* array of YM2151's */
 static unsigned int YMNumChips;	/* total # of YM2151's emulated */
-static unsigned char ym2151stereo = 1;
+
 
 /* these variables stay here for speedup purposes only */
 static YM2151 * PSG;
@@ -1061,7 +1062,7 @@ void YM2151WriteReg(int n, int r, int v)
 		case 0x10:	/* timer A hi */
 			chip->timer_A_index = (chip->timer_A_index & 0x003) | (v<<2);
 			break;
-			
+
 		case 0x11:	/* timer A low */
 			chip->timer_A_index = (chip->timer_A_index & 0x3fc) | (v & 3);
 			break;
@@ -1171,15 +1172,8 @@ void YM2151WriteReg(int n, int r, int v)
 		switch(r & 0x18){
 		case 0x00:	/* RL enable, Feedback, Connection */
 			op->fb_shift = ((v>>3)&7) ? ((v>>3)&7)+6:0;
-			if (ym2151stereo)
-			{
-				chip->pan[ (r&7)*2    ] = (v & 0x40) ? ~0 : 0;
-				chip->pan[ (r&7)*2 +1 ] = (v & 0x80) ? ~0 : 0;
-			}
-			else
-			{
-				chip->pan[r & 7] = (v & 0xc0) ? ~0 : 0;
-			}
+			chip->pan[ (r&7)*2    ] = (v & 0x40) ? ~0 : 0;
+			chip->pan[ (r&7)*2 +1 ] = (v & 0x80) ? ~0 : 0;
 			chip->connect[r&7] = v&7;
 			set_connect(op, r&7, v&7);
 			break;
@@ -1480,14 +1474,13 @@ static void ym2151_state_save_register( int numchips )
 *	'clock' is the chip clock in Hz
 *	'rate' is sampling rate
 */
-int YM2151Init(int num, int clock, int rate, unsigned char stereo)
+int YM2151Init(int num, int clock, int rate)
 {
 	int i;
 
 	if (YMPSG)
 		return -1;	/* duplicate init. */
 
-	ym2151stereo = stereo;
 	YMNumChips = num;
 
 	YMPSG = (YM2151 *)malloc(sizeof(YM2151) * YMNumChips);
@@ -2416,50 +2409,32 @@ void YM2151UpdateOne(int num, INT16 **buffers, int length)
 		chan7_calc();
 		SAVE_SINGLE_CHANNEL(7)
 
-		if(ym2151stereo)
-		{
-			outl = chanout[0] & PSG->pan[0];
-			outr = chanout[0] & PSG->pan[1];
-			outl += (chanout[1] & PSG->pan[2]);
-			outr += (chanout[1] & PSG->pan[3]);
-			outl += (chanout[2] & PSG->pan[4]);
-			outr += (chanout[2] & PSG->pan[5]);
-			outl += (chanout[3] & PSG->pan[6]);
-			outr += (chanout[3] & PSG->pan[7]);
-			outl += (chanout[4] & PSG->pan[8]);
-			outr += (chanout[4] & PSG->pan[9]);
-			outl += (chanout[5] & PSG->pan[10]);
-			outr += (chanout[5] & PSG->pan[11]);
-			outl += (chanout[6] & PSG->pan[12]);
-			outr += (chanout[6] & PSG->pan[13]);
-			outl += (chanout[7] & PSG->pan[14]);
-			outr += (chanout[7] & PSG->pan[15]);
-	
-			outl >>= FINAL_SH;
-			outr >>= FINAL_SH;
-			if (outl > MAXOUT) outl = MAXOUT;
-				else if (outl < MINOUT) outl = MINOUT;
-			if (outr > MAXOUT) outr = MAXOUT;
-				else if (outr < MINOUT) outr = MINOUT;
-			((SAMP*)bufL)[i] = (SAMP)outl;
-			((SAMP*)bufR)[i] = (SAMP)outr;
-		}
-		else
-		{
-			outl = chanout[0] & PSG->pan[0];
-			outl += (chanout[1] & PSG->pan[1]);
-			outl += (chanout[2] & PSG->pan[2]);
-			outl += (chanout[3] & PSG->pan[3]);
-			outl += (chanout[4] & PSG->pan[4]);
-			outl += (chanout[5] & PSG->pan[5]);
-			outl += (chanout[6] & PSG->pan[6]);
-			outl += (chanout[7] & PSG->pan[7]);
-	
-			outl >>= FINAL_SH;
-			if (outl > MAXOUT) outl = MAXOUT;
-				else if (outl < MINOUT) outl = MINOUT;
-			((SAMP*)bufL)[i] = (SAMP)outl;
-		}
+		outl = chanout[0] & PSG->pan[0];
+		outr = chanout[0] & PSG->pan[1];
+		outl += (chanout[1] & PSG->pan[2]);
+		outr += (chanout[1] & PSG->pan[3]);
+		outl += (chanout[2] & PSG->pan[4]);
+		outr += (chanout[2] & PSG->pan[5]);
+		outl += (chanout[3] & PSG->pan[6]);
+		outr += (chanout[3] & PSG->pan[7]);
+		outl += (chanout[4] & PSG->pan[8]);
+		outr += (chanout[4] & PSG->pan[9]);
+		outl += (chanout[5] & PSG->pan[10]);
+		outr += (chanout[5] & PSG->pan[11]);
+		outl += (chanout[6] & PSG->pan[12]);
+		outr += (chanout[6] & PSG->pan[13]);
+		outl += (chanout[7] & PSG->pan[14]);
+		outr += (chanout[7] & PSG->pan[15]);
+
+		outl >>= FINAL_SH;
+		outr >>= FINAL_SH;
+		if (outl > MAXOUT) outl = MAXOUT;
+			else if (outl < MINOUT) outl = MINOUT;
+		if (outr > MAXOUT) outr = MAXOUT;
+			else if (outr < MINOUT) outr = MINOUT;
+		((SAMP*)bufL)[i] = (SAMP)outl;
+		((SAMP*)bufR)[i] = (SAMP)outr;
+
 		SAVE_ALL_CHANNELS
 
 #ifdef USE_MAME_TIMERS

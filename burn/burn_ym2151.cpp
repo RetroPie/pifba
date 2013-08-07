@@ -78,24 +78,33 @@ static void YM2151RenderResample(short* pSoundBuf, int nSegmentLength)
 
 static void YM2151RenderNormal(short* pSoundBuf, int nSegmentLength)
 {
+	nBurnPosition += nSegmentLength;
+
 	pYM2151Buffer[0] = pBuffer;
 	pYM2151Buffer[1] = pBuffer + nSegmentLength;
 
 	YM2151UpdateOne(0, pYM2151Buffer, nSegmentLength);
-	{
-		for (int n = nSegmentLength; n > 0; n--) {
-			*pSoundBuf++ = *pYM2151Buffer[0]++;
-			*pSoundBuf++ = *pYM2151Buffer[1]++;
+
+#ifndef OOPSWARE_FIX
+	if (bBurnUseMMX) {
+		BurnSoundCopy_FM_A(pYM2151Buffer[0], pYM2151Buffer[1], pSoundBuf, nSegmentLength, nYM2151Volume, nYM2151Volume);
+	} else {
+#endif
+		for (int n = 0; n < nSegmentLength; n++) {
+			for (int i = 0; i < 2; i++) {
+				int nSample = pYM2151Buffer[i][n] * (nYM2151Volume >> 10);
+				nSample >>= 8;
+				
+				if (nSample < -32768) nSample = -32768;
+				if (nSample > 32767) nSample = 32767;
+			
+				pSoundBuf[(n << 1) + i] = nSample;
+			}
 		}
+#ifndef OOPSWARE_FIX
 	}
-
+#endif
 }
-
-static void YM2151RenderMono(short* pSoundBuf, int nSegmentLength)
-{
-	YM2151UpdateOne(0, &pSoundBuf, nSegmentLength);
-}
-
 
 void BurnYM2151Reset()
 {
@@ -109,10 +118,10 @@ void BurnYM2151Exit()
 	free(pBuffer);
 }
 
-int BurnYM2151Init(int nClockFrequency, float nVolume, bool stereo)
+int BurnYM2151Init(int nClockFrequency, float nVolume)
 {
 	if (nBurnSoundRate <= 0) {
-		YM2151Init(1, nClockFrequency, 11025,stereo?1:0);
+		YM2151Init(1, nClockFrequency, 11025);
 		return 0;
 	}
 
@@ -123,21 +132,18 @@ int BurnYM2151Init(int nClockFrequency, float nVolume, bool stereo)
 		while (nBurnYM2151SoundRate > nBurnSoundRate * 3) {
 			nBurnYM2151SoundRate >>= 1;
 		}
-        
+
 		BurnYM2151Render = YM2151RenderResample;
-        
+
 		nYM2151Volume = (int)((double)16384.0 * 100.0 / nVolume);
 	} else {
 		nBurnYM2151SoundRate = nBurnSoundRate;
-		if (stereo)
-			BurnYM2151Render = YM2151RenderNormal;
-		else
-			BurnYM2151Render = YM2151RenderMono;
-		
-		nYM2151Volume = (int)((double)65536.0 * 100.0 / nVolume);
-	}
+		BurnYM2151Render = YM2151RenderNormal;
 
-	YM2151Init(1, nClockFrequency, nBurnYM2151SoundRate,stereo?1:0);
+		nYM2151Volume = (int)((double)65536.0 * 100.0 / nVolume);
+	} 
+
+	YM2151Init(1, nClockFrequency, nBurnYM2151SoundRate);
 
 	pBuffer = (short*)malloc(65536 * 2 * sizeof(short));
 	memset(pBuffer, 0, 65536 * 2 * sizeof(short));

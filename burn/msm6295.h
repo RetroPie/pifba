@@ -2,7 +2,7 @@
 
 #define MAX_MSM6295 (2)
 
-int MSM6295Init(int nChip, int nSamplerate, float fMaxVolume, bool bAddSignal, bool stereo=true);
+int MSM6295Init(int nChip, int nSamplerate, float fMaxVolume, bool bAddSignal);
 void MSM6295Reset(int nChip);
 void MSM6295Exit(int nChip);
 

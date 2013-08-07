@@ -46,7 +46,6 @@ static int* pBuffer = NULL;
 static int nLastChip;
 
 static bool bAdd;
-static bool msm6295stereo = true;
 
 void MSM6295Reset(int nChip)
 {
@@ -86,7 +85,7 @@ int MSM6295Scan(int nChip, int /*nAction*/)
 	return 0;
 }
 
-static void MSM6295Render_Linear(int nChip, int* pBuf, int nSegmentLength, bool bAdd)
+static void MSM6295Render_Linear(int nChip, int* pBuf, int nSegmentLength)
 {
 	static int nPreviousSample[MAX_MSM6295], nCurrentSample[MAX_MSM6295];
 	int nVolume = MSM6295[nChip].nVolume;
@@ -161,10 +160,7 @@ static void MSM6295Render_Linear(int nChip, int* pBuf, int nSegmentLength, bool 
 		// Scale all 4 channels
 		nSample *= nVolume;
 
-		if (bAdd)
-			*pBuf++ += nSample;
-		else
-			*pBuf++ = nSample;
+		*pBuf++ += nSample;
 
 		nFractionalPosition += MSM6295[nChip].nSampleSize;
 	}
@@ -172,7 +168,7 @@ static void MSM6295Render_Linear(int nChip, int* pBuf, int nSegmentLength, bool 
 	MSM6295[nChip].nFractionalPosition = nFractionalPosition;
 }
 
-static void MSM6295Render_Cubic(int nChip, int* pBuf, int nSegmentLength, bool bAdd)
+static void MSM6295Render_Cubic(int nChip, int* pBuf, int nSegmentLength)
 {
 	int nVolume = MSM6295[nChip].nVolume;
 	int nFractionalPosition;
@@ -279,59 +275,42 @@ static void MSM6295Render_Cubic(int nChip, int* pBuf, int nSegmentLength, bool b
 
 		nOutput *= nVolume;
 
-		if (bAdd)
-			*pBuf++ += nOutput;
-		else
-			*pBuf++ = nOutput;
-		
+		*pBuf++ += nOutput;
+
 		MSM6295[nChip].nFractionalPosition = (MSM6295[nChip].nFractionalPosition & 0x0FFF) + MSM6295[nChip].nSampleSize;
 	}
 }
 
 int MSM6295Render(int nChip, short* pSoundBuf, int nSegmentLength)
 {
-	if (nLastChip>0)
-	{
-		if (nChip == 0)
-		{
-			memset(pBuffer, 0, nSegmentLength * sizeof(int));
-		}
-	
-		if (nInterpolation >= 3)
-		{
-			MSM6295Render_Cubic(nChip, pBuffer, nSegmentLength, true);
-		} else
-		{
-			MSM6295Render_Linear(nChip, pBuffer, nSegmentLength, true);
-		}
-	}
-	else
-	{
-		if (nInterpolation >= 3)
-		{
-			MSM6295Render_Cubic(nChip, pBuffer, nSegmentLength, false);
-		} else
-		{
-			MSM6295Render_Linear(nChip, pBuffer, nSegmentLength, false);
-		}
+	if (nChip == 0) {
+		memset(pBuffer, 0, nSegmentLength * sizeof(int));
 	}
 
-	if (msm6295stereo)
-	{
-		if (nChip == nLastChip)
-		{
-			if (bAdd)
-			{
+	if (nInterpolation >= 3) {
+		MSM6295Render_Cubic(nChip, pBuffer, nSegmentLength);
+	} else {
+		MSM6295Render_Linear(nChip, pBuffer, nSegmentLength);
+	}
+
+	if (nChip == nLastChip)	{
+#ifndef OOPSWARE_FIX
+		if (bBurnUseMMX) {
+			if (bAdd) {
+				BurnSoundCopyClamp_Mono_Add_A(pBuffer, pSoundBuf, nSegmentLength);
+			} else {
+				BurnSoundCopyClamp_Mono_A(pBuffer, pSoundBuf, nSegmentLength);
+			}
+		} else {
+#endif
+			if (bAdd) {
 				BurnSoundCopyClamp_Mono_Add_C(pBuffer, pSoundBuf, nSegmentLength);
-			} else
-			{
+			} else {
 				BurnSoundCopyClamp_Mono_C(pBuffer, pSoundBuf, nSegmentLength);
 			}
+#ifndef OOPSWARE_FIX
 		}
-	}
-	else
-	{
-		BurnSoundCopyClamp_MonoMono_Add_C(pBuffer, pSoundBuf, nSegmentLength);
+#endif
 	}
 
 	return 0;
@@ -415,7 +394,7 @@ void MSM6295Exit(int nChip)
 	}
 }
 
-int MSM6295Init(int nChip, int nSamplerate, float fMaxVolume, bool bAddSignal, bool stereo)
+int MSM6295Init(int nChip, int nSamplerate, float fMaxVolume, bool bAddSignal)
 {
 	if (nBurnSoundRate > 0) {
 		if (pBuffer == NULL) {
@@ -424,7 +403,6 @@ int MSM6295Init(int nChip, int nSamplerate, float fMaxVolume, bool bAddSignal, b
 	}
 
 	bAdd = bAddSignal;
-	msm6295stereo = stereo;
 
 	// Convert volume from percentage
 	MSM6295[nChip].nVolume = int(fMaxVolume * 256.0 / 100.0 + 0.5);

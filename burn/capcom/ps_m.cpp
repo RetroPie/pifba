@@ -19,12 +19,12 @@ int PsmInit()
 		nRate = 11025;
 	}
 
-	if (BurnYM2151Init(3579540, 50.0, false)) {				// Init FM sound chip
+	if (BurnYM2151Init(3579540, 50.0)) {				// Init FM sound chip
 		return 1;
 	}
 
 	// Allocate a buffer for the intermediate sound (between YM2151 and pBurnSoundOut)
-	nMemLen = nBurnSoundLen * sizeof(short);
+	nMemLen = nBurnSoundLen * 2 * sizeof(short);
 	WaveBuf = (short*)malloc(nMemLen);
 	if (WaveBuf == NULL) {
 		PsmExit();
@@ -35,9 +35,9 @@ int PsmInit()
 	// Init ADPCM
 	MSM6295ROM = CpsAd;
 	if (Forgottn) {
-		nRet = MSM6295Init(0, 6061, 21.5, 1, false);
+		nRet = MSM6295Init(0, 6061, 21.5, 1);
 	} else {
-		nRet = MSM6295Init(0, 7576, 21.5, 1,false);
+		nRet = MSM6295Init(0, 7576, 21.5, 1);
 	}
 
 	if (nRet!=0) {
@@ -81,10 +81,10 @@ int PsmUpdate(int nEnd)
 	}
 
 	// Render FM
-	BurnYM2151Render(pBurnSoundOut + nPos, nEnd - nPos);
+	BurnYM2151Render(pBurnSoundOut + (nPos << 1), nEnd - nPos);
 
 	// Render ADPCM
-//	MSM6295Render(0, pBurnSoundOut + nPos, nEnd - nPos);
+//sq	MSM6295Render(0, pBurnSoundOut + (nPos << 1), nEnd - nPos);
 
 	nPos = nEnd;
 

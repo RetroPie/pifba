@@ -4,7 +4,7 @@ extern "C" {
  #include "ym2151.h"
 }
 
-int BurnYM2151Init(int nClockFrequency, float nVolume, bool stereo =true);
+int BurnYM2151Init(int nClockFrequency, float nVolume);
 void BurnYM2151Reset();
 void BurnYM2151Exit();
 extern void (*BurnYM2151Render)(short* pSoundBuf, int nSegmentLength);
