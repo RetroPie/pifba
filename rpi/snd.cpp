@@ -72,10 +72,10 @@ int SndInit()
 {
 	if (config_options.option_sound_enable)
 	{
-		if (BurnDrvGetHardwareCode() == HARDWARE_CAPCOM_CPS1)
-		{
-			nAudioChannels = 1;
-		}
+//		if (BurnDrvGetHardwareCode() == HARDWARE_CAPCOM_CPS1)
+//		{
+//			nAudioChannels = 1;
+//		}
 
 		switch(config_options.option_samplerate)
 		{
@@ -368,5 +368,9 @@ static void alsa_free(void *data)
 		}
 		free(alsa);
 	}
+
+	logoutput("ALSA: FIFO Underrun: %d\n", fifo_underrun);
+	logoutput("ALSA: FIFO Overrun: %d\n", fifo_overrun);
+	logoutput("ALSA: Snd Underrun %d\n", snd_underrun);
 }
 
