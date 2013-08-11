@@ -140,15 +140,6 @@ void pi_parse_config_file (void)
 
 void pi_initialize()
 {
-//	for (int i=1; i<5; i++)
-//	{
-//		struct usbjoy *joy = joy_open(i);
-//		if(joy != NULL)
-//		{
-//			joys[joyCount] = joy;
-//			joyCount++;
-//		}
-//	}
 
     pi_initialize_input();
 	pi_parse_config_file();
@@ -244,6 +235,10 @@ int init_SDL(void)
 		if(joys[0])
 			logoutput("Found %d joysticks\n",joyCount);
 	}
+	else
+		joyCount=1;
+
+
 	SDL_EventState(SDL_ACTIVEEVENT,SDL_IGNORE);
 	SDL_EventState(SDL_SYSWMEVENT,SDL_IGNORE);
 	SDL_EventState(SDL_VIDEORESIZE,SDL_IGNORE);
