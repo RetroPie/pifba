@@ -20,7 +20,7 @@ CXXFLAGS += -D__cdecl="" -D__fastcall="" -DUSE_SPEEDHACKS -DNEO_DISPLAY_OVERSCAN
 CXXFLAGS += -finline -finline-functions -mstructure-size-boundary=32 -frename-registers 
 
 INCPATH	= -I./rpi -I./burn -I./burn/neogeo -I./burn/capcom -I./burn/cave -I./burn/toaplan -I./cpu/cyclone \
-	-I./cpu/z80 -I./cpu/nec -I./cpu/sh2 -I./burn/misc -I$(SDKSTAGE)/opt/vc/include -I$(SDKSTAGE)/opt/vc/include/interface/vcos/pthreads \
+	-I./cpu/z80 -I./cpu/cz80 -I./cpu/nec -I./cpu/sh2 -I./burn/misc -I$(SDKSTAGE)/opt/vc/include -I$(SDKSTAGE)/opt/vc/include/interface/vcos/pthreads \
 	-I$(SDKSTAGE)/opt/vc/include/interface/vmcs_host/linux -I/usr/include/SDL -I/usr/include/glib-2.0 -I/usr/lib/arm-linux-gnueabihf/glib-2.0/include 
 LINK	= arm-linux-gnueabihf-g++
 LFLAGS	= -g
@@ -41,6 +41,7 @@ HEADERS = gp2xsdk.h \
 		font.h \
 		snd.h \
 		z80.h \
+		cz80.h \
 		cyclone.h \
 		burn.h \
 		burnint.h \
@@ -90,6 +91,7 @@ SOURCES = rpi/gp2xsdk.cpp \
 		rpi/input.cpp \
 		cpu/cyclone/cyclone.s \
 		cpu/z80/z80.cpp \
+		cpu/cz80/cz80.cpp \
 		cpu/nec/nec.cpp \
 		cpu/nec/sh2.cpp \
 		burn/ay8910.c \
@@ -316,6 +318,7 @@ OBJECTS = $(OBJ)/gp2xsdk.o \
 		$(OBJ)/cyclone.o \
 		$(OBJ)/z80.o \
 		$(OBJ)/z80daisy.o \
+		$(OBJ)/cz80.o \
 		$(OBJ)/nec.o \
 		$(OBJ)/sh2.o \
 		$(OBJ)/ay8910.o \
@@ -618,6 +621,9 @@ $(OBJ)/z80.o: cpu/z80/z80.cpp
 
 $(OBJ)/z80daisy.o: cpu/z80/z80daisy.cpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/z80daisy.o cpu/z80/z80daisy.cpp
+
+$(OBJ)/cz80.o: cpu/cz80/cz80.c
+	$(CC) -c $(CCFLAGS) $(INCPATH) -o $(OBJ)/cz80.o cpu/cz80/cz80.c
 
 $(OBJ)/nec.o: cpu/nec/nec.cpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJ)/nec.o cpu/nec/nec.cpp
