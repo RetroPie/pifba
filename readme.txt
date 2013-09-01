@@ -40,8 +40,8 @@ Keyboard controls:
 'shift'          Button 4
 'z'              Button 5
 'x'              Button 6
-'return'         Start button (opens config menu in the frontend)
-'tab'            Select button (quits in the frontend)
+'return'         Start button (starts a game)
+'tab'            Select button (opens config menu in the frontend)
 'escape'         Quit
 'L+R+SELECT'     Service Mode
 }}}
