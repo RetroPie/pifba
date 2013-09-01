@@ -636,7 +636,11 @@ void ss_prg_options(void)
             }
         }
         
-        if(Joypads & GP2X_A) {
+		if (Joypads & GP2X_SELECT && Joypads & GP2X_START) {
+			exit_prog();
+		}
+
+        if(Joypads & GP2X_A || Joypads & GP2X_START) {
             switch(options.num){
 //                case OPTION_NUM_FBA2X_SOUND:
 //                    flag_save = RED;
@@ -679,6 +683,8 @@ void ss_prg_options(void)
                     break;
             }
         }
+
+
 	}
 }
 
@@ -1035,7 +1041,7 @@ int main(int argc, char *argv[])
 	            load_preview(selector.num);
 	        }
 	
-			if (Joypads & GP2X_SELECT || Joypads & GP2X_ESCAPE) {
+			if ((Joypads & GP2X_SELECT && Joypads & GP2X_START) || Joypads & GP2X_ESCAPE) {
 	            capex.sely = selector.y;
 	            capex.selnum = selector.num;
 	            capex.seloffset_num = selector.offset_num;
@@ -1044,7 +1050,7 @@ int main(int argc, char *argv[])
 	            Quit=1;
 	        }
 	                
-	        if (Joypads & GP2X_A ){
+	        if ( Joypads & GP2X_A || Joypads & GP2X_START ){
 				if ( data.state[listing_tri[capex.list][selector.num]] > RED ){
 	                capex.sely = selector.y;
 	                capex.selnum = selector.num;
@@ -1057,7 +1063,13 @@ int main(int argc, char *argv[])
 	                
 	        if( Joypads & GP2X_X ) ss_prg_help(); 
 	                
-	        if( Joypads & GP2X_START ) ss_prg_options();
+	        if( Joypads & GP2X_SELECT ) {
+	            capex.sely = selector.y;
+	            capex.selnum = selector.num;
+	            capex.seloffset_num = selector.offset_num;
+	            write_cfg();    //Write the current selection to the config
+				ss_prg_options();
+			}
 	
 		}
 	

@@ -148,6 +148,10 @@ Postprocessing can be enabled by setting "DisplayEffect" in fba2x.cfg. In additi
 
 *CHANGE LOG*
 
+_September 01, 2013:_
+  * Joystick SELECT+START now quits the frontend. Joystick SELECT now opens the menu and START will start a game.
+  * 2nd player controls now configurable for joystick and keyboard.
+
 _August 11, 2013:_
   * Fixed keyboard not working when no joysticks attached
 

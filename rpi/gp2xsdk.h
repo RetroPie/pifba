@@ -50,11 +50,27 @@ enum {
 #define RPI_KEY_RIGHT   SDLK_RIGHT
 #define RPI_KEY_UP      SDLK_UP
 #define RPI_KEY_DOWN    SDLK_DOWN
+
+//player 2 keyboard defaults to disabled
+#define RPI_KEY_A_2       999
+#define RPI_KEY_B_2       999
+#define RPI_KEY_X_2       999
+#define RPI_KEY_Y_2       999
+#define RPI_KEY_L_2       999
+#define RPI_KEY_R_2       999
+#define RPI_KEY_START_2   999
+#define RPI_KEY_SELECT_2  999
+#define RPI_KEY_LEFT_2    999
+#define RPI_KEY_RIGHT_2   999
+#define RPI_KEY_UP_2      999
+#define RPI_KEY_DOWN_2    999
+
 #define RPI_KEY_QUIT    SDLK_ESCAPE
 //#define RPI_KEY_ACCEL   SDLK_BACKSPACE
 #define RPI_KEY_QLOAD   SDLK_F1
 #define RPI_KEY_QSAVE   SDLK_F2
 
+//Default joy button configuration
 #define RPI_JOY_A       3
 #define RPI_JOY_B       2
 #define RPI_JOY_X       1
@@ -74,13 +90,25 @@ enum {
 #define X_1 2
 #define Y_1 3
 #define L_1 4
-#define R_1 6
-#define START_1 12
-#define SELECT_1 13
-#define UP_1 16
-#define DOWN_1 17
-#define LEFT_1 18
-#define RIGHT_1 19
+#define R_1 5
+#define START_1 6
+#define SELECT_1 7
+#define UP_1 8
+#define DOWN_1 9
+#define LEFT_1 10
+#define RIGHT_1 11
+#define A_2 20
+#define B_2 21
+#define X_2 22
+#define Y_2 23
+#define L_2 24
+#define R_2 25
+#define START_2 26
+#define SELECT_2 27
+#define UP_2 28
+#define DOWN_2 29
+#define LEFT_2 30
+#define RIGHT_2 31
 
 #define ACCEL 50
 #define QUIT 51
@@ -88,11 +116,6 @@ enum {
 
 #define QLOAD 55
 #define QSAVE 56
-
-#define SHIFTL 30
-#define SHIFTR 31
-#define CTRLL 32
-#define CTRLR 33
 
 // Axis positions
 #define CENTER  0

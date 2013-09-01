@@ -13,6 +13,19 @@ RIGHT_1=275
 UP_1=273
 DOWN_1=274
 QUIT=27
+#player 2 keyboard controls, disabled by default
+A_2=999
+B_2=999
+X_2=999
+Y_2=999
+L_2=999
+R_2=999
+START_2=999
+SELECT_2=999
+LEFT_2=999
+RIGHT_2=999
+UP_2=999
+DOWN_2=999
 
 [Joystick]
 # Get codes from "jstest /dev/input/js0"
@@ -28,6 +41,18 @@ SELECT_1=8
 #Joystick axis
 JA_LR=0
 JA_UD=1
+#player 2 button configuration
+A_2=0
+B_2=1
+X_2=2
+Y_2=3
+L_2=4
+R_2=6
+START_2=9
+SELECT_2=8
+#Joystick axis
+JA_LR_2=0
+JA_UD_2=1
 
 [Graphics]
 DisplaySmoothStretch=1

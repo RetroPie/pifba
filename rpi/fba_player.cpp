@@ -67,6 +67,8 @@ void do_keypad()
 	ServiceRequest = 0;
 	P1P2Start = 0;
 	
+	//for (int i=0;i<joyCount;i++) {
+	//Always check for two players, i.e. keyboard input
 	for (int i=0;i<joyCount;i++) {
 
 		joy = pi_joystick_read(i);
