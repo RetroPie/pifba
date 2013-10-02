@@ -148,6 +148,10 @@ Postprocessing can be enabled by setting "DisplayEffect" in fba2x.cfg. In additi
 
 *CHANGE LOG*
 
+
+_October 02, 2013:_
+  * Added DPAD (HAT) controls support for joysticks.
+
 _September 01, 2013:_
   * Joystick SELECT+START now quits the frontend. Joystick SELECT now opens the menu and START will start a game.
   * 2nd player controls now configurable for joystick and keyboard.
