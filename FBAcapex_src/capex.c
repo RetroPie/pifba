@@ -1094,10 +1094,12 @@ static void fe_ProcessEvents (void)
             case SDL_JOYBUTTONDOWN:
                 joy_buttons[event.jbutton.which][event.jbutton.button] = 1;
                 break;
+
             case SDL_JOYBUTTONUP:
                 joy_buttons[event.jbutton.which][event.jbutton.button] = 0;
                 break;
-           case SDL_JOYAXISMOTION:
+
+            case SDL_JOYAXISMOTION:
                 if(event.jaxis.axis == joyaxis_LR) {
                     if(event.jaxis.value > -10000 && event.jaxis.value < 10000)
                         joy_axes[event.jbutton.which][joyaxis_LR] = CENTER;
@@ -1115,6 +1117,47 @@ static void fe_ProcessEvents (void)
                         joy_axes[event.jbutton.which][joyaxis_UD] = UP;
                 }
                 break;
+
+            case SDL_JOYHATMOTION:
+                switch(event.jhat.value) {
+                  case SDL_HAT_CENTERED:
+                    joy_axes[event.jaxis.which][joyaxis_LR] = CENTER;
+                    joy_axes[event.jaxis.which][joyaxis_UD] = CENTER;
+                    break;
+                  case SDL_HAT_UP:
+                    joy_axes[event.jaxis.which][joyaxis_LR] = CENTER;
+                    joy_axes[event.jaxis.which][joyaxis_UD] = UP;
+                    break;
+                  case SDL_HAT_DOWN:
+                    joy_axes[event.jaxis.which][joyaxis_LR] = CENTER;
+                    joy_axes[event.jaxis.which][joyaxis_UD] = DOWN;
+                    break;
+                  case SDL_HAT_LEFT:
+                    joy_axes[event.jaxis.which][joyaxis_LR] = LEFT;
+                    joy_axes[event.jaxis.which][joyaxis_UD] = CENTER;
+                    break;
+                  case SDL_HAT_RIGHT:
+                    joy_axes[event.jaxis.which][joyaxis_LR] = RIGHT;
+                    joy_axes[event.jaxis.which][joyaxis_UD] = CENTER;
+                    break;
+                  case SDL_HAT_RIGHTUP:
+                    joy_axes[event.jaxis.which][joyaxis_LR] = RIGHT;
+                    joy_axes[event.jaxis.which][joyaxis_UD] = UP;
+                    break;
+                  case SDL_HAT_LEFTUP:
+                    joy_axes[event.jaxis.which][joyaxis_LR] = LEFT;
+                    joy_axes[event.jaxis.which][joyaxis_UD] = UP;
+                    break;
+                  case SDL_HAT_RIGHTDOWN:
+                    joy_axes[event.jaxis.which][joyaxis_LR] = RIGHT;
+                    joy_axes[event.jaxis.which][joyaxis_UD] = DOWN;
+                    break;
+                  case SDL_HAT_LEFTDOWN:
+                    joy_axes[event.jaxis.which][joyaxis_LR] = LEFT;
+                    joy_axes[event.jaxis.which][joyaxis_UD] = DOWN;
+                    break;
+                }
+
             case SDL_KEYDOWN:
                 sdl_keys = SDL_GetKeyState(NULL);
                 break;
