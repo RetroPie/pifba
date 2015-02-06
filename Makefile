@@ -11,13 +11,11 @@
 CC	=	arm-linux-gnueabihf-gcc
 CXX	=	arm-linux-gnueabihf-g++
 
-CFLAGS	= -march=armv6 -mfpu=vfp -mfloat-abi=hard -pipe -Wall -W -Wno-write-strings -O3 -DOOPSWARE_FIX -D_T="" -DNEOGEO_HACKS -D__cdecl="" 
-CFLAGS += -D__fastcall="" -DUSE_SPEEDHACKS -DNEO_DISPLAY_OVERSCAN -falign-functions=32 -falign-loops -falign-labels -falign-jumps -fomit-frame-pointer -ffast-math 
-CFLAGS += -fexpensive-optimizations -finline -finline-functions -mstructure-size-boundary=32 -frename-registers 
+CFLAGS += -O3 -ffast-math -Wall -W -Wno-write-strings -DOOPSWARE_FIX -D_T="" -DNEOGEO_HACKS -D__cdecl="" 
+CFLAGS += -D__fastcall="" -DUSE_SPEEDHACKS -DNEO_DISPLAY_OVERSCAN
 
-CXXFLAGS = -march=armv6 -mfpu=vfp -mfloat-abi=hard -pipe -DQWS -fno-exceptions -fno-rtti -Wall -W -Wno-write-strings -O3 -DOOPSWARE_FIX -D_T="" -DNEOGEO_HACKS 
-CXXFLAGS += -D__cdecl="" -D__fastcall="" -DUSE_SPEEDHACKS -DNEO_DISPLAY_OVERSCAN -falign-functions=32 -falign-loops -falign-labels -falign-jumps -fomit-frame-pointer -ffast-math 
-CXXFLAGS += -fexpensive-optimizations -finline -finline-functions -mstructure-size-boundary=32 -frename-registers 
+CXXFLAGS += -O3 -ffast-math -DQWS -fno-exceptions -fno-rtti -Wall -W -Wno-write-strings  -DOOPSWARE_FIX -D_T="" -DNEOGEO_HACKS 
+CXXFLAGS += -D__cdecl="" -D__fastcall="" -DUSE_SPEEDHACKS -DNEO_DISPLAY_OVERSCAN 
 
 INCPATH	= -I./rpi -I./burn -I./burn/neogeo -I./burn/capcom -I./burn/cave -I./burn/toaplan -I./cpu/cyclone \
 	-I./cpu/z80 -I./cpu/cz80 -I./cpu/nec -I./cpu/sh2 -I./burn/misc -I$(SDKSTAGE)/opt/vc/include -I$(SDKSTAGE)/opt/vc/include/interface/vcos/pthreads \
