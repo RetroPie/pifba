@@ -24,7 +24,7 @@ INCPATH	= -I./rpi -I./burn -I./burn/neogeo -I./burn/capcom -I./burn/cave -I./bur
 	-I$(SDKSTAGE)/opt/vc/include/interface/vmcs_host/linux -I/usr/include/SDL -I/usr/include/glib-2.0 -I/usr/lib/arm-linux-gnueabihf/glib-2.0/include 
 LINK	= arm-linux-gnueabihf-g++
 LFLAGS	= 
-LIBS	= -lz -lpthread -lm -lpthread -lSDL -L/opt/vc/lib -lbcm_host -lGLESv2 -lEGL -lglib-2.0
+LIBS	= -lz -lpthread -lm -lpthread -lSDL -L/opt/vc/lib -lbcm_host -lGLESv2 -lEGL -lglib-2.0 -lasound -lrt
 
 TAR		= tar -cf
 GZIP	= gzip -9f
