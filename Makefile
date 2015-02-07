@@ -8,8 +8,8 @@
 
 ####### Compiler, tools and options
 
-CC	=	arm-linux-gnueabihf-gcc
-CXX	=	arm-linux-gnueabihf-g++
+CC	=	gcc
+CXX	=	g++
 
 CFLAGS += -O3 -ffast-math -Wall -W -Wno-write-strings -DOOPSWARE_FIX -D_T="" -DNEOGEO_HACKS -D__cdecl="" 
 CFLAGS += -D__fastcall="" -DUSE_SPEEDHACKS -DNEO_DISPLAY_OVERSCAN
