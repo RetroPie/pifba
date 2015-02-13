@@ -247,12 +247,11 @@ int init_SDL(void)
 			//aren't SDL compatible
 			if(joys[i])
 			{
-				if (SDL_JoystickNumAxes(myjoy[i]) > 6)
+				if (SDL_JoystickNumAxes(myjoy[i]) > 28)
 				{
 					SDL_JoystickClose(myjoy[i]);
 					joys[i]=0;
 					logoutput("Error detected invalid joystick/keyboard\n");
-					break;
 				}
 				else
 					joyCount++;
