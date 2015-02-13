@@ -1,6 +1,6 @@
-=Final Burn Alpha 2x for Raspberry Pi by Squid=
+Final Burn Alpha 2x for Raspberry Pi by Squid
 
-*INTRODUCTION*
+INTRODUCTION
 
 PiFBA is Final Burn Alpha 2x for the Raspberry Pi ported by Squid. This emulates old arcade games using MAME based roms for CPS1, CPS2, Neogeo, Toaplan and many other games. It should support most recent versions of the MAME versions of these ROMS but unfortnately there is no definitive version to use. A full list of supported games is in the frontend program.
 
@@ -15,7 +15,7 @@ It uses a modified version of the Capex frontend for game selection but you can 
 This port supports keyboard and USB joystick input and are configurable. It uses GLES2 graphics API and can run in the Console or under X-Windows. The audio uses the ALSA API and SDL is used for input. It uses a Cyclone 68000 core for performance and a MAME z80 core for compatibility.
 
 Download it from the official Raspberry Pi App Store:
-http://store.raspberrypi.com/projects/pifba
+http://store.raspberrypi.com/projects/pi-fba
 
 Alternatively download it manually from:
 http://pifba.googlecode.com/git/piFBA.zip
@@ -26,10 +26,9 @@ http://code.google.com/p/pifba/
 (No asking for ROMS or any issues with ROMS)
 
 
-*CONTROLS*
+CONTROLS
 
 Keyboard controls:
-{{{
 'up arrow'       Up direction
 'down arrow'     Down direction
 'left arrow'     Left direction
@@ -44,7 +43,6 @@ Keyboard controls:
 'tab'            Select button (opens config menu in the frontend)
 'escape'         Quit
 'L+R+SELECT'     Service Mode
-}}}
 
 Additionally to quit with the joystick you can press SELECT+START.
 
@@ -59,8 +57,7 @@ YELLOW = parent rom detected or clone rom detected & parent rom detected
 GREEN = clone rom detected & parent rom detected 
 
 
-*INSTALLATION*
-{{{
+INSTALLATION
 fba2x       -> Game binary
 fbacapex    -> Frontend binary
 fba2x.cfg   -> Keyboard and joystick configuration
@@ -71,7 +68,6 @@ roms/       -> ROMs directory (Put your game ROMs in here)
 skin/       -> Frontend skins directory
 FBACache_windows.zip -> for converting large ROMS to .fba cache format
 fba_029671_clrmame_dat.zip -> clrmamepro DAT file for ROM validation and conversion.
-}}}
 
 To run piFBA simple run the "fbacapex" executable. At the command line "./fbacapex".
 This runs the GUI frontend. To simply run piFBA without the GUI enter "./fba2x roms/{gamerom}" where "{gamerom}" is the game rom filename to run. A number of options are available for "fba2x", enter "./fba2x" on the command line for a list.
@@ -81,53 +77,46 @@ For the frontend screenshots you need to put the relevant screenshot files in th
 An output file called "output.log" is generated for each game which may show useful information for problem ROMS.
 
 
-*Pi CONFIGURATION*
+Pi CONFIGURATION
 
 I highly recommend overclocking your Raspberry Pi to gain maximum performance
 as PiFBA is very CPU intensive and overclocking will make most games run at full speed.
+The Pi 2 does not need overclocking.
 
-My overclocking settings which work well, (/boot/config.txt)
-{{{
+My overclocking settings which work well, (/boot/config.txt):
 arm_freq=900
 sdram_freq=500
-}}}
 
 NOTE: Make sure overclocking is actually working by checking "cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor" should be "ondemand". Later kernels appear to set it to "powersave" by default.
 
 If your sound is too quiet then do the following to fix that:
-{{{
 First get the playback device, type "amixer controls"
 This will show the numid for the playback device, probably 3.
 Now set the volume, type "amixer cset numid=3 90%".
 Then reboot to make it permanent.
-}}}
 
 If you're having problems with HDMI audio then it is likely PulseAudio
 is causing the issues as it has problems with the ALSA drivers. To fix
 this simply remove PulseAudio:
-{{{
 sudo apt-get --purge remove pulseaudio
 sudo apt-get autoremove
-}}}
 
 If you're getting a black screen when running in Console mode with
 Composite output, try removing/commenting out the "overscan_" parameters from "/boot/config.txt" as follows (using disable_overscan doesn't appear to fix it):
-{{{
 #overscan_left=16
 #overscan_right=16
 #overscan_top=16
 #overscan_bottom=16
-}}}
 
-*GRAPHICS EFFECTS*
+GRAPHICS EFFECTS
 
 Postprocessing can be enabled by setting "DisplayEffect" in fba2x.cfg. In addition you can disable anti-aliasing smoothing ("DisplaySmoothStretch" in fba2x.cfg). For the scanlines filter it is recommended you switch off "DisplaySmoothStretch".
 
-*PORT CREDITS*
+PORT CREDITS
 
   * Ported to and optimised for the Raspberry Pi by Squid (aka Pudding on the Pi forums)
 
-*ORIGINAL CREDITS*
+ORIGINAL CREDITS
 
   * Final Burn copyright Team FB Alpha.
   * FBA2X version 7.3 by HeadOverHeels.
@@ -146,34 +135,34 @@ Postprocessing can be enabled by setting "DisplayEffect" in fba2x.cfg. In additi
   * PNG functionality provided by libpng (http://www.libpng.org/) and PNGlib (http://www.madwizard.org/).
   * Zip functionality provided by zlib (http://www.zlib.net/).
 
-*CHANGE LOG*
+CHANGE LOG
 
 
-_October 02, 2013:_
+October 02, 2013:
   * Added DPAD (HAT) controls support for joysticks.
 
-_September 01, 2013:_
+September 01, 2013:
   * Joystick SELECT+START now quits the frontend. Joystick SELECT now opens the menu and START will start a game.
   * 2nd player controls now configurable for joystick and keyboard.
 
-_August 11, 2013:_
+August 11, 2013:
   * Fixed keyboard not working when no joysticks attached
 
-_August 7, 2013:_
+August 7, 2013:
   * Fixed sound in some games, e.g. pang3, forgottn
   * All sound now rendered in stereo (mono uses both channels)
 
-_August 5, 2013:_
+August 5, 2013:
   * Added two player joystick support
   * Fixed frontend neverending quit with joysticks
 
-_July 30, 2013:_
+July 30, 2013:
   * Higher resolution frontend
 
-_July 24, 2013:_
+July 24, 2013:
   * Fixed some games
   * Added more Taito games
   * Added "MaintainAspectRatio" option to allow filled screen
 
-_July 21, 2013:_
+July 21, 2013:
   * Initial release.
