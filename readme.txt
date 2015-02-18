@@ -76,9 +76,7 @@ An output file called "output.log" is generated for each game which may show use
 
 Pi CONFIGURATION
 
-I highly recommend overclocking your Raspberry Pi to gain maximum performance
-as PiFBA is very CPU intensive and overclocking will make most games run at full speed.
-The Pi 2 does not need overclocking.
+I highly recommend overclocking your Raspberry Pi to gain maximum performance as PiFBA is very CPU intensive and overclocking will make most games run at full speed.  The Pi 2 does not need overclocking.
 
 My overclocking settings which work well, (/boot/config.txt):
 arm_freq=900
@@ -92,9 +90,7 @@ This will show the numid for the playback device, probably 3.
 Now set the volume, type "amixer cset numid=3 90%".
 Then reboot to make it permanent.
 
-If you're having problems with HDMI audio then it is likely PulseAudio
-is causing the issues as it has problems with the ALSA drivers. To fix
-this simply remove PulseAudio:
+If you're having problems with HDMI audio then it is likely PulseAudio is causing the issues as it has problems with the ALSA drivers. To fix this simply remove PulseAudio:
 sudo apt-get --purge remove pulseaudio
 sudo apt-get autoremove
 
