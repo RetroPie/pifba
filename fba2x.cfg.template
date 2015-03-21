@@ -85,5 +85,6 @@ DisplaySmoothStretch=1
 DisplayEffect=0
 DisplayBorder=0
 MaintainAspectRatio=1
+DisplayAutoRotate=0
 
 [Sound]
