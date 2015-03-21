@@ -41,7 +41,7 @@ CONTROLS
 
 Additionally to quit with the joystick you can press SELECT+START.
 
-The joystick layout defaults to Saitek P380 button layout. 
+The joystick layout defaults to XBMX 360 button layout. 
 
 All controls are configurable by editing the "fba2x.cfg" file. If your joystick uses axis different than 0 and 1 you can change this in the fbax2.cfg file.
 
