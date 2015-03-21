@@ -108,7 +108,12 @@ Composite output, try removing/commenting out the "overscan_" parameters from "/
 GRAPHICS EFFECTS
 ----------------
 
-Postprocessing can be enabled by setting "DisplayEffect" in fba2x.cfg. In addition you can disable anti-aliasing smoothing ("DisplaySmoothStretch" in fba2x.cfg). For the scanlines filter it is recommended you switch off "DisplaySmoothStretch".
+fba2x.cfg settings:
+
+    DisplaySmoothStretch - Disable anti-aliasing smoothing.
+    DisplayEffect - Postprocessing scanline filter.  For the scanlines filter it is recommended you switch off "DisplaySmoothStretch".
+    DisplayAutoRotate - For vertical games auto rotate the display.
+    MaintainAspectRatio - Keep the original game display ratio or fill the screen.
 
 PORT CREDITS
 ------------
@@ -138,11 +143,17 @@ ORIGINAL CREDITS
 CHANGE LOG
 ----------
 
-October 02, 2013:
+March 2013:
+
+  * DPAD/HAT support fixed.
+  * Added 4 player joystick support.
+  * Screen rotation option for vertical games.
+
+October 2013:
 
   * Added DPAD (HAT) controls support for joysticks.
 
-September 01, 2013:
+September 2013:
 
   * Joystick SELECT+START now quits the frontend. Joystick SELECT now opens the menu and START will start a game.
   * 2nd player controls now configurable for joystick and keyboard.
