@@ -12,6 +12,7 @@ typedef struct
 	int display_smooth_stretch;
 	int display_effect;
 	int maintain_aspect_ratio;
+	int display_rotate;
 } CFG_OPTIONS;
 
 #endif

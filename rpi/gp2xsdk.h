@@ -97,6 +97,7 @@ enum {
 #define DOWN_1 9
 #define LEFT_1 10
 #define RIGHT_1 11
+
 #define A_2 20
 #define B_2 21
 #define X_2 22
@@ -110,12 +111,39 @@ enum {
 #define LEFT_2 30
 #define RIGHT_2 31
 
-#define ACCEL 50
-#define QUIT 51
-#define HELP 52
+#define A_3 32
+#define B_3 33
+#define X_3 34
+#define Y_3 35
+#define L_3 36
+#define R_3 37
+#define START_3 38
+#define SELECT_3 39
+#define UP_3 40
+#define DOWN_3 41
+#define LEFT_3 42
+#define RIGHT_3 43
 
-#define QLOAD 55
-#define QSAVE 56
+#define A_4 44
+#define B_4 45
+#define X_4 46
+#define Y_4 47
+#define L_4 48
+#define R_4 49
+#define START_4 50
+#define SELECT_4 51
+#define UP_4 52
+#define DOWN_4 53
+#define LEFT_4 54
+#define RIGHT_4 55
+
+#define ACCEL 60
+#define QUIT 61
+#define HELP 62
+
+#define QLOAD 63
+#define QSAVE 64
+
 
 // Axis positions
 #define CENTER  0

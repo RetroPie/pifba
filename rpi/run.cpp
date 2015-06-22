@@ -16,10 +16,10 @@ static int VideoBufferHeight = 0;
 static int PhysicalBufferWidth = 0;
 
 
-static unsigned short * BurnVideoBuffer = NULL;	
+static unsigned short * BurnVideoBuffer = NULL; 
 static bool BurnVideoBufferAlloced = false;
 
-static unsigned short * BurnVideoBufferSave = NULL;	
+static unsigned short * BurnVideoBufferSave = NULL; 
 
 bool bShowFPS = false;
 
@@ -39,65 +39,70 @@ int RunReset()
     //Burn rotates vertical games internally and as we rotate the bitmap
     //after Burn has drawn it but before we draw to GLES we need to
     //swap the dimensions for our GLES initialisation.
-    if(BurnDrvGetFlags() & BDF_ORIENTATION_VERTICAL)
+    int rotate = 0;
+    if(BurnDrvGetFlags() & BDF_ORIENTATION_VERTICAL && !config_options.display_rotate) {
+        rotate = 1;
+    }
+
+    if(rotate == 1)
         pi_setvideo_mode(VideoBufferHeight, VideoBufferWidth);
     else
         pi_setvideo_mode(VideoBufferWidth, VideoBufferHeight);
+ 
+    nFramesEmulated = 0;
+    nCurrentFrame = 0;
+    nFramesRendered = 0;    
+    nFramesRenderedTotal = 0;   
     
-	nFramesEmulated = 0;
-	nCurrentFrame = 0;
-	nFramesRendered = 0;	
-	nFramesRenderedTotal = 0;	
-	
-	return 0;
+    return 0;
 }
 
 int RunOneFrame(bool bDraw, int fps) 
 {
-	do_keypad();
-	InpMake(FBA_KEYPAD);
+    do_keypad();
+    InpMake(FBA_KEYPAD);
 
-	nFramesEmulated++;
-	nCurrentFrame++;
-	
-	pBurnDraw = NULL;
-	if ( bDraw )
-	{
-		nFramesRendered++;
-		nFramesRenderedTotal++;
-		VideoBufferUpdate();
-		pBurnDraw = (unsigned char *)&BurnVideoBuffer[0];
-	}
-	
-	BurnDrvFrame();
-	
-	pBurnDraw = NULL;
-	if ( bDraw )
-	{
-		VideoTrans();
-		if (bShowFPS)
-		{
-			char buf[10];
-			sprintf(buf, "FPS: %2d", fps);
-			//draw_text(buf, x, 0, 0xBDF7, 0x2020);
-			DrawRect((uint16 *) (unsigned short *) &VideoBuffer[0],0, 0, 60, 9, 0,PhysicalBufferWidth);
-			DrawString (buf, (unsigned short *) &VideoBuffer[0], 0, 0,PhysicalBufferWidth);
-		}
-		pi_video_flip();
-	}
+    nFramesEmulated++;
+    nCurrentFrame++;
+    
+    pBurnDraw = NULL;
+    if ( bDraw )
+    {
+        nFramesRendered++;
+        nFramesRenderedTotal++;
+        VideoBufferUpdate();
+        pBurnDraw = (unsigned char *)&BurnVideoBuffer[0];
+    }
+    
+    BurnDrvFrame();
+    
+    pBurnDraw = NULL;
+    if ( bDraw )
+    {
+        VideoTrans();
+        if (bShowFPS)
+        {
+            char buf[10];
+            sprintf(buf, "FPS: %2d", fps);
+            //draw_text(buf, x, 0, 0xBDF7, 0x2020);
+            DrawRect((uint16 *) (unsigned short *) &VideoBuffer[0],0, 0, 60, 9, 0,PhysicalBufferWidth);
+            DrawString (buf, (unsigned short *) &VideoBuffer[0], 0, 0,PhysicalBufferWidth);
+        }
+        pi_video_flip();
+    }
 
-	return 0;
+    return 0;
 }
 
 static unsigned int HighCol16(int r, int g, int b, int  /* i */)
 {
-	unsigned int t;
+    unsigned int t;
 
-	t  = (r << 8) & 0xF800;
-	t |= (g << 3) & 0x07E0;
-	t |= (b >> 3) & 0x001F;
+    t  = (r << 8) & 0xF800;
+    t |= (g << 3) & 0x07E0;
+    t |= (b >> 3) & 0x001F;
 
-	return t;
+    return t;
 }
 
 static void BurnerVideoTransDemo(){}
@@ -134,33 +139,39 @@ static void BurnerVideoRotate()
 
 int VideoInit()
 {
-	BurnDrvGetFullSize(&VideoBufferWidth, &VideoBufferHeight);
-	
-	logoutput("Screen Size: %d x %d\n", VideoBufferWidth, VideoBufferHeight);
-	
-	nBurnBpp = 2;
-	BurnHighCol = HighCol16;
-	
-	BurnRecalcPal();
-	
+    BurnDrvGetFullSize(&VideoBufferWidth, &VideoBufferHeight);
+    
+    logoutput("Screen Size: %d x %d\n", VideoBufferWidth, VideoBufferHeight);
+    
+    nBurnBpp = 2;
+    BurnHighCol = HighCol16;
+    
+    BurnRecalcPal();
+    
     BurnVideoBufferAlloced = false;
     nBurnPitch  = VideoBufferWidth * 2;
     
-    if(BurnDrvGetFlags() & BDF_ORIENTATION_VERTICAL)
+    int rotate = 0;
+    if(BurnDrvGetFlags() & BDF_ORIENTATION_VERTICAL && !config_options.display_rotate) {
+        rotate = 1;
+    }
+
+    if(rotate == 1)
     {
+        logoutput("Screen Rotate 90\n");
+
         BurnerVideoTrans = BurnerVideoRotate;
         BurnVideoBuffer = (unsigned short *)malloc( VideoBufferWidth * VideoBufferHeight * 2 );
-		BurnVideoBufferAlloced = true;
+        BurnVideoBufferAlloced = true;
         BurnVideoBufferSave = BurnVideoBuffer;
         PhysicalBufferWidth = VideoBufferHeight;
-    }
-    else {
+    } else {
         BurnerVideoTrans = BurnerVideoDoNothing;
-    	BurnVideoBuffer = VideoBuffer;
+        BurnVideoBuffer = VideoBuffer;
         PhysicalBufferWidth = VideoBufferWidth;
     }
-		
-	return 0;
+
+    return 0;
 }
 
 // 'VideoBuffer' is updated each frame due to double buffering, so we sometimes need to ensure BurnVideoBuffer is updated too.
@@ -174,20 +185,20 @@ void VideoBufferUpdate (void)
 
 void VideoTrans()
 {
-	BurnerVideoTrans();
+    BurnerVideoTrans();
 }
 
 void VideoExit()
 {
-	if ( BurnVideoBufferAlloced )
-		free(BurnVideoBuffer);
-	BurnVideoBuffer = NULL;
-	BurnVideoBufferAlloced = false;
-	BurnerVideoTrans = BurnerVideoTransDemo;
+    if ( BurnVideoBufferAlloced )
+        free(BurnVideoBuffer);
+    BurnVideoBuffer = NULL;
+    BurnVideoBufferAlloced = false;
+    BurnerVideoTrans = BurnerVideoTransDemo;
 }
 
 void ChangeFrameskip()
 {
-	bShowFPS = !bShowFPS;
-	nFramesRendered = 0;
+    bShowFPS = !bShowFPS;
+    nFramesRendered = 0;
 }
