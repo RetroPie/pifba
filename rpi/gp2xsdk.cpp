@@ -30,7 +30,7 @@ extern bool bShowFPS;
 static int surface_width;
 static int surface_height;
 
-unsigned char joy_buttons[2][32];
+unsigned char joy_buttons[4][32];
 unsigned char joy_axes[4][2];
 
 int joyaxis_LR[4], joyaxis_UD[4];
