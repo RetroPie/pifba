@@ -312,14 +312,14 @@ char ss_prg_credit(void)
 		dispmanx_display();
 		
 		SDL_PollEvent(&event);
-		if (event.type==SDL_JOYBUTTONDOWN){
+		if ((event.type==SDL_KEYDOWN) || (event.type==SDL_JOYBUTTONDOWN)){
 			if (counter==0 ) {
 				if ( event.jbutton.button==GP2X_BUTTON_START ){
 					return 1 ;
 				}else return 0;
 			}
 			++counter;
-		}else if (event.type==SDL_JOYBUTTONUP){
+		}else if ((event.type==SDL_KEYUP) || (event.type==SDL_JOYBUTTONUP)){
 			counter=0;// reinitialisation joystick
 		}
 	}
@@ -364,11 +364,11 @@ void ss_prg_help(void)
 		dispmanx_display();
 		
 		SDL_PollEvent(&event);
-		if (event.type==SDL_JOYBUTTONDOWN){
+		if ((event.type==SDL_KEYDOWN) || (event.type==SDL_JOYBUTTONDOWN)){
 			if (counter==0) Hquit = 1 ;
 			++counter;
 		} 
-		else if (event.type==SDL_JOYBUTTONUP){
+		else if ((event.type==SDL_KEYUP) || (event.type==SDL_JOYBUTTONUP)){
 			counter=0;// reinitialisation joystick
 		}
 	}
