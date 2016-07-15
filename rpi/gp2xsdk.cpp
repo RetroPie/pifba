@@ -283,7 +283,7 @@ int init_SDL(void)
             logoutput("Found %d joysticks\n",joyCount);
     }
     else
-        joyCount=1;
+        joyCount=2;
 
     //sq frig number of players for keyboard
     //joyCount=2;
