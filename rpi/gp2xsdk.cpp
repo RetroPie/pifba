@@ -77,7 +77,7 @@ static Uint16 pi_joy[NUMKEYS];
 
 void pi_initialize_input()
 {
-    memset(joy_buttons, 0, 32*2);
+    memset(joy_buttons, 0, 32*4);
     memset(joy_axes, 0, 4*2);
     memset(pi_key, 0, NUMKEYS*2);
     memset(pi_joy, 0, NUMKEYS*2);
@@ -173,7 +173,6 @@ void pi_initialize_input()
 
 void pi_parse_config_file (void)
 {
-    int i=0;
 
     open_config_file();
 
@@ -279,11 +278,11 @@ int init_SDL(void)
                     joyCount++;
             }
         }
-        if(joy[0])
-            logoutput("Found %d joysticks\n",joyCount);
+        if(joyCount)
+            logoutput("Found %d joystick(s)\n", joyCount);
     }
     if(joyCount < 2)
-        joyCount=2;
+        joyCount = 2;
 
     //sq frig number of players for keyboard
     //joyCount=2;
@@ -382,17 +381,17 @@ void pi_setvideo_mode(int width, int height)
         uint32_t sx, sy;
         
         // Work out the position and size on the display
-        display_ratio = (float)display_width/(float)display_height;
-        game_ratio = (float)width/(float)height;
+        display_ratio = display_width/(float)display_height;
+        game_ratio = width/(float)height;
         
         display_x = sx = display_adj_width;
         display_y = sy = display_adj_height;
         
         if(config_options.maintain_aspect_ratio || game_ratio < 1) {
-                if (game_ratio>display_ratio)
-                    sy = (float)display_adj_width/(float)game_ratio;
+                if (game_ratio > display_ratio)
+                    sy = display_adj_width / game_ratio;
                 else
-                    sx = (float)display_adj_height*(float)game_ratio;
+                    sx = display_adj_height * game_ratio;
         }
         
         // Centre bitmap on screen
@@ -634,7 +633,7 @@ unsigned long pi_joystick_read(int which1)
         if (joy_axes[0][JOYLR] == LEFT)         val |= GP2X_LEFT;
         if (joy_axes[0][JOYLR] == RIGHT)        val |= GP2X_RIGHT;
     } 
-    if (which1 == 1) {
+    else if (which1 == 1) {
         if (joy_buttons[1][pi_joy[L_2]])        val |= GP2X_L;
         if (joy_buttons[1][pi_joy[R_2]])        val |= GP2X_R;
         if (joy_buttons[1][pi_joy[X_2]])        val |= GP2X_X;
@@ -648,7 +647,7 @@ unsigned long pi_joystick_read(int which1)
         if (joy_axes[1][JOYLR] == LEFT)         val |= GP2X_LEFT;
         if (joy_axes[1][JOYLR] == RIGHT)        val |= GP2X_RIGHT;
     }
-    if (which1 == 2) {
+    else if (which1 == 2) {
         if (joy_buttons[2][pi_joy[L_3]])        val |= GP2X_L;
         if (joy_buttons[2][pi_joy[R_3]])        val |= GP2X_R;
         if (joy_buttons[2][pi_joy[X_3]])        val |= GP2X_X;
@@ -662,7 +661,7 @@ unsigned long pi_joystick_read(int which1)
         if (joy_axes[2][JOYLR] == LEFT)         val |= GP2X_LEFT;
         if (joy_axes[2][JOYLR] == RIGHT)        val |= GP2X_RIGHT;
     }
-    if (which1 == 3) {
+    else if (which1 == 3) {
         if (joy_buttons[3][pi_joy[L_4]])        val |= GP2X_L;
         if (joy_buttons[3][pi_joy[R_4]])        val |= GP2X_R;
         if (joy_buttons[3][pi_joy[X_4]])        val |= GP2X_X;
