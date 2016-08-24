@@ -99,7 +99,6 @@ void generate_gamelist(void)
 void parse_cmd(int argc, char *argv[], char *path)
 {
 	int option_index, c;
-	char *p;
 
 	static struct option long_opts[] = {
 		{"sound", 0, &config_options.option_sound_enable, 1},
@@ -110,7 +109,8 @@ void parse_cmd(int argc, char *argv[], char *path)
 		{"hw-rescale", 0, &config_options.option_rescale, 2},
 		{"showfps", 0, &config_options.option_showfps, 1},
 		{"no-showfps", 0, &config_options.option_showfps, 0},
-		{"gamelist", 0, 0, 'l'}
+		{"gamelist", 0, 0, 'l'},
+		{"config", required_argument, 0, 'c'}
 	};
 
 	option_index=optind=0;
@@ -127,6 +127,16 @@ void parse_cmd(int argc, char *argv[], char *path)
 			    //Generate full gamelist
 				generate_gamelist();		
 				break;
+			case 'c':
+				if(!access(optarg, R_OK)) {
+					strncpy(config_options.config_file, optarg, sizeof(config_options.config_file));
+				} else {
+					perror(optarg);
+					exit(1);
+				}
+				break;
+			case '?': // missing argument, the getopt_long() print the error message
+				exit(1);
 		}
 	}
 
@@ -159,7 +169,7 @@ void logflush(void)
 
 int main( int argc, char **argv )
 { 	
-	char path[MAX_PATH];
+    char path[MAX_PATH];
     char abspath[1000];
 
     //Set the directory to where the binary is
@@ -173,9 +183,10 @@ int main( int argc, char **argv )
 	if (argc < 2)
 	{
 		printf ("Usage: %s <path to rom><shortname>.zip [OPTION]...\n   ie: %s roms/uopoko.zip\n Note: Path and .zip extension are mandatory.\n\n",argv[0], argv[0]);
-		printf ("  --gamelist        generate a gamelist.txt with all supported games\n");
-		printf ("  --showfps         show FPS during the game\n");
-		printf ("  --no-sound        disable sound\n");
+		printf ("  --config fba2x.cfg  load config file\n");
+		printf ("  --gamelist          generate a gamelist.txt with all supported games\n");
+		printf ("  --showfps           show FPS during the game\n");
+		printf ("  --no-sound          disable sound\n");
 		printf ("\n");
 		return 0;
 	}
@@ -186,6 +197,7 @@ int main( int argc, char **argv )
 	config_options.option_samplerate = 2;
 	config_options.option_showfps = 0;
 	config_options.option_display_border = 30;
+	strcpy(config_options.config_file, "fba2x.cfg");
 	parse_cmd(argc, argv,path);
 
 	//Make sure directory exists
