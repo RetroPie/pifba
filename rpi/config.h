@@ -13,6 +13,7 @@ typedef struct
 	int display_effect;
 	int maintain_aspect_ratio;
 	int display_rotate;
+	char config_file[MAX_PATH];
 } CFG_OPTIONS;
 
 #endif
