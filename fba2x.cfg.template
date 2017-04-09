@@ -1,31 +1,31 @@
 [Keyboard]
 # Get codes from /usr/include/SDL/SDL_keysym.h
-A_1=306
-B_1=32
-X_1=308
-Y_1=304
-L_1=122
-R_1=120
-START_1=13
-SELECT_1=9
-LEFT_1=276
-RIGHT_1=275
-UP_1=273
-DOWN_1=274
-QUIT=27
-#player 2 keyboard controls, disabled by default
-A_2=999
-B_2=999
-X_2=999
-Y_2=999
-L_2=999
-R_2=999
-START_2=999
-SELECT_2=999
-LEFT_2=999
-RIGHT_2=999
-UP_2=999
-DOWN_2=999
+A_1=306       # left ctrl
+B_1=32        # space
+X_1=308       # left alt
+Y_1=304       # left shift
+L_1=122       # z
+R_1=120       # x
+START_1=13    # enter
+SELECT_1=9    # tab
+LEFT_1=276    # left arrow
+RIGHT_1=275   # right arrow
+UP_1=273      # up arrow
+DOWN_1=274    # down arrow
+QUIT=27       # esc
+#player 2 keyboard controls
+A_2=117       # u
+B_2=111       # o
+X_2=105       # i
+Y_2=106       # j
+L_2=107       # k
+R_2=108       # l
+START_2=53    # 5
+SELECT_2=48   # 0 (zero)
+LEFT_2=97     # a
+RIGHT_2=100   # d
+UP_2=119      # w
+DOWN_2=115    # s
 
 [Joystick]
 # Get codes from "jstest /dev/input/js0"
